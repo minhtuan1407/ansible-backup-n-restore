@@ -1,0 +1,36 @@
+---
+- name: Validate OS
+  fail: msg="Intall is only supported on Debian or CentOS or Ubuntu"
+  when: ansible_distribution != 'Debian' or ansible_distribution != 'CentOS' or ansible_distribution != 'Ubuntu'
+# - name: Validate OS version
+#   fail: msg="Intall is only supported on Debian 9, Debian 10, CentOS 7, Centos 8, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 20.04"
+#   when: ansible_distribution_major_version != '9'
+- name: Validate Architecture
+  fail: msg="Install is only support on x86_64"
+  when: ansible_architecture != 'x86_64'
+- name: Download rclone
+  get_url:
+    url: https://downloads.rclone.org/rclone-current-linux-amd64.zip
+    dest: /tmp/rclone-current-linux-amd64.zip
+- name: Extract rclone-current-linux-amd64.zip
+  unarchive:
+    src: /tmp/rclone-current-linux-amd64.zip
+    dest: /tmp/
+    remote_src: yes
+- name: Copy binary rclone
+  shell:
+    cmd: cp /tmp/rclone-*-linux-amd64/rclone /usr/bin/
+- name: Change permission & ownership of rclone
+  file:
+    path: /usr/bin/rclone
+    owner: root
+    group: root
+    mode: 0775
+- name: Copy google json service account
+  copy:
+    src: minhtuan1407-drive-d4c1e3ba85f0.json
+    dest: /opt/minhtuan1407-drive-d4c1e3ba85f0.json
+- name: Config rclone
+  shell:
+    cmd: rclone config create google-drive drive service_account_file /opt/minhtuan1407-drive-d4c1e3ba85f0.json shared_with_me true
+...

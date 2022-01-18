@@ -1,0 +1,14 @@
+---
+# tasks file for ansible-backup-n-restore
+- include: check-os-n-rclone.yml
+  tags:
+    - check-os-n-rclone
+- include: backup.yml
+  tags:
+    - backup
+  when: task == "Backup"
+- include: restore.yml
+  tags:
+    - backup
+  when: task == "Restore"
+...

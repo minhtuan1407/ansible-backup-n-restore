@@ -1,0 +1,12 @@
+---
+- name: Check exist /usr/sbin/httpd
+  stat:
+    path: /usr/sbin/httpd
+  register: httpd_exist
+  when: ansible_distribution == 'CentOS'
+- name: Check exist /usr/sbin/apache2
+  stat:
+    path: /usr/sbin/apache2
+  register: apache2_exist
+  when: ansible_distribution == 'CentOS'
+...
