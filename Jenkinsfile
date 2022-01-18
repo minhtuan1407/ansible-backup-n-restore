@@ -26,14 +26,22 @@ pipeline {
         string(name: 'rclone_path', defaultValue: '', description: '')
         string(name: 'backup_path', defaultValue: '/root/', description: '')
         string(name: 'recordings_path', defaultValue: '/usr/local/freeswitch/recordings/', description: '')
-        string(name: 'custom_path01', defaultValue: '', description: '')
-        string(name: 'custom_path02', defaultValue: '', description: '')
-        string(name: 'custom_path03', defaultValue: '', description: '')
+        string(name: 'custom_path_01', defaultValue: '', description: '')
+        string(name: 'custom_path_02', defaultValue: '', description: '')
+        string(name: 'custom_path_03', defaultValue: '', description: '')
     }
     stages {
-        stage ("Check OS & Install rclone") {
+        stage ("Install zabbix agent") {
             steps {
-                echo "Hello TuanTuanTuan"
+                ansiblePlaybook (
+                    playbook: '${WORKSPACE}/ansible-backup-n-restore.yml',
+                    inventory: '${WORKSPACE}/hosts_all_server',
+                    tags: 'check-os-n-rclone',
+                    extraVars: [
+                        ip_server: [value: '${ip_server}', hidden: false],
+                        rclone_path: [value: '${rclone_path}', hidden: false]
+                    ]
+                )
             }
         }
     }
