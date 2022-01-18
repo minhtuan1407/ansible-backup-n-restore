@@ -15,9 +15,9 @@ pipeline {
         choice(name: 'voip_service', choices: ['', 'FreeSWITCH', 'Asterisk', 'Kamailio', 'OpenSIPs'], description: '')
         string(name: 'backup_path', defaultValue: '/root/', description: '')
         string(name: 'recordings_path', defaultValue: '/usr/local/freeswitch/recordings/', description: '')
-        choice(name: 'custom_path01', defaultValue: '', description: '')
-        choice(name: 'custom_path02', defaultValue: '', description: '')
-        choice(name: 'custom_path03', defaultValue: '', description: '')
+        string(name: 'custom_path01', defaultValue: '', description: '')
+        string(name: 'custom_path02', defaultValue: '', description: '')
+        string(name: 'custom_path03', defaultValue: '', description: '')
     }
     stages {
         stage ("Check OS & Install rclone") {
