@@ -9,7 +9,7 @@
   debug:
     msg:
       - "mariadb exist"
-  when: "'mariadb-server' in ansible_facts.packages"
+  when: "'mariadb*' in ansible_facts.packages"
 - name: Add line compress directory /etc/mariadb/
   blockinfile:
     path: /opt/backup-system.sh
@@ -18,5 +18,5 @@
     block: |
       tar -czvf $BACKUP_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C /etc/ mysql
     state: present
-  when: "'mariadb-server' in ansible_facts.packages"
+  when: "'mariadb*' in ansible_facts.packages"
 ...
