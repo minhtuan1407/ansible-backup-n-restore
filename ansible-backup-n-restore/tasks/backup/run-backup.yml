@@ -4,7 +4,7 @@
     marker: "# Tuan upload file backup"
     insertbefore: EOF
     block: |
-      rclone copy -P --ignore-existing $SAVE_PATH $RCLONE_PATH
+      rclone copy -P --ignore-existing $BACKUP_PATH $RCLONE_PATH
     state: present
 - name: Upload file recordings to google drive
   blockinfile:
