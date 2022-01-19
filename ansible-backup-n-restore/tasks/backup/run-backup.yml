@@ -23,8 +23,20 @@
     block: |
       cd $BACKUP_PATH && rm -rf $IP_SERVER-httpd-*.tar.gz $IP_SERVER-apache2-*.tar.gz
     state: present
-- name: Show domain_uuid
-  debug:
-    msg:
-    - "Run now is {{ run_now }}"
-    - "Crontab 3h is {{ crontab_3h }}"
+- name: Add crontab to run backup at 03:00
+  cron:
+    name: "Run backup database at 22:00"
+    minute: "00"
+    hour: "03"
+    job:
+    - "bash /opt/backup-system.sh"
+  when: crontab_3h == true
+- name: Run backup right now
+  shell:
+    cmd: "bash /opt/backup-system.sh"
+  when: run_now == true
+# - name: Show domain_uuid
+#   debug:
+#     msg:
+#     - "Run now is {{ run_now }}"
+#     - "Crontab 3h is {{ crontab_3h }}"
