@@ -21,7 +21,7 @@
     marker: "# Tuan delete file backup"
     insertbefore: EOF
     block: |
-      cd $BACKUP_PATH && rm -rf $IP_SERVER-httpd-*.tar.gz $IP_SERVER-apache2-*.tar.gz
+      cd $BACKUP_PATH && rm -rf $IP_SERVER-httpd-*.tar.gz $IP_SERVER-apache2-*.tar.gz $IP_SERVER-nginx-*.tar.gz
     state: present
 - name: Add crontab to run backup at 03:00
   cron:

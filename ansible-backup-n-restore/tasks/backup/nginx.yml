@@ -1,0 +1,20 @@
+---
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+- name: Message check nginx 
+  debug:
+    msg:
+      - "nginx exist"
+  when: "'nginx' in ansible_facts.packages"
+- name: Add line compress directory /etc/nginx/
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress nginx config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C /etc/ nginx
+    state: present
+  when: 
+    - "'nginx' in ansible_facts.packages"
+...

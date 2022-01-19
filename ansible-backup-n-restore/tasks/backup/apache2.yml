@@ -22,7 +22,6 @@
     state: present
   when: 
     - "'httpd' in ansible_facts.packages"
-    - apache2 == true
 - name: Add line compress directory /etc/apache2/
   blockinfile:
     path: /opt/backup-system.sh
@@ -33,5 +32,4 @@
     state: present
   when: 
     - "'apache2' in ansible_facts.packages"
-    - apache2 == true
 ...
