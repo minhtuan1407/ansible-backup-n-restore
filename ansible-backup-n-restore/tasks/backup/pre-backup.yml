@@ -14,7 +14,7 @@
 - name: Insert base variables
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "---base---"
+    marker_begin: "# Tuan set variable bash shell"
     insertbefore: BOF
     block: |
       NOW=$(date +%Y-%m-%d)
