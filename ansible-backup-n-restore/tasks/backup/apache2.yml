@@ -1,12 +1,17 @@
 ---
-- name: Check exist /usr/sbin/httpd
-  stat:
-    path: /usr/sbin/httpd
-  register: httpd_exist
-- name: Check exist /usr/sbin/apache2
-  stat:
-    path: /usr/sbin/apache2
-  register: apache2_exist
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+- name: Message check apache2 and httpd
+  debug:
+    msg:
+      - "httpd exist"
+  when: "'httpd' in ansible_facts.packages"
+- name: Message check apache2 and httpd
+  debug:
+    msg:
+      - "apache2 exist"
+  when: "'apache2' in ansible_facts.packages"
 - name: Add line compress directory /etc/httpd/
   blockinfile:
     path: /opt/backup-system.sh
@@ -15,7 +20,9 @@
     block: |
       tar -czvf $BACKUP_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C /etc/ httpd
     state: present
-  when: httpd_exist.stat.exists
+  when: 
+    - "'httpd' in ansible_facts.packages"
+    - Apache2 == true
 - name: Add line compress directory /etc/apache2/
   blockinfile:
     path: /opt/backup-system.sh
@@ -24,5 +31,7 @@
     block: |
       tar -czvf $BACKUP_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C /etc/ apache2
     state: present
-  when: apache2_exist.stat.exists
+  when: 
+    - "'apache2' in ansible_facts.packages"
+    - Apache2 == true
 ...
