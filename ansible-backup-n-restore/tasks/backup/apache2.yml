@@ -9,4 +9,12 @@
     path: /usr/sbin/apache2
   register: apache2_exist
   when: ansible_distribution == 'Debian'
+- name: Add line compress directory /etc/httpd/
+  blockinfile:
+    path: /opt/backup-system.sh
+    insertbefore: EOF
+    block: |
+      tar -czvf $SAVE_DIR/httpd-$NOW.tar.gz -C /etc/ httpd
+    state: present
+  when: httpd_exist.stat.exists
 ...
