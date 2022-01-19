@@ -1,8 +1,8 @@
 ---
 # tasks file for ansible-backup-n-restore
-- include: check-os-n-rclone.yml
+- include: install-rclone.yml
   tags:
-    - check-os-n-rclone
+    - install-rclone
 - include: backup.yml
   tags:
     - backup
