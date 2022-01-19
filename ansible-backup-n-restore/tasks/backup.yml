@@ -5,11 +5,11 @@
 - include: backup/apache2.yml
   tags:
     - apache2
-  when: apache2 == true
+  when: apache2 == "true"
 - include: backup/nginx.yml
   tags:
     - nginx
-  when: nginx == true
+  when: nginx == "true"
 - include: backup/run-backup.yml
   tags:
     - run-backup

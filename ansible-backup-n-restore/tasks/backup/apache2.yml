@@ -2,12 +2,12 @@
 - name: Gather the package facts
   package_facts:
     manager: auto
-- name: Message check apache2 and httpd
+- name: Message check httpd
   debug:
     msg:
       - "httpd exist"
   when: "'httpd' in ansible_facts.packages"
-- name: Message check apache2 and httpd
+- name: Message check apache2
   debug:
     msg:
       - "apache2 exist"
