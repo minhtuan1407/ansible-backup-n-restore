@@ -22,6 +22,7 @@ pipeline {
         booleanParam(name: 'opensips', defaultValue: false, description: '')
         booleanParam(name: 'crontab_3h', defaultValue: true, description: '')
         booleanParam(name: 'run_now', defaultValue: true, description: '')
+        booleanParam(name: 'delete_after', defaultValue: false, description: '')
         string(name: 'rclone_path', defaultValue: 'minhtuan.tel4vn.com', description: '')
         string(name: 'backup_path', defaultValue: '/opt/backup/', description: '')
         string(name: 'recordings_path', defaultValue: '/usr/local/freeswitch/recordings/', description: '')
@@ -59,15 +60,16 @@ pipeline {
                         freeswitch: [value: '${freeswitch}', hidden: false],
                         kamailio: [value: '${kamailio}', hidden: false],
                         opensips: [value: '${opensips}', hidden: false],
+                        crontab_3h: [value: '${crontab_3h}', hidden: false],
+                        run_now: [value: '${run_now}', hidden: false],
+                        delete_after: [value: '${delete_after}', hidden: false],
                         backup_path: [value: '${backup_path}', hidden: false],
                         rclone_path: [value: '${rclone_path}', hidden: false],
                         recordings_path: [value: '${recordings_path}', hidden: false],
                         rclone_path: [value: '${rclone_path}', hidden: false],
                         custom_path_01: [value: '${custom_path_01}', hidden: false],
                         custom_path_02: [value: '${custom_path_02}', hidden: false],
-                        custom_path_03: [value: '${custom_path_03}', hidden: false],
-                        crontab_3h: [value: '${crontab_3h}', hidden: false],
-                        run_now: [value: '${run_now}', hidden: false]
+                        custom_path_03: [value: '${custom_path_03}', hidden: false]
                     ]
                 )
             }
