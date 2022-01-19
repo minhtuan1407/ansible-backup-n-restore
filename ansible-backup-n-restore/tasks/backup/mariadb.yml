@@ -1,15 +1,21 @@
 ---
-- name: Gather the package facts
-  package_facts:
-    manager: auto
-- name: Print the package facts
-  ansible.builtin.debug:
-    var: ansible_facts.packages
+- name: Check if package mariadb is exist
+  shell:
+    cmd: yum list installed | grep mariadb
+  register: mariadb_package
+  when: ansible_distribution != 'CentOS'
+  failed_when: mariadb_package.rc not in [0, 1]
+- name: Check if package mariadb is exist
+  shell:
+    cmd: dpkg -l | grep mariadb
+  register: mariadb_package
+  when: ansible_distribution != 'Debian'
+  failed_when: mariadb_package.rc not in [0, 1]
 - name: Message check mariadb 
   debug:
     msg:
       - "mariadb exist"
-  when: "'mariadb*' in ansible_facts.packages"
+  when: mariadb_package.rc == 0
 - name: Add line compress directory /etc/mariadb/
   blockinfile:
     path: /opt/backup-system.sh
@@ -18,5 +24,5 @@
     block: |
       tar -czvf $BACKUP_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C /etc/ mysql
     state: present
-  when: "'mariadb*' in ansible_facts.packages"
+  when: mariadb_package.rc == 0
 ...
