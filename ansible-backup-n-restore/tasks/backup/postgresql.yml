@@ -3,13 +3,13 @@
   shell:
     cmd: yum list installed | grep postgresql
   register: postgresql_package
-  when: ansible_distribution != 'CentOS'
+  when: ansible_distribution == 'CentOS'
   failed_when: postgresql_package.rc not in [0, 1]
 - name: Check if package postgresql is exist
   shell:
     cmd: dpkg -l | grep postgresql
   register: postgresql_package
-  when: ansible_distribution != 'Debian'
+  when: ansible_distribution == 'Debian'
   failed_when: postgresql_package.rc not in [0, 1]
 - name: Message check postgresql 
   debug:
