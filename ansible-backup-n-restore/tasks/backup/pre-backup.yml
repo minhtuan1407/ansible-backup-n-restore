@@ -14,7 +14,6 @@
 - name: Insert base variables
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "------"
     insertbefore: BOF
     block: |
       NOW=$(date +%Y-%m-%d)
