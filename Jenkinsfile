@@ -51,6 +51,7 @@ pipeline {
                     tags: 'backup',
                     extraVars: [
                         ip_server: [value: '${ip_server}', hidden: false],
+                        task: [value: '${task}', hidden: false],
                         rclone_path: [value: '${rclone_path}', hidden: false],
                         recordings_path: [value: '${recordings_path}', hidden: false],
                         rclone_path: [value: '${rclone_path}', hidden: false],
