@@ -30,11 +30,11 @@
     hour: "03"
     job:
     - "bash /opt/backup-system.sh"
-  when: "{{ crontab_3h }}" == "true"
+  when: crontab_3h == "true"
 - name: Run backup right now
   shell:
     cmd: "bash /opt/backup-system.sh"
-  when: "{{ run_now }}" == "true"
+  when: run_now == "true"
 - name: Show debug
   debug:
     msg:
