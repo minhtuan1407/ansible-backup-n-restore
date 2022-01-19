@@ -31,7 +31,7 @@ pipeline {
         string(name: 'custom_path_03', defaultValue: '', description: '')
     }
     stages {
-        stage ("Check OS & Rclone") {
+        stage ("Install Rclone") {
             steps {
                 ansiblePlaybook (
                     playbook: '${WORKSPACE}/ansible-backup-n-restore.yml',
@@ -39,6 +39,24 @@ pipeline {
                     tags: 'install-rclone',
                     extraVars: [
                         ip_server: [value: '${ip_server}', hidden: false]
+                    ]
+                )
+            }
+        }
+        stage ("Backup") {
+            steps {
+                ansiblePlaybook (
+                    playbook: '${WORKSPACE}/ansible-backup-n-restore.yml',
+                    inventory: '${WORKSPACE}/hosts_all_server',
+                    tags: 'install-rclone',
+                    extraVars: [
+                        ip_server: [value: '${ip_server}', hidden: false],
+                        rclone_path: [value: '${rclone_path}', hidden: false],
+                        recordings_path: [value: '${recordings_path}', hidden: false],
+                        rclone_path: [value: '${rclone_path}', hidden: false],
+                        custom_path_01: [value: '${custom_path_01}', hidden: false],
+                        custom_path_02: [value: '${custom_path_02}', hidden: false],
+                        custom_path_03: [value: '${custom_path_03}', hidden: false]
                     ]
                 )
             }

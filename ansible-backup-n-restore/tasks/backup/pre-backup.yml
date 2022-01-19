@@ -14,9 +14,9 @@
   when: not backup_file.stat.exists
 - name: Insert base variables
   blockinfile:
+    path: /opt/backup-system.sh
     marker: "------"
     insertbefore: BOF
-    state: present
     block: |
       NOW=$(date +%Y-%m-%d)
       YEAR=$(date +%Y)
@@ -28,4 +28,5 @@
       CUSTOM_PATH_01={{ custom_path_01  }}
       CUSTOM_PATH_02={{ custom_path_02  }}
       CUSTOM_PATH_03={{ custom_path_03  }}
+    state: present
 ...
