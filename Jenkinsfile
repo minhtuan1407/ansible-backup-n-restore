@@ -48,7 +48,7 @@ pipeline {
                 ansiblePlaybook (
                     playbook: '${WORKSPACE}/ansible-backup-n-restore.yml',
                     inventory: '${WORKSPACE}/hosts_all_server',
-                    tags: 'install-rclone',
+                    tags: 'backup',
                     extraVars: [
                         ip_server: [value: '${ip_server}', hidden: false],
                         rclone_path: [value: '${rclone_path}', hidden: false],
