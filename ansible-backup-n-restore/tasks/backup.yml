@@ -1,4 +1,7 @@
 ---
+- include: backup/pre-backup.yml
+  tags:
+    - pre-backup
 - include: backup/apache2.yml
   tags:
     - apache2

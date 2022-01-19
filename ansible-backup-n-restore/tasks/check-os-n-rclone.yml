@@ -1,7 +1,7 @@
 ---
 - name: Validate OS
-  fail: msg="Intall is only supported on Debian or CentOS or Ubuntu"
-  when: ansible_distribution != 'Debian' or ansible_distribution != 'CentOS' or ansible_distribution != 'Ubuntu'
+  fail: msg="Intall is only supported on Debian or CentOS"
+  when: ansible_distribution != 'Debian' or ansible_distribution != 'CentOS'
 # - name: Validate OS version
 #   fail: msg="Intall is only supported on Debian 9, Debian 10, CentOS 7, Centos 8, Ubuntu 16.04, Ubuntu 18.04, Ubuntu 20.04"
 #   when: ansible_distribution_major_version != '9'

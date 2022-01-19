@@ -1,0 +1,31 @@
+---
+- name: Check file /opt/backup-system.sh
+  stat:
+    path: /opt/backup-system.sh
+  register: backup_file
+- name: Backup file /opt/backup-system.sh
+  shell:
+    cmd: mv /opt/backup-system.sh /opt/backup-system.sh.$(date +%Y-%m-%d--%H-%M-%S).bak
+  when: backup_file.stat.exists
+- name: Create backup file
+  file:
+    path: /opt/backup-system.sh
+    state: touch
+  when: not backup_file.stat.exists
+- name: Insert base variables
+  blockinfile:
+    marker: "------"
+    insertbefore: BOF
+    state: present
+    block: |
+      NOW=$(date +%Y-%m-%d)
+      YEAR=$(date +%Y)
+      MONTH=$(date +%h)
+      DAY=$(date +%d)
+      RCLONE_PATH={{ rclone_path }}
+      BACKUP_PATH={{ backup_path }}
+      RECORD_PATH={{ recordings_path }}
+      CUSTOM_PATH_01={{ custom_path_01  }}
+      CUSTOM_PATH_02={{ custom_path_02  }}
+      CUSTOM_PATH_03={{ custom_path_03  }}
+...

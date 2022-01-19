@@ -31,15 +31,14 @@ pipeline {
         string(name: 'custom_path_03', defaultValue: '', description: '')
     }
     stages {
-        stage ("Install zabbix agent") {
+        stage ("Check OS & Rclone") {
             steps {
                 ansiblePlaybook (
                     playbook: '${WORKSPACE}/ansible-backup-n-restore.yml',
                     inventory: '${WORKSPACE}/hosts_all_server',
                     tags: 'check-os-n-rclone',
                     extraVars: [
-                        ip_server: [value: '${ip_server}', hidden: false],
-                        rclone_path: [value: '${rclone_path}', hidden: false]
+                        ip_server: [value: '${ip_server}', hidden: false]
                     ]
                 )
             }

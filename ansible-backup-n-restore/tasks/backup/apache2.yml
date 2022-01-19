@@ -8,5 +8,5 @@
   stat:
     path: /usr/sbin/apache2
   register: apache2_exist
-  when: ansible_distribution == 'CentOS'
+  when: ansible_distribution == 'Debian'
 ...
