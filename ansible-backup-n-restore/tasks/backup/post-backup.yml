@@ -1,0 +1,24 @@
+- name: Upload file to google drive
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan upload file backup"
+    insertbefore: EOF
+    block: |
+      rclone copy -P --ignore-existing $SAVE_PATH $RCLONE_PATH
+    state: present
+- name: Upload file recordings to google drive
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan upload file recordings"
+    insertbefore: EOF
+    block: |
+      rclone copy -P --ignore-existing $RECORD_PATH $RCLONE_RECORDINGS_PATH
+    state: present
+- name: Insert delete file
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan delete file"
+    insertbefore: EOF
+    block: |
+      rm -rf $IP_SERVER-httpd-$NOW.tar.gz $IP_SERVER-apache2-$NOW.tar.gz
+    state: present

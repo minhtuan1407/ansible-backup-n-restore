@@ -13,11 +13,13 @@
     marker: "# Tuan set variable bash shell"
     insertbefore: BOF
     block: |
+      IP_SERVER=$(curl ifconfig.me)
       NOW=$(date +%Y-%m-%d)
       YEAR=$(date +%Y)
       MONTH=$(date +%h)
       DAY=$(date +%d)
-      RCLONE_PATH={{ rclone_path }}
+      RCLONE_PATH=google-drive:google-drive/{{ rclone_path }}
+      RCLONE_RECORDINGS_PATH=google-drive:google-drive/{{ rclone_path }}/recordings
       BACKUP_PATH={{ backup_path }}
       RECORD_PATH={{ recordings_path }}
       CUSTOM_PATH_01={{ custom_path_01  }}
@@ -25,4 +27,8 @@
       CUSTOM_PATH_03={{ custom_path_03  }}
     state: present
     create: yes
+- name: Create backup directory
+  file:
+    path: "{{ backup_path }}"
+    state: directory
 ...
