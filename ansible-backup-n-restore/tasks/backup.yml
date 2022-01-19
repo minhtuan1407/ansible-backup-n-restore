@@ -5,4 +5,7 @@
 - include: backup/apache2.yml
   tags:
     - apache2
+- include: backup/run-backup.yml
+  tags:
+    - run-backup
 ...

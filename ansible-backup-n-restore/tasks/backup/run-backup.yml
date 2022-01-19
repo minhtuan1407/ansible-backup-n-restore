@@ -14,11 +14,12 @@
     block: |
       rclone copy -P --ignore-existing $RECORD_PATH $RCLONE_RECORDINGS_PATH
     state: present
+  when: recordings_path != ''
 - name: Insert delete file
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan delete file"
+    marker: "# Tuan delete file backup"
     insertbefore: EOF
     block: |
-      rm -rf $IP_SERVER-httpd-$NOW.tar.gz $IP_SERVER-apache2-$NOW.tar.gz
+      rm -rf $IP_SERVER-httpd-*.tar.gz $IP_SERVER-apache2-*.tar.gz
     state: present
