@@ -6,7 +6,7 @@
   debug:
     msg:
       - "postgresql exist"
-  when: "'postgresql' in ansible_facts.packages"
+  when: "'postgresql-*' in ansible_facts.packages"
 - name: Add line compress directory /etc/postgresql/
   blockinfile:
     path: /opt/backup-system.sh
@@ -16,5 +16,5 @@
       tar -czvf $BACKUP_PATH/$IP_SERVER-postgresql-$NOW.tar.gz -C /etc/ postgresql
     state: present
   when: 
-    - "'postgresql' in ansible_facts.packages"
+    - "'postgresql-*' in ansible_facts.packages"
 ...
