@@ -1,0 +1,20 @@
+---
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+- name: Message check postgresql 
+  debug:
+    msg:
+      - "postgresql exist"
+  when: "'postgresql' in ansible_facts.packages"
+- name: Add line compress directory /etc/postgresql/
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress postgresql config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_PATH/$IP_SERVER-postgresql-$NOW.tar.gz -C /etc/ postgresql
+    state: present
+  when: 
+    - "'postgresql' in ansible_facts.packages"
+...

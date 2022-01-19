@@ -1,0 +1,20 @@
+---
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+- name: Message check mariadb 
+  debug:
+    msg:
+      - "mariadb exist"
+  when: "'mariadb' in ansible_facts.packages"
+- name: Add line compress directory /etc/mariadb/
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress mariadb config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C /etc/ mysql
+    state: present
+  when: 
+    - "'mariadb' in ansible_facts.packages"
+...

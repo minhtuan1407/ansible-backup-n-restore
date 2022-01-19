@@ -10,6 +10,14 @@
   tags:
     - nginx
   when: nginx == "true"
+- include: backup/mariadb.yml
+  tags:
+    - mariadb
+  when: mariadb == "true"
+- include: backup/postgresql.yml
+  tags:
+    - postgresql
+  when: postgresql == "true"
 - include: backup/run-backup.yml
   tags:
     - run-backup
