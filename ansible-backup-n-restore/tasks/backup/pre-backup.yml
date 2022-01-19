@@ -11,7 +11,6 @@
   file:
     path: /opt/backup-system.sh
     state: touch
-  when: not backup_file.stat.exists
 - name: Insert base variables
   blockinfile:
     path: /opt/backup-system.sh
