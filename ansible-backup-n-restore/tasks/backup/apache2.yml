@@ -2,6 +2,9 @@
 - name: Gather the package facts
   package_facts:
     manager: auto
+- name: Print the package facts
+  ansible.builtin.debug:
+    var: ansible_facts.packages
 - name: Message check httpd
   debug:
     msg:
@@ -20,8 +23,7 @@
     block: |
       tar -czvf $BACKUP_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C /etc/ httpd
     state: present
-  when: 
-    - "'httpd' in ansible_facts.packages"
+  when: "'httpd' in ansible_facts.packages"
 - name: Add line compress directory /etc/apache2/
   blockinfile:
     path: /opt/backup-system.sh
@@ -30,6 +32,5 @@
     block: |
       tar -czvf $BACKUP_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C /etc/ apache2
     state: present
-  when: 
-    - "'apache2' in ansible_facts.packages"
+  when: "'apache2' in ansible_facts.packages"
 ...

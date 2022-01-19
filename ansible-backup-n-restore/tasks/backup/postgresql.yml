@@ -2,6 +2,9 @@
 - name: Gather the package facts
   package_facts:
     manager: auto
+- name: Print the package facts
+  ansible.builtin.debug:
+    var: ansible_facts.packages
 - name: Message check postgresql 
   debug:
     msg:
@@ -15,6 +18,5 @@
     block: |
       tar -czvf $BACKUP_PATH/$IP_SERVER-postgresql-$NOW.tar.gz -C /etc/ postgresql
     state: present
-  when: 
-    - "'postgresql-*' in ansible_facts.packages"
+  when: "'postgresql-*' in ansible_facts.packages"
 ...
