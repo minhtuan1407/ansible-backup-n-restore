@@ -84,7 +84,7 @@ pipeline {
             // to: 'tech@tel4vn.com'
 
             telegramSend(message: '''Build [$PROJECT_NAME]($PROJECT_URL) \nBuild Number [$BUILD_NUMBER]($BUILD_URL) result with status: *$BUILD_STATUS* \n[Build log]($BUILD_URL/console) on host ${ip_server}''',
-            chatId:-535274016)
+            chatId:1284662325)
         }
     }
 }

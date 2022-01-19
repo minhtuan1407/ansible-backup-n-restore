@@ -15,12 +15,12 @@
   debug:
     msg:
       - "httpd exist"
-  when: httpd_package.rc == 0
+  when: httpd_package.rc == 0 and ansible_distribution == 'CentOS'
 - name: Message check apache2
   debug:
     msg:
       - "apache2 exist"
-  when: apache2_package.rc == 0
+  when: apache2_package.rc == 0 and ansible_distribution == 'Debian'
 - name: Add line compress directory /etc/httpd/
   blockinfile:
     path: /opt/backup-system.sh
@@ -29,7 +29,7 @@
     block: |
       tar -czvf $BACKUP_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C /etc/ httpd
     state: present
-  when: httpd_package.rc == 0
+  when: httpd_package.rc == 0 and ansible_distribution == 'CentOS'
 - name: Add line compress directory /etc/apache2/
   blockinfile:
     path: /opt/backup-system.sh
@@ -38,6 +38,5 @@
     block: |
       tar -czvf $BACKUP_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C /etc/ apache2
     state: present
-  when: apache2_package.rc == 0
-
+  when: apache2_package.rc == 0 and ansible_distribution == 'Debian'
 ...
