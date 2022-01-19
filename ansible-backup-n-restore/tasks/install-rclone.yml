@@ -1,4 +1,16 @@
 ---
+- name: Install base packages with apt
+  apt:
+    name:
+    - unzip
+    state: present
+  when: ansible_distribution == 'Debian'
+- name: Install base packages with yum
+  yum:
+    name:
+    - unzip
+    state: present
+  when: ansible_distribution == 'CentOS'
 - name: Download rclone
   get_url:
     url: https://downloads.rclone.org/rclone-current-linux-amd64.zip
