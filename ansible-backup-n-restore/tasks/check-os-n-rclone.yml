@@ -1,4 +1,7 @@
 ---
+- name: Distribution
+  debug: 
+    msg: This machine OS is {{ ansible_distribution }}
 - name: Validate OS
   fail: msg="Intall is only supported on Debian or CentOS"
   when: ansible_distribution != 'Debian' or ansible_distribution != 'CentOS'
