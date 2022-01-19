@@ -1,22 +1,28 @@
 ---
-- name: Gather the package facts
-  package_facts:
-    manager: auto
-- name: Print the package facts
-  ansible.builtin.debug:
-    var: ansible_facts.packages
+- name: Check if package nginx is exist
+  shell:
+    cmd: yum list installed | grep nginx
+  register: nginx_package
+  when: ansible_distribution != 'CentOS'
+  failed_when: nginx_package.rc not in [0, 1]
+- name: Check if package nginx is exist
+  shell:
+    cmd: dpkg -l | grep nginx
+  register: nginx_package
+  when: ansible_distribution != 'Debian'
+  failed_when: nginx_package.rc not in [0, 1]
 - name: Message check nginx 
   debug:
     msg:
       - "nginx exist"
-  when: "'nginx' in ansible_facts.packages"
+  when: nginx_package.rc == 0
 - name: Add line compress directory /etc/nginx/
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan compress nginx config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C /etc/ nginx
+      tar -czvf $BACKUP_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C /etc/ mysql
     state: present
-  when: "'nginx' in ansible_facts.packages"
+  when: nginx_package.rc == 0
 ...

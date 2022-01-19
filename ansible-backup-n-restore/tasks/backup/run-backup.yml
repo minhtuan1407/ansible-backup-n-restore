@@ -41,8 +41,4 @@
   shell:
     cmd: "bash /opt/backup-system.sh"
   when: run_now == "true"
-- name: Show debug
-  debug:
-    msg:
-    - "Run now is {{ run_now }}"
-    - "Crontab 3h is {{ crontab_3h }}"
+...
