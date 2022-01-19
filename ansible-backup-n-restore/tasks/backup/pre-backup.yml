@@ -13,6 +13,7 @@
     marker: "# Tuan set variable bash shell"
     insertbefore: BOF
     block: |
+      #!/bin/bash
       IP_SERVER=$(curl ifconfig.me)
       NOW=$(date +%Y-%m-%d)
       YEAR=$(date +%Y)

@@ -6,9 +6,9 @@
 - include: backup.yml
   tags:
     - backup
-  when: task == "Backup"
+  when: task == "backup"
 - include: restore.yml
   tags:
     - backup
-  when: task == "Restore"
+  when: task == "restore"
 ...

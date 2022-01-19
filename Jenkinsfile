@@ -6,21 +6,20 @@ pipeline {
     parameters {
         string(name: 'ip_server', defaultValue: '', description: '')
         // choice(name: 'system_name', choices: ['CloudPBX', 'SBC', 'PitelPBX', 'Autocall', 'PitelCallCenter', 'BillingAST', 'BillingFS', 'ELK', 'Database', 'WebServer', 'LAB'], description: '')
-        choice(name: 'task', choices: ['Backup', 'Restore'], description: '')
+        choice(name: 'task', choices: ['backup', 'restore'], description: '')
         // choice(name: 'web_service', choices: ['', 'Apache2', 'Nginx'], description: '')
         // choice(name: 'db_service', choices: ['', 'MariaDB', 'PostgreSQL'], description: '')
         // choice(name: 'voip_service', choices: ['', 'Asterisk', 'FreeSWITCH', 'Kamailio', 'OpenSIPs'], description: '')
         // choice(name: 'crontab_3h', choices: ['Yes', 'No'], description: '')
         // choice(name: 'run_now', choices: ['Yes', 'No'], description: '')
-        booleanParam(name: 'Apache2', defaultValue: false, description: '')
-        booleanParam(name: 'Nginx', defaultValue: false, description: '')
-        booleanParam(name: 'MariaDB', defaultValue: false, description: '')
-        booleanParam(name: 'PostgreSQL', defaultValue: false, description: '')
-        booleanParam(name: 'Asterisk', defaultValue: false, description: '')
-        booleanParam(name: 'FreeSWITCH', defaultValue: false, description: '')
-        booleanParam(name: 'Kamailio', defaultValue: false, description: '')
-        booleanParam(name: 'OpenSIPs', defaultValue: false, description: '')
-        booleanParam(name: 'Asterisk', defaultValue: false, description: '')
+        booleanParam(name: 'apache2', defaultValue: false, description: '')
+        booleanParam(name: 'nginx', defaultValue: false, description: '')
+        booleanParam(name: 'mariadb', defaultValue: false, description: '')
+        booleanParam(name: 'postgresql', defaultValue: false, description: '')
+        booleanParam(name: 'asterisk', defaultValue: false, description: '')
+        booleanParam(name: 'freeswitch', defaultValue: false, description: '')
+        booleanParam(name: 'kamailio', defaultValue: false, description: '')
+        booleanParam(name: 'opensips', defaultValue: false, description: '')
         booleanParam(name: 'crontab_3h', defaultValue: true, description: '')
         booleanParam(name: 'run_now', defaultValue: true, description: '')
         string(name: 'rclone_path', defaultValue: 'minhtuan.tel4vn.com', description: '')
@@ -52,6 +51,14 @@ pipeline {
                     extraVars: [
                         ip_server: [value: '${ip_server}', hidden: false],
                         task: [value: '${task}', hidden: false],
+                        apache2: [value: '${apache2}', hidden: false],
+                        nginx: [value: '${nginx}', hidden: false],
+                        mariadb: [value: '${mariadb}', hidden: false],
+                        postgresql: [value: '${postgresql}', hidden: false],
+                        asterisk: [value: '${asterisk}', hidden: false],
+                        freeswitch: [value: '${freeswitch}', hidden: false],
+                        kamailio: [value: '${kamailio}', hidden: false],
+                        opensips: [value: '${opensips}', hidden: false],
                         backup_path: [value: '${backup_path}', hidden: false],
                         rclone_path: [value: '${rclone_path}', hidden: false],
                         recordings_path: [value: '${recordings_path}', hidden: false],
