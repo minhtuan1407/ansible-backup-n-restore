@@ -18,13 +18,13 @@
       tar -czvf $SAVE_DIR/httpd-$NOW.tar.gz -C /etc/ httpd
     state: present
   when: httpd_exist.stat.exists
-- name: Add line compress directory /etc/apache2/
-  blockinfile:
-    path: /opt/backup-system.sh
-    marker: "# Tuan compress apache2 config"
-    insertafter: EOF
-    block: |
-      tar -czvf $BACKUP_PATH/apche2-$NOW.tar.gz -C /etc/ apache2
-    state: present
-  when: apache2_exist.stat.exists
+# - name: Add line compress directory /etc/apache2/
+#   blockinfile:
+#     path: /opt/backup-system.sh
+#     marker: "# Tuan compress apache2 config"
+#     insertafter: EOF
+#     block: |
+#       tar -czvf $BACKUP_PATH/apche2-$NOW.tar.gz -C /etc/ apache2
+#     state: present
+#   when: apache2_exist.stat.exists
 ...
