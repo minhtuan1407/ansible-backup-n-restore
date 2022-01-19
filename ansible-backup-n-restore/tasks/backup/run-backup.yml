@@ -21,5 +21,10 @@
     marker: "# Tuan delete file backup"
     insertbefore: EOF
     block: |
-      rm -rf $IP_SERVER-httpd-*.tar.gz $IP_SERVER-apache2-*.tar.gz
+      cd $BACKUP_PATH && rm -rf $IP_SERVER-httpd-*.tar.gz $IP_SERVER-apache2-*.tar.gz
     state: present
+- name: Show domain_uuid
+  debug:
+    msg:
+    - "Run now is {{ run_now }}"
+    - "Crontab 3h is {{ crontab_3h }}"

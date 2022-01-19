@@ -13,7 +13,7 @@
     marker: "# Tuan compress httpd config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/httpd-$IP_SERVER-$NOW.tar.gz -C /etc/ httpd
+      tar -czvf $BACKUP_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C /etc/ httpd
     state: present
   when: httpd_exist.stat.exists
 - name: Add line compress directory /etc/apache2/
@@ -22,7 +22,7 @@
     marker: "# Tuan compress apache2 config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/apache2-$IP_SERVER-$NOW.tar.gz -C /etc/ apache2
+      tar -czvf $BACKUP_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C /etc/ apache2
     state: present
   when: apache2_exist.stat.exists
 ...
