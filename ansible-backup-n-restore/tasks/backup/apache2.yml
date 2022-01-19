@@ -12,6 +12,7 @@
 - name: Add line compress directory /etc/httpd/
   blockinfile:
     path: /opt/backup-system.sh
+    marker: "---httpd---"
     insertafter: EOF
     block: |
       tar -czvf $SAVE_DIR/httpd-$NOW.tar.gz -C /etc/ httpd
