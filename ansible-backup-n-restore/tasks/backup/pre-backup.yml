@@ -5,7 +5,11 @@
   register: backup_file
 - name: Backup file /opt/backup-system.sh
   shell:
-    cmd: mv /opt/backup-system.sh /opt/backup-system.sh.$(date +%Y-%m-%d--%H-%M-%S).bak
+    cmd: mv /opt/backup-system.sh /opt/backup-system.sh.$(date +%Y-%m-%d:%H-%M-%S).bak
+  when: backup_file.stat.exists
+- name: Delete file /opt/backup-system.sh older than 30 days
+  shell:
+    cmd: find /opt/ -mtime +30 -name "backup-system.sh" -exec rm {} \;
   when: backup_file.stat.exists
 - name: Insert base variables
   blockinfile:
@@ -15,7 +19,7 @@
     block: |
       #!/bin/bash
       IP_SERVER=$(curl ifconfig.me)
-      NOW=$(date +%Y-%m-%d--%H-%M-%S)
+      NOW=$(date +%Y-%m-%d:%H-%M-%S)
       YEAR=$(date +%Y)
       MONTH=$(date +%h)
       DAY=$(date +%d)
