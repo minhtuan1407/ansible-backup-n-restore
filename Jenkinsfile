@@ -58,7 +58,9 @@ pipeline {
                         rclone_path: [value: '${rclone_path}', hidden: false],
                         custom_path_01: [value: '${custom_path_01}', hidden: false],
                         custom_path_02: [value: '${custom_path_02}', hidden: false],
-                        custom_path_03: [value: '${custom_path_03}', hidden: false]
+                        custom_path_03: [value: '${custom_path_03}', hidden: false],
+                        crontab_3h: [value: '${crontab_3h}', hidden: false],
+                        run_now: [value: '${run_now}', hidden: false]
                     ]
                 )
             }
