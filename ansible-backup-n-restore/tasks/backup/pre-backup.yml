@@ -15,7 +15,7 @@
     block: |
       #!/bin/bash
       IP_SERVER=$(curl ifconfig.me)
-      NOW=$(date +%Y-%m-%d)
+      NOW=$(date +%Y-%m-%d--%H-%M-%S)
       YEAR=$(date +%Y)
       MONTH=$(date +%h)
       DAY=$(date +%d)
