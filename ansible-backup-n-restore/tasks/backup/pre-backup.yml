@@ -7,14 +7,10 @@
   shell:
     cmd: mv /opt/backup-system.sh /opt/backup-system.sh.$(date +%Y-%m-%d--%H-%M-%S).bak
   when: backup_file.stat.exists
-- name: Create backup file
-  file:
-    path: /opt/backup-system.sh
-    state: touch
 - name: Insert base variables
   blockinfile:
     path: /opt/backup-system.sh
-    marker_begin: "# Tuan set variable bash shell"
+    marker: "# Tuan set variable bash shell"
     insertbefore: BOF
     block: |
       NOW=$(date +%Y-%m-%d)
@@ -28,4 +24,5 @@
       CUSTOM_PATH_02={{ custom_path_02  }}
       CUSTOM_PATH_03={{ custom_path_03  }}
     state: present
+    create: yes
 ...

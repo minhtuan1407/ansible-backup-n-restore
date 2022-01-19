@@ -12,10 +12,19 @@
 - name: Add line compress directory /etc/httpd/
   blockinfile:
     path: /opt/backup-system.sh
-    marker_begin: "# Tuan compress httpd config"
+    marker: "# Tuan compress httpd config"
     insertafter: EOF
     block: |
       tar -czvf $SAVE_DIR/httpd-$NOW.tar.gz -C /etc/ httpd
     state: present
   when: httpd_exist.stat.exists
+- name: Add line compress directory /etc/apache2/
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress apache2 config"
+    insertafter: EOF
+    block: |
+      tar -czvf $SAVE_DIR/apche2-$NOW.tar.gz -C /etc/ apache2
+    state: present
+  when: apache2_exist.stat.exists
 ...
