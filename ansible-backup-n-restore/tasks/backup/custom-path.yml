@@ -17,7 +17,7 @@
       tar -czvf $BACKUP_PATH/$IP_SERVER-custom_path_02-$NOW.tar.gz -C {{ custom_path_02 }}
     state: present
   when: custom_path_02 == "true"
-- name: Add line compress custom_path_02
+- name: Add line compress custom_path_03
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan compress custom_path_03"
