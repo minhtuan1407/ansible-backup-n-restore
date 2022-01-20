@@ -54,8 +54,8 @@ pipeline {
                     tags: 'backup',
                     extraVars: [
                         ip_server: [value: '${ip_server}', hidden: false],
-                        db_user: [value: '${custom_path_03}', hidden: true],
-                        db_pass: [value: '${custom_path_03}', hidden: true],
+                        db_user: [value: '${db_user}', hidden: true],
+                        db_pass: [value: '${db_pass}', hidden: true],
                         task: [value: '${task}', hidden: false],
                         apache2: [value: '${apache2}', hidden: false],
                         nginx: [value: '${nginx}', hidden: false],
