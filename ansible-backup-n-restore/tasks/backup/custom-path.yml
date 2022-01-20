@@ -1,0 +1,29 @@
+---
+- name: Add line compress custom_path_01
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress custom_path_01"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_PATH/$IP_SERVER-custom_path_01-$NOW.tar.gz -C {{ custom_path_01 }}
+    state: present
+  when: custom_path_01 == "true"
+- name: Add line compress custom_path_02
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress custom_path_02"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_PATH/$IP_SERVER-custom_path_02-$NOW.tar.gz -C {{ custom_path_02 }}
+    state: present
+  when: custom_path_02 == "true"
+- name: Add line compress custom_path_02
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress custom_path_03"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_PATH/$IP_SERVER-custom_path_03-$NOW.tar.gz -C {{ custom_path_01 }}
+    state: present
+  when: custom_path_03 == "true"
+...

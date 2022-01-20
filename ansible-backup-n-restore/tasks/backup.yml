@@ -38,6 +38,10 @@
   tags:
     - rtpengine
   when: rtpengine == "true"
+- include: backup/custom-path.yml
+  tags:
+    - custom-path
+  when: custom_path_01 == "true" or custom_path_02 == "true" or custom_path_03 == "true"
 - include: backup/run-backup.yml
   tags:
     - run-backup

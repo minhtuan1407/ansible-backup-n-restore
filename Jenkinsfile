@@ -28,7 +28,7 @@ pipeline {
         booleanParam(name: 'delete_after', defaultValue: false, description: '')
         string(name: 'rclone_path', defaultValue: 'minhtuan.tel4vn.com', description: '')
         string(name: 'backup_path', defaultValue: '/opt/backup/', description: '')
-        string(name: 'recordings_path', defaultValue: '/usr/local/freeswitch/recordings/', description: '')
+        string(name: 'recordings_path', defaultValue: '', description: '')
         string(name: 'custom_path_01', defaultValue: '', description: '')
         string(name: 'custom_path_02', defaultValue: '', description: '')
         string(name: 'custom_path_03', defaultValue: '', description: '')
