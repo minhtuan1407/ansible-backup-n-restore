@@ -21,7 +21,7 @@
     marker: "# Tuan delete file backup by name"
     insertbefore: EOF
     block: |
-      cd $BACKUP_PATH && rm -rf $IP_SERVER-httpd-*.tar.gz $IP_SERVER-apache2-*.tar.gz $IP_SERVER-nginx-*.tar.gz $IP_SERVER-mariadb-*.tar.gz $IP_SERVER-mysqldump-*.sql.gz $IP_SERVER-postgresql-*.tar.gz $IP_SERVER-pg_dumpall-*.sql.gz $IP_SERVER-asterisk-*.tar.gz $IP_SERVER-freeswitch-*.tar.gz $IP_SERVER-kamailio-*.tar.gz $IP_SERVER-opensips-*.tar.gz $IP_SERVER-rtpengine-*.tar.gz
+      cd $BACKUP_PATH && rm -rf $IP_SERVER-httpd-*.tar.gz $IP_SERVER-apache2-*.tar.gz $IP_SERVER-nginx-*.tar.gz $IP_SERVER-mariadb-*.tar.gz $IP_SERVER-mysqldump-*.sql.gz $IP_SERVER-postgresql-*.tar.gz $IP_SERVER-pg_dumpall-*.sql.gz $IP_SERVER-asterisk-*.tar.gz $IP_SERVER-freeswitch-*.tar.gz $IP_SERVER-kamailio-*.tar.gz $IP_SERVER-opensips-*.tar.gz $IP_SERVER-rtpengine-*.tar.gz $IP_SERVER-custom_path_01-$NOW.tar.gz $IP_SERVER-custom_path_02-$NOW.tar.gz $IP_SERVER-custom_path_01-$NOW.tar.gz
     state: present
   when: delete_after == "true"
 - name: Insert delete file by date

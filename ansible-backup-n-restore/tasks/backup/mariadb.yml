@@ -1,13 +1,13 @@
 ---
 - name: Check if package mariadb is exist with yum
   shell:
-    cmd: yum list installed | grep mariadb
+    cmd: yum list installed | grep mariadb-server
   register: mariadb_package
   when: ansible_distribution == 'CentOS'
   failed_when: mariadb_package.rc not in [0, 1]
 - name: Check if package mariadb is exist with dpkg
   shell:
-    cmd: dpkg -l | grep mariadb
+    cmd: dpkg -l | grep mariadb-server
   register: mariadb_package
   when: ansible_distribution == 'Debian'
   failed_when: mariadb_package.rc not in [0, 1]
@@ -16,7 +16,7 @@
     msg:
       - "mariadb exist"
   when: mariadb_package.rc == 0
-- name: Add line compress directory /etc/mariadb/
+- name: Add line compress directory /etc/mysql/
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan compress mariadb config"
