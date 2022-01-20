@@ -3,7 +3,7 @@
   shell:
     cmd: ls /etc/opensips
   register: opensips_path
-  failed_when: opensips_path.rc not in [0, 1]
+  failed_when: opensips_path.rc not in [0, 1, 2]
 - name: Message check opensips 
   debug:
     msg:
