@@ -15,16 +15,23 @@
       rclone copy -P --ignore-existing $RECORD_PATH $RCLONE_RECORDINGS_PATH
     state: present
   when: recordings_path != ''
-- name: Insert delete file
+- name: Insert delete file by name
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan delete file backup"
     insertbefore: EOF
     block: |
       cd $BACKUP_PATH && rm -rf $IP_SERVER-httpd-*.tar.gz $IP_SERVER-apache2-*.tar.gz $IP_SERVER-nginx-*.tar.gz $IP_SERVER-mariadb-*.tar.gz $IP_SERVER-mysqldump-*.sql.gz $IP_SERVER-postgresql-*.tar.gz $IP_SERVER-pg_dumpall-*.sql.gz $IP_SERVER-asterisk-*.tar.gz $IP_SERVER-freeswitch-*.tar.gz $IP_SERVER-kamailio-*.tar.gz $IP_SERVER-opensips-*.tar.gz $IP_SERVER-rtpengine-*.tar.gz
-      find $BACKUP_PATH \( -name "*.tar.gz" -o -name "*.sql.gz" \) -type f -mtime +1 -delete
     state: present
   when: delete_after == "true"
+- name: Insert delete file by date
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan delete file backup"
+    insertbefore: EOF
+    block: |
+      find $BACKUP_PATH \( -name "*.tar.gz" -o -name "*.sql.gz" \) -type f -mtime +1 -delete
+    state: present
 - name: Add crontab to run backup at 03:00
   cron:
     name: "Run backup database at 03:00"
@@ -43,3 +50,4 @@
     cmd: "bash /opt/backup-system.sh"
   when: run_now == "true"
 ...
+
