@@ -31,7 +31,7 @@
     marker: "# Tuan dump all database mariadb"
     insertafter: EOF
     block: |
-      mysqldump -u $DB_USER -p$DB_PASS --all-databases | gzip > $BACKUP_PATH/$IP_SERVER-mysqldump-$NOW.tar.gz
+      mysqldump -u $DB_USER -p$DB_PASS --all-databases | gzip > $BACKUP_PATH/$IP_SERVER-mysqldump-$NOW.sql.gz
     state: present
   when: mariadb_package.rc == 0 and db_user != '' and db_pass != ''
 ...
