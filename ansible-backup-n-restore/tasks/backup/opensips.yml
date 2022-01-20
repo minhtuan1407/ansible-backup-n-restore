@@ -17,5 +17,5 @@
     block: |
       tar -czvf $BACKUP_PATH/$IP_SERVER-opensips-$NOW.tar.gz -C /etc/ opensips
     state: present
-  when: opensips_package.rc == 0
+  when: opensips_path.rc == 0
 ...
