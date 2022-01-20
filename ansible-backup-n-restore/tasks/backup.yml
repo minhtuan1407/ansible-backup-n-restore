@@ -18,6 +18,26 @@
   tags:
     - postgresql
   when: postgresql == "true"
+- include: backup/asterisk.yml
+  tags:
+    - asterisk
+  when: asterisk == "true"
+- include: backup/freeswitch.yml
+  tags:
+    - freeswitch
+  when: freeswitch == "true"
+- include: backup/kamailio.yml
+  tags:
+    - kamailio
+  when: kamailio == "true"
+- include: backup/opensips.yml
+  tags:
+    - opensips
+  when: opensips == "true"
+- include: backup/rtpengine.yml
+  tags:
+    - rtpengine
+  when: rtpengine == "true"
 - include: backup/run-backup.yml
   tags:
     - run-backup

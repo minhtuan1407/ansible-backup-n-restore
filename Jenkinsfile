@@ -5,6 +5,8 @@ pipeline {
     }
     parameters {
         string(name: 'ip_server', defaultValue: '', description: '')
+        string(name: 'db_user', defaultValue: '', description: '')
+        string(name: 'db_pass', defaultValue: '', description: '')
         // choice(name: 'system_name', choices: ['CloudPBX', 'SBC', 'PitelPBX', 'Autocall', 'PitelCallCenter', 'BillingAST', 'BillingFS', 'ELK', 'Database', 'WebServer', 'LAB'], description: '')
         choice(name: 'task', choices: ['backup', 'restore'], description: '')
         // choice(name: 'web_service', choices: ['', 'Apache2', 'Nginx'], description: '')
@@ -20,6 +22,7 @@ pipeline {
         booleanParam(name: 'freeswitch', defaultValue: false, description: '')
         booleanParam(name: 'kamailio', defaultValue: false, description: '')
         booleanParam(name: 'opensips', defaultValue: false, description: '')
+        booleanParam(name: 'rtpengine', defaultValue: false, description: '')
         booleanParam(name: 'crontab_3h', defaultValue: true, description: '')
         booleanParam(name: 'run_now', defaultValue: true, description: '')
         booleanParam(name: 'delete_after', defaultValue: false, description: '')
@@ -51,6 +54,8 @@ pipeline {
                     tags: 'backup',
                     extraVars: [
                         ip_server: [value: '${ip_server}', hidden: false],
+                        db_user: [value: '${custom_path_03}', hidden: true],
+                        db_pass: [value: '${custom_path_03}', hidden: true],
                         task: [value: '${task}', hidden: false],
                         apache2: [value: '${apache2}', hidden: false],
                         nginx: [value: '${nginx}', hidden: false],
@@ -60,6 +65,7 @@ pipeline {
                         freeswitch: [value: '${freeswitch}', hidden: false],
                         kamailio: [value: '${kamailio}', hidden: false],
                         opensips: [value: '${opensips}', hidden: false],
+                        rtpengine: [value: '${rtpengine}', hidden: false],
                         crontab_3h: [value: '${crontab_3h}', hidden: false],
                         run_now: [value: '${run_now}', hidden: false],
                         delete_after: [value: '${delete_after}', hidden: false],

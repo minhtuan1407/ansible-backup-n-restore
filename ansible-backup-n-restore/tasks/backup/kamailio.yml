@@ -1,0 +1,28 @@
+---
+- name: Check if package kamailio is exist with yum
+  shell:
+    cmd: yum list installed | grep kamailio
+  register: kamailio_package
+  when: ansible_distribution == 'CentOS'
+  failed_when: kamailio_package.rc not in [0, 1]
+- name: Check if package kamailio is exist with dpkg
+  shell:
+    cmd: dpkg -l | grep kamailio
+  register: kamailio_package
+  when: ansible_distribution == 'Debian'
+  failed_when: kamailio_package.rc not in [0, 1]
+- name: Message check kamailio 
+  debug:
+    msg:
+      - "kamailio exist"
+  when: kamailio_package.rc == 0
+- name: Add line compress directory /etc/kamailio/
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress kamailio config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_PATH/$IP_SERVER-kamailio-$NOW.tar.gz -C /etc/ kamailio
+    state: present
+  when: kamailio_package.rc == 0
+...

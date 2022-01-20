@@ -1,0 +1,28 @@
+---
+- name: Check if package rtpengine is exist with yum
+  shell:
+    cmd: yum list installed | grep rtpengine
+  register: rtpengine_package
+  when: ansible_distribution == 'CentOS'
+  failed_when: rtpengine_package.rc not in [0, 1]
+- name: Check if package rtpengine is exist with dpkg
+  shell:
+    cmd: dpkg -l | grep rtpengine
+  register: rtpengine_package
+  when: ansible_distribution == 'Debian'
+  failed_when: rtpengine_package.rc not in [0, 1]
+- name: Message check opensips 
+  debug:
+    msg:
+      - "opensips exist"
+  when: rtpengine_package.rc == 0
+- name: Add line compress directory /etc/rtpengine
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress rtpengine config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_PATH/$IP_SERVER-rtpengine-$NOW.tar.gz -C /etc/ rtpengine
+    state: present
+  when: opensips_package.rc == 0
+...

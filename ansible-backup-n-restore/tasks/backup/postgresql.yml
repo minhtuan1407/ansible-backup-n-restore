@@ -1,11 +1,11 @@
 ---
-- name: Check if package postgresql is exist
+- name: Check if package postgresql is exist with yum
   shell:
     cmd: yum list installed | grep postgresql
   register: postgresql_package
   when: ansible_distribution == 'CentOS'
   failed_when: postgresql_package.rc not in [0, 1]
-- name: Check if package postgresql is exist
+- name: Check if package postgresql is exist with dpkg
   shell:
     cmd: dpkg -l | grep postgresql
   register: postgresql_package
@@ -23,6 +23,15 @@
     insertafter: EOF
     block: |
       tar -czvf $BACKUP_PATH/$IP_SERVER-postgresql-$NOW.tar.gz -C /etc/ postgresql
+    state: present
+  when: postgresql_package.rc == 0
+- name: Dump database postgresql
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan dump all database postgresql"
+    insertafter: EOF
+    block: |
+      sudo -u postgres pg_dumpall -h 127.0.0.1 | gzip > $BACKUP_PATH/$IP_SERVER-pg_dumpall-$NOW.sql.gz
     state: present
   when: postgresql_package.rc == 0
 ...

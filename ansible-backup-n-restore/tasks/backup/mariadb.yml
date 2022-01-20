@@ -1,11 +1,11 @@
 ---
-- name: Check if package mariadb is exist
+- name: Check if package mariadb is exist with yum
   shell:
     cmd: yum list installed | grep mariadb
   register: mariadb_package
   when: ansible_distribution == 'CentOS'
   failed_when: mariadb_package.rc not in [0, 1]
-- name: Check if package mariadb is exist
+- name: Check if package mariadb is exist with dpkg
   shell:
     cmd: dpkg -l | grep mariadb
   register: mariadb_package
@@ -25,4 +25,13 @@
       tar -czvf $BACKUP_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C /etc/ mysql
     state: present
   when: mariadb_package.rc == 0
+- name: Dump database mariadb
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan dump all database mariadb"
+    insertafter: EOF
+    block: |
+      mysqldump -u $DB_USER -p$DB_PASS --all-databases | gzip > $BACKUP_PATH/$IP_SERVER-mysqldump-$NOW.tar.gz
+    state: present
+  when: mariadb_package.rc == 0 and db_user != '' and db_pass != ''
 ...

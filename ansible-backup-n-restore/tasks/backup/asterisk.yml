@@ -1,0 +1,28 @@
+---
+- name: Check if package asterisk is exist with yum
+  shell:
+    cmd: yum list installed | grep asterisk
+  register: asterisk_package
+  when: ansible_distribution == 'CentOS'
+  failed_when: asterisk_package.rc not in [0, 1]
+- name: Check if package asterisk is exist with dpkg
+  shell:
+    cmd: dpkg -l | grep asterisk
+  register: asterisk_package
+  when: ansible_distribution == 'Debian'
+  failed_when: asterisk_package.rc not in [0, 1]
+- name: Message check asterisk 
+  debug:
+    msg:
+      - "asterisk exist"
+  when: asterisk_package.rc == 0
+- name: Add line compress directory /etc/asterisk/
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress asterisk config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_PATH/$IP_SERVER-asterisk-$NOW.tar.gz -C /etc/ asterisk
+    state: present
+  when: asterisk_package.rc == 0
+...
