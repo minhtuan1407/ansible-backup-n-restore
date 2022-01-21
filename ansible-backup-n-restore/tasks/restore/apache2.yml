@@ -1,0 +1,42 @@
+---
+- name: Check if package httpd is exist with yum
+  shell:
+    cmd: yum list installed | grep httpd
+  register: httpd_package
+  when: ansible_distribution == 'CentOS'
+  failed_when: httpd_package.rc not in [0, 1]
+- name: Check if package apache2 is exist with dpkg
+  shell:
+    cmd: dpkg -l | grep apache2
+  register: apache2_package
+  when: ansible_distribution == 'Debian'
+  failed_when: apache2_package.rc not in [0, 1]
+- name: Message check httpd
+  debug:
+    msg:
+      - "httpd exist"
+  when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
+- name: Message check apache2
+  debug:
+    msg:
+      - "apache2 exist"
+  when: ansible_distribution == 'Debian' and apache2_package.rc == 0
+- name: Add line compress directory /etc/httpd/
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress httpd config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C /etc/ httpd
+    state: present
+  when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
+- name: Add line compress directory /etc/apache2/
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress apache2 config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C /etc/ apache2
+    state: present
+  when: ansible_distribution == 'Debian' and apache2_package.rc == 0
+...
