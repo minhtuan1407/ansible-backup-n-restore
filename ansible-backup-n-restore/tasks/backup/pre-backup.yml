@@ -23,8 +23,8 @@
       YEAR=$(date +%Y)
       MONTH=$(date +%h)
       DAY=$(date +%d)
-      RCLONE_PATH=google-drive:google-drive/{{ rclone_path }}/$YEAR/$MONTH/$DAY
-      RCLONE_RECORDINGS_PATH=google-drive:google-drive/{{ rclone_path }}/recordings
+      RCLONE_PATH=google-drive:google-drive/{{ rclone_url }}/config-n-database/$YEAR/$MONTH/$DAY
+      RCLONE_RECORDINGS_PATH=google-drive:google-drive/{{ rclone_url }}/recordings
       BACKUP_PATH={{ backup_path }}
       RECORD_PATH={{ recordings_path }}
       CUSTOM_PATH_01={{ custom_path_01  }}

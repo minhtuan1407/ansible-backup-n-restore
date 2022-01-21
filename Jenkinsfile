@@ -26,7 +26,7 @@ pipeline {
         booleanParam(name: 'crontab_3h', defaultValue: true, description: '')
         booleanParam(name: 'run_now', defaultValue: true, description: '')
         booleanParam(name: 'delete_after', defaultValue: false, description: '')
-        string(name: 'rclone_path', defaultValue: 'minhtuan.tel4vn.com', description: '')
+        string(name: 'rclone_url', defaultValue: 'minhtuan.tel4vn.com', description: '')
         string(name: 'backup_path', defaultValue: '/opt/backup/', description: '')
         string(name: 'recordings_path', defaultValue: '', description: '')
         string(name: 'custom_path_01', defaultValue: '', description: '')

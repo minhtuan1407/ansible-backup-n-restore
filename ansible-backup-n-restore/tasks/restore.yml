@@ -1,3 +1,48 @@
 ---
-
+- include: restore/pre-restore.yml
+  tags:
+    - pre-restore
+- include: restore/apache2.yml
+  tags:
+    - apache2
+  when: apache2 == "true"
+- include: restore/nginx.yml
+  tags:
+    - nginx
+  when: nginx == "true"
+- include: restore/mariadb.yml
+  tags:
+    - mariadb
+  when: mariadb == "true"
+- include: restore/postgresql.yml
+  tags:
+    - postgresql
+  when: postgresql == "true"
+- include: restore/asterisk.yml
+  tags:
+    - asterisk
+  when: asterisk == "true"
+- include: restore/freeswitch.yml
+  tags:
+    - freeswitch
+  when: freeswitch == "true"
+- include: restore/kamailio.yml
+  tags:
+    - kamailio
+  when: kamailio == "true"
+- include: restore/opensips.yml
+  tags:
+    - opensips
+  when: opensips == "true"
+- include: restore/rtpengine.yml
+  tags:
+    - rtpengine
+  when: rtpengine == "true"
+- include: restore/custom-path.yml
+  tags:
+    - custom-path
+  when: custom_path_01 != '' or custom_path_02 != '' or custom_path_03 != ''
+- include: restore/run-restore.yml
+  tags:
+    - run-restore
 ...
