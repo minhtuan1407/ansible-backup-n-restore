@@ -41,7 +41,7 @@
 - include: backup/custom-path.yml
   tags:
     - custom-path
-  when: custom_path_01 == "true" or custom_path_02 == "true" or custom_path_03 == "true"
+  when: custom_path_01 != '' or custom_path_02 != '' or custom_path_03 != ''
 - include: backup/run-backup.yml
   tags:
     - run-backup
