@@ -12,9 +12,13 @@
     state: present
   when: ansible_distribution == 'CentOS'
 - name: Download rclone
-  get_url:
-    url: https://downloads.rclone.org/rclone-current-linux-amd64.zip
-    dest: /tmp/rclone-current-linux-amd64.zip
+  shell:
+    cmd: curl -O curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip
+    chdir: /tmp/
+# - name: Download rclone
+#   get_url:
+#     url: https://downloads.rclone.org/rclone-current-linux-amd64.zip
+#     dest: /tmp/rclone-current-linux-amd64.zip
 - name: Extract rclone-current-linux-amd64.zip
   unarchive:
     src: /tmp/rclone-current-linux-amd64.zip

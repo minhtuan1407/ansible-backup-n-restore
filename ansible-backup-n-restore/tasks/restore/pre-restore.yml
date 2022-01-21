@@ -46,7 +46,6 @@
     block: |
       rclone copy -P --ignore-existing $RCLONE_PATH $BACKUP_PATH
     state: present
-
 - name: Upload file recordings to google drive
   blockinfile:
     path: /opt/backup-system.sh
