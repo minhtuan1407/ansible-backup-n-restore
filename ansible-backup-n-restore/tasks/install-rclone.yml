@@ -11,28 +11,31 @@
     - unzip
     state: present
   when: ansible_distribution == 'CentOS'
+- name: Check rclone exist
+  path: /usr/bin/rclone
+  register: rclone
 - name: Download rclone
-  shell:
-    cmd: curl -O curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip
-    chdir: /tmp/
-# - name: Download rclone
-#   get_url:
-#     url: https://downloads.rclone.org/rclone-current-linux-amd64.zip
-#     dest: /tmp/rclone-current-linux-amd64.zip
+  get_url:
+    url: https://downloads.rclone.org/rclone-current-linux-amd64.zip
+    dest: /tmp/rclone-current-linux-amd64.zip
+  when: not rclone.stat.exist
 - name: Extract rclone-current-linux-amd64.zip
   unarchive:
     src: /tmp/rclone-current-linux-amd64.zip
     dest: /tmp/
     remote_src: yes
+  when: not rclone.stat.exist
 - name: Copy binary rclone
   shell:
     cmd: cp /tmp/rclone-*-linux-amd64/rclone /usr/bin/
+  when: not rclone.stat.exist
 - name: Change permission & ownership of rclone
   file:
     path: /usr/bin/rclone
     owner: root
     group: root
     mode: 0775
+  when: not rclone.stat.exist
 - name: Copy google json service account
   copy:
     src: minhtuan1407-drive-d4c1e3ba85f0.json
