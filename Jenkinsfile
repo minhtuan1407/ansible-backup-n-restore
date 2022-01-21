@@ -70,7 +70,7 @@ pipeline {
                         run_now: [value: '${run_now}', hidden: false],
                         delete_after: [value: '${delete_after}', hidden: false],
                         backup_path: [value: '${backup_path}', hidden: false],
-                        rclone_path: [value: '${rclone_path}', hidden: false],
+                        rclone_url: [value: '${rclone_path}', hidden: false],
                         recordings_path: [value: '${recordings_path}', hidden: false],
                         rclone_path: [value: '${rclone_path}', hidden: false],
                         custom_path_01: [value: '${custom_path_01}', hidden: false],
