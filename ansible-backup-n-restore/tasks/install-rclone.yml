@@ -12,7 +12,8 @@
     state: present
   when: ansible_distribution == 'CentOS'
 - name: Check rclone exist
-  path: /usr/bin/rclone
+  stat:
+    path: /usr/bin/rclone
   register: rclone
 - name: Download rclone
   get_url:
