@@ -5,7 +5,7 @@
     marker: "# Tuan compress custom_path_01"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_01 }}/*
+      tar -czvf $BACKUP_PATH/$IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_01 }} .
     state: present
   when: custom_path_01 != ''
 - name: Add line compress custom_path_02
@@ -14,7 +14,7 @@
     marker: "# Tuan compress custom_path_02"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_02 }}/*
+      tar -czvf $BACKUP_PATH/$IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_02 }} .
     state: present
   when: custom_path_02 != ''
 - name: Add line compress custom_path_03
@@ -23,7 +23,7 @@
     marker: "# Tuan compress custom_path_03"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_01 }}/*
+      tar -czvf $BACKUP_PATH/$IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_03 }} .
     state: present
   when: custom_path_03 != ''
 ...
