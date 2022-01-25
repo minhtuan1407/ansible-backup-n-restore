@@ -22,7 +22,7 @@
     marker: "# Tuan compress mariadb config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C /etc/ mysql
+      tar -czvf $BACKUP_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C /etc/mysql/ .
     state: present
   when: mariadb_package.rc == 0
 - name: Dump database mariadb

@@ -22,7 +22,7 @@
     marker: "# Tuan compress rtpengine config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-rtpengine-$NOW.tar.gz -C /etc/ rtpengine
+      tar -czvf $BACKUP_PATH/$IP_SERVER-rtpengine-$NOW.tar.gz -C /etc/rtpengine/ .
     state: present
   when: rtpengine_package.rc == 0
 ...

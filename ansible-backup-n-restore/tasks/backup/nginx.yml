@@ -22,7 +22,7 @@
     marker: "# Tuan compress nginx config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C /etc/ nginx
+      tar -czvf $BACKUP_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C /etc/nginx/ .
     state: present
   when: nginx_package.rc == 0
 ...
