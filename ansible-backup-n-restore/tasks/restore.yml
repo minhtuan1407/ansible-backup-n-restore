@@ -2,14 +2,14 @@
 - include: restore/pre-restore.yml
   tags:
     - pre-restore
-# - include: restore/apache2.yml
-#   tags:
-#     - apache2
-#   when: apache2 == "true"
-# - include: restore/nginx.yml
-#   tags:
-#     - nginx
-#   when: nginx == "true"
+- include: restore/apache2.yml
+  tags:
+    - apache2
+  when: apache2 == "true"
+- include: restore/nginx.yml
+  tags:
+    - nginx
+  when: nginx == "true"
 # - include: restore/mariadb.yml
 #   tags:
 #     - mariadb
