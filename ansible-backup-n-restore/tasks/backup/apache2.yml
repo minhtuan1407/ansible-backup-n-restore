@@ -28,7 +28,7 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C {{ httpd_path }} .
     state: present
-  when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0 and 
+  when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0 and httpd_path_check.rc == 0
 - name: Check if apache2 package is exist with dpkg
   shell:
     cmd: dpkg -l | grep apache2
