@@ -12,7 +12,7 @@ pipeline {
         // choice(name: 'web_service', choices: ['', 'Apache2', 'Nginx'], description: '')
         // choice(name: 'db_service', choices: ['', 'MariaDB', 'PostgreSQL'], description: '')
         // choice(name: 'voip_service', choices: ['', 'Asterisk', 'FreeSWITCH', 'Kamailio', 'OpenSIPs'], description: '')
-        // choice(name: 'crontab_3h', choices: ['Yes', 'No'], description: '')
+        // choice(name: 'crontab_backup_3h', choices: ['Yes', 'No'], description: '')
         // choice(name: 'run_now', choices: ['Yes', 'No'], description: '')
         booleanParam(name: 'apache2', defaultValue: false, description: '')
         booleanParam(name: 'nginx', defaultValue: false, description: '')
@@ -23,7 +23,7 @@ pipeline {
         booleanParam(name: 'kamailio', defaultValue: false, description: '')
         booleanParam(name: 'opensips', defaultValue: false, description: '')
         booleanParam(name: 'rtpengine', defaultValue: false, description: '')
-        booleanParam(name: 'crontab_3h', defaultValue: true, description: '')
+        booleanParam(name: 'crontab_backup_3h', defaultValue: true, description: '')
         booleanParam(name: 'run_now', defaultValue: true, description: '')
         booleanParam(name: 'delete_after', defaultValue: false, description: '')
         booleanParam(name: 'restart_after', defaultValue: false, description: '')
@@ -67,7 +67,7 @@ pipeline {
                         kamailio: [value: '${kamailio}', hidden: false],
                         opensips: [value: '${opensips}', hidden: false],
                         rtpengine: [value: '${rtpengine}', hidden: false],
-                        crontab_3h: [value: '${crontab_3h}', hidden: false],
+                        crontab_backup_3h: [value: '${crontab_backup_3h}', hidden: false],
                         run_now: [value: '${run_now}', hidden: false],
                         delete_after: [value: '${delete_after}', hidden: false],
                         restart_after: [value: '${restart_after}', hidden: false],
@@ -101,7 +101,7 @@ pipeline {
                         kamailio: [value: '${kamailio}', hidden: false],
                         opensips: [value: '${opensips}', hidden: false],
                         rtpengine: [value: '${rtpengine}', hidden: false],
-                        crontab_3h: [value: '${crontab_3h}', hidden: false],
+                        crontab_backup_3h: [value: '${crontab_backup_3h}', hidden: false],
                         run_now: [value: '${run_now}', hidden: false],
                         delete_after: [value: '${delete_after}', hidden: false],
                         restart_after: [value: '${restart_after}', hidden: false],
