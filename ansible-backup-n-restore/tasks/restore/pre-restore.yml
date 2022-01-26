@@ -46,5 +46,4 @@
     block: |
       rclone copy -P --ignore-existing $RCLONE_PATH $BACKUP_PATH
     state: present
-- name: 
 ...
