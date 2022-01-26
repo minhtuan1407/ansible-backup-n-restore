@@ -20,7 +20,7 @@
     msg:
       - "{{ httpd_path }} exist"
   when: ansible_distribution == 'CentOS' and httpd_path_check.rc == 0
-- name: Add line compress directory {{ httpd_path }}
+- name: Add line compress directory "{{ httpd_path }}"
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan compress httpd config"
