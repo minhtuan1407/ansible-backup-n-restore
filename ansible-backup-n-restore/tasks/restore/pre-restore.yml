@@ -1,7 +1,7 @@
 ---
-- name: Check if rclone url exist
-  shell:
-    cmd:
+- name: Check if rclone_url is empty
+  fail: msg="rclone_url is empty"
+  when: rclone_url == ''
 - name: Check file /opt/restore-system.sh
   stat:
     path: /opt/restore-system.sh
@@ -26,8 +26,8 @@
       YEAR=$(date +%Y)
       MONTH=$(date +%h)
       DAY=$(date +%d)
-      RCLONE_PATH=google-drive:google-drive/{{ rclone_url }}/config-n-database/$YEAR/$MONTH/$DAY
-      RCLONE_RECORDINGS_PATH=google-drive:google-drive/{{ rclone_url }}/recordings
+      RCLONE_PATH=google-drive:google-drive/{{ rclone_url | replace(' ','-') }}/config-n-database/$YEAR/$MONTH/$DAY
+      RCLONE_RECORDINGS_PATH=google-drive:google-drive/{{ rclone_url | replace(' ','-') }}/recordings
       BACKUP_RESTORE_PATH={{ backup_restore_path }}
       RECORD_PATH={{ recordings_path }}
       CUSTOM_PATH_01={{ custom_path_01  }}
