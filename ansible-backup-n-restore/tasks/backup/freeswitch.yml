@@ -15,7 +15,7 @@
     marker: "# Tuan compress freeswitch config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz -C {{ freeswitch_path }}  .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz -C {{ freeswitch_path }} --exclude='{{ freeswitch_path }}/recordings/' .
     state: present
   when: freeswitch_path_check.rc == 0
 ...
