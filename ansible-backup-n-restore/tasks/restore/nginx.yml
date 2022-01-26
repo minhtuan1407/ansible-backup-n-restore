@@ -16,7 +16,7 @@
     marker: "# Tuan extract nginx config"
     insertafter: EOF
     block: |
-      tar -xzvf $BACKUP_RESTORE_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/nginx
+      tar -xzvf $BACKUP_RESTORE_PATH/*-nginx-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/nginx
     state: present
   when: ansible_distribution == 'Debian' and nginx_package.rc == 0
 - name: Backup directory /etc/nginx
