@@ -27,16 +27,32 @@
     marker: "# Tuan compress httpd config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C /etc/ httpd
+      tar -xzvf $BACKUP_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C $BACKUP_PATH/httpd
     state: present
-  when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
+  when: ansible_distribution == 'CentOS' and httpd_package.rc == 0 and
 - name: Add line compress directory /etc/apache2/
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan compress apache2 config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C /etc/ apache2
+      tar -xzvf $BACKUP_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C $BACKUP_PATH/apache2
     state: present
+  when: ansible_distribution == 'Debian' and apache2_package.rc == 0
+- name: Backup directory /etc/httpd
+  shell:
+    cmd: mv /etc/httpd /etc/httpd.$(date +%Y-%m-%d--%H-%M-%S).bak
+  when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
+- name: Backup directory /etc/apache2
+  shell:
+    cmd: mv /etc/apache2 /etc/apache2.$(date +%Y-%m-%d--%H-%M-%S).bak
+  when: ansible_distribution == 'Debian' and apache2_package.rc == 0
+- name: Apply config /etc/httpd from backup
+  shell:
+    cmd: mv $BACKUP_PATH/httpd /etc/httpd
+  when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
+- name: Apply config /etc/apache2 from backup
+  shell:
+    cmd: mv $BACKUP_PATH/apache2 /etc/apache2
   when: ansible_distribution == 'Debian' and apache2_package.rc == 0
 ...

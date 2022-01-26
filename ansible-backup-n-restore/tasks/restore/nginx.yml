@@ -1,0 +1,30 @@
+---
+- name: Check if package nginx is exist with dpkg
+  shell:
+    cmd: dpkg -l | grep nginx
+  register: nginx_package
+  when: ansible_distribution == 'Debian'
+  failed_when: nginx_package.rc not in [0, 1]
+- name: Message check nginx
+  debug:
+    msg:
+      - "nginx exist"
+  when: ansible_distribution == 'Debian' and nginx_package.rc == 0
+- name: Add line compress directory /etc/nginx/
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan compress nginx config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C $BACKUP_PATH/nginx
+    state: present
+  when: ansible_distribution == 'Debian' and nginx_package.rc == 0
+- name: Backup directory /etc/nginx
+  shell:
+    cmd: mv /etc/nginx /etc/nginx.$(date +%Y-%m-%d--%H-%M-%S).bak
+  when: ansible_distribution == 'Debian' and nginx_package.rc == 0
+- name: Apply config /etc/nginx from backup
+  shell:
+    cmd: mv $BACKUP_PATH/nginx /etc/nginx
+  when: ansible_distribution == 'Debian' and nginx_package.rc == 0
+...

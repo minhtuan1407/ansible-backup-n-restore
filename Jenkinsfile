@@ -26,6 +26,7 @@ pipeline {
         booleanParam(name: 'crontab_3h', defaultValue: true, description: '')
         booleanParam(name: 'run_now', defaultValue: true, description: '')
         booleanParam(name: 'delete_after', defaultValue: false, description: '')
+        booleanParam(name: 'restart_after', defaultValue: false, description: '')
         string(name: 'rclone_url', defaultValue: 'minhtuan.tel4vn.com', description: '')
         string(name: 'backup_path', defaultValue: '/opt/backup/', description: '')
         string(name: 'recordings_path', defaultValue: '', description: '')
@@ -69,6 +70,41 @@ pipeline {
                         crontab_3h: [value: '${crontab_3h}', hidden: false],
                         run_now: [value: '${run_now}', hidden: false],
                         delete_after: [value: '${delete_after}', hidden: false],
+                        restart_after: [value: '${restart_after}', hidden: false],
+                        rclone_url: [value: '${rclone_url}', hidden: false],
+                        backup_path: [value: '${backup_path}', hidden: false],
+                        recordings_path: [value: '${recordings_path}', hidden: false],
+                        custom_path_01: [value: '${custom_path_01}', hidden: false],
+                        custom_path_02: [value: '${custom_path_02}', hidden: false],
+                        custom_path_03: [value: '${custom_path_03}', hidden: false]
+                    ]
+                )
+            }
+        }
+        stage ("Restore") {
+            steps {
+                ansiblePlaybook (
+                    playbook: '${WORKSPACE}/ansible-backup-n-restore.yml',
+                    inventory: '${WORKSPACE}/hosts_all_server',
+                    tags: 'restore',
+                    extraVars: [
+                        ip_server: [value: '${ip_server}', hidden: false],
+                        db_user: [value: '${db_user}', hidden: true],
+                        db_pass: [value: '${db_pass}', hidden: true],
+                        task: [value: '${task}', hidden: false],
+                        apache2: [value: '${apache2}', hidden: false],
+                        nginx: [value: '${nginx}', hidden: false],
+                        mariadb: [value: '${mariadb}', hidden: false],
+                        postgresql: [value: '${postgresql}', hidden: false],
+                        asterisk: [value: '${asterisk}', hidden: false],
+                        freeswitch: [value: '${freeswitch}', hidden: false],
+                        kamailio: [value: '${kamailio}', hidden: false],
+                        opensips: [value: '${opensips}', hidden: false],
+                        rtpengine: [value: '${rtpengine}', hidden: false],
+                        crontab_3h: [value: '${crontab_3h}', hidden: false],
+                        run_now: [value: '${run_now}', hidden: false],
+                        delete_after: [value: '${delete_after}', hidden: false],
+                        restart_after: [value: '${restart_after}', hidden: false],
                         rclone_url: [value: '${rclone_url}', hidden: false],
                         backup_path: [value: '${backup_path}', hidden: false],
                         recordings_path: [value: '${recordings_path}', hidden: false],

@@ -19,7 +19,7 @@
     block: |
       #!/bin/bash
       IP_SERVER=$(curl ifconfig.me)
-      NOW=$(date +%Y-%m-%d--%H-%M-%S)
+      NOW=$(date +%Y-%m-%d)
       YEAR=$(date +%Y)
       MONTH=$(date +%h)
       DAY=$(date +%d)
@@ -46,13 +46,5 @@
     block: |
       rclone copy -P --ignore-existing $RCLONE_PATH $BACKUP_PATH
     state: present
-- name: Upload file recordings to google drive
-  blockinfile:
-    path: /opt/backup-system.sh
-    marker: "# Tuan download file recordings"
-    insertbefore: EOF
-    block: |
-      rclone copy -P --ignore-existing $RCLONE_RECORDINGS_PATH $RECORD_PATH
-    state: present
-  when: recordings_path != ''
+- name: 
 ...
