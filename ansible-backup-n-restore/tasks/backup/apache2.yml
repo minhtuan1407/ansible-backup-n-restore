@@ -33,7 +33,7 @@
   shell:
     cmd: dpkg -l | grep apache2
   register: apache2_package_check
-  failed_when: apache2_package.rc not in [0, 1]
+  failed_when: apache2_package_check.rc not in [0, 1]
   when: ansible_distribution == 'Debian'
 - name: Message check apache2 package
   debug:
