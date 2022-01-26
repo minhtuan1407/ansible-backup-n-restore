@@ -25,7 +25,7 @@
       DAY=$(date +%d)
       RCLONE_PATH=google-drive:google-drive/{{ rclone_url }}/config-n-database/$YEAR/$MONTH/$DAY
       RCLONE_RECORDINGS_PATH=google-drive:google-drive/{{ rclone_url }}/recordings
-      BACKUP_PATH={{ backup_path }}
+      BACKUP_PATH={{ backup_restore_path }}
       RECORD_PATH={{ recordings_path }}
       CUSTOM_PATH_01={{ custom_path_01  }}
       CUSTOM_PATH_02={{ custom_path_02  }}
@@ -36,6 +36,6 @@
     create: yes
 - name: Create backup directory
   file:
-    path: "{{ backup_path }}"
+    path: "{{ backup_restore_path }}"
     state: directory
 ...

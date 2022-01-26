@@ -16,7 +16,7 @@
   when: ansible_distribution == 'Debian' and nginx == "true" and restart_after == "true"
 - name: Upload file recordings to google drive
   blockinfile:
-    path: /opt/backup-system.sh
+    path: /opt/restore-system.sh
     marker: "# Tuan download file recordings"
     insertbefore: EOF
     block: |

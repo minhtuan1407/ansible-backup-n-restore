@@ -28,7 +28,7 @@ pipeline {
         booleanParam(name: 'delete_after', defaultValue: false, description: '')
         booleanParam(name: 'restart_after', defaultValue: false, description: '')
         string(name: 'rclone_url', defaultValue: 'minhtuan.tel4vn.com', description: '')
-        string(name: 'backup_path', defaultValue: '/opt/backup/', description: '')
+        string(name: 'backup_restore_path', defaultValue: '/opt/backup/', description: '')
         string(name: 'recordings_path', defaultValue: '', description: '')
         string(name: 'custom_path_01', defaultValue: '', description: '')
         string(name: 'custom_path_02', defaultValue: '', description: '')
@@ -72,7 +72,7 @@ pipeline {
                         delete_after: [value: '${delete_after}', hidden: false],
                         restart_after: [value: '${restart_after}', hidden: false],
                         rclone_url: [value: '${rclone_url}', hidden: false],
-                        backup_path: [value: '${backup_path}', hidden: false],
+                        backup_restore_path: [value: '${backup_restore_path}', hidden: false],
                         recordings_path: [value: '${recordings_path}', hidden: false],
                         custom_path_01: [value: '${custom_path_01}', hidden: false],
                         custom_path_02: [value: '${custom_path_02}', hidden: false],
@@ -106,7 +106,7 @@ pipeline {
                         delete_after: [value: '${delete_after}', hidden: false],
                         restart_after: [value: '${restart_after}', hidden: false],
                         rclone_url: [value: '${rclone_url}', hidden: false],
-                        backup_path: [value: '${backup_path}', hidden: false],
+                        backup_restore_path: [value: '${backup_restore_path}', hidden: false],
                         recordings_path: [value: '${recordings_path}', hidden: false],
                         custom_path_01: [value: '${custom_path_01}', hidden: false],
                         custom_path_02: [value: '${custom_path_02}', hidden: false],

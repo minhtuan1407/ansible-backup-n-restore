@@ -10,10 +10,10 @@
     msg:
       - "nginx exist"
   when: ansible_distribution == 'Debian' and nginx_package.rc == 0
-- name: Add line compress directory /etc/nginx/
+- name: Add line extract directory /etc/nginx/
   blockinfile:
-    path: /opt/backup-system.sh
-    marker: "# Tuan compress nginx config"
+    path: /opt/restore-system.sh
+    marker: "# Tuan extract nginx config"
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C $BACKUP_PATH/nginx
@@ -23,8 +23,13 @@
   shell:
     cmd: mv /etc/nginx /etc/nginx.$(date +%Y-%m-%d--%H-%M-%S).bak
   when: ansible_distribution == 'Debian' and nginx_package.rc == 0
-- name: Apply config /etc/nginx from backup
-  shell:
-    cmd: mv $BACKUP_PATH/nginx /etc/nginx
+- name: Add line extract directory /etc/nginx/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan extract nginx config"
+    insertafter: EOF
+    block: |
+      mv $BACKUP_PATH/nginx /etc/nginx
+    state: present
   when: ansible_distribution == 'Debian' and nginx_package.rc == 0
 ...

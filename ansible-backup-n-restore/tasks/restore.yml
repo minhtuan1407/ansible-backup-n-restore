@@ -42,7 +42,7 @@
 #   tags:
 #     - custom-path
 #   when: custom_path_01 != '' or custom_path_02 != '' or custom_path_03 != ''
-# - include: restore/run-restore.yml
-#   tags:
-#     - run-restore
+- include: restore/run-restore.yml
+  tags:
+    - run-restore
 ...

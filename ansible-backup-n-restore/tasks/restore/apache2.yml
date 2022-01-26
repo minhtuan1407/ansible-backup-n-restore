@@ -21,19 +21,19 @@
     msg:
       - "apache2 exist"
   when: ansible_distribution == 'Debian' and apache2_package.rc == 0
-- name: Add line compress directory /etc/httpd/
+- name: Add line extract directory /etc/httpd/
   blockinfile:
-    path: /opt/backup-system.sh
-    marker: "# Tuan compress httpd config"
+    path: /opt/restore-system.sh
+    marker: "# Tuan extract httpd config"
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C $BACKUP_PATH/httpd
     state: present
   when: ansible_distribution == 'CentOS' and httpd_package.rc == 0 and
-- name: Add line compress directory /etc/apache2/
+- name: Add line extract directory /etc/apache2/
   blockinfile:
-    path: /opt/backup-system.sh
-    marker: "# Tuan compress apache2 config"
+    path: /opt/restore-system.sh
+    marker: "# Tuan extract apache2 config"
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C $BACKUP_PATH/apache2
@@ -47,11 +47,11 @@
   shell:
     cmd: mv /etc/apache2 /etc/apache2.$(date +%Y-%m-%d--%H-%M-%S).bak
   when: ansible_distribution == 'Debian' and apache2_package.rc == 0
-- name: Apply config /etc/httpd from backup
+- name: Apply config /etc/httpd from restore
   shell:
     cmd: mv $BACKUP_PATH/httpd /etc/httpd
   when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
-- name: Apply config /etc/apache2 from backup
+- name: Apply config /etc/apache2 from restore
   shell:
     cmd: mv $BACKUP_PATH/apache2 /etc/apache2
   when: ansible_distribution == 'Debian' and apache2_package.rc == 0

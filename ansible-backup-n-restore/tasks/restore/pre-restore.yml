@@ -1,19 +1,19 @@
 ---
-- name: Check file /opt/backup-system.sh
+- name: Check file /opt/restore-system.sh
   stat:
-    path: /opt/backup-system.sh
-  register: backup_file
-- name: Backup file /opt/backup-system.sh
+    path: /opt/restore-system.sh
+  register: restore_file
+- name: Backup file /opt/restore-system.sh
   shell:
-    cmd: mv /opt/backup-system.sh /opt/backup-system.sh.$(date +%Y-%m-%d--%H-%M-%S).bak
-  when: backup_file.stat.exists
-- name: Delete file /opt/backup-system.sh older than 30 days
+    cmd: mv /opt/restore-system.sh /opt/restore-system.sh.$(date +%Y-%m-%d--%H-%M-%S).bak
+  when: restore_file.stat.exists
+- name: Delete file /opt/restore-system.sh older than 30 days
   shell:
-    cmd: find /opt/ -mtime +30 -name "backup-system.sh" -exec rm {} \;
-  when: backup_file.stat.exists
+    cmd: find /opt/ -mtime +30 -name "restore-system.sh" -exec rm {} \;
+  when: restore_file.stat.exists
 - name: Insert base variables
   blockinfile:
-    path: /opt/backup-system.sh
+    path: /opt/restore-system.sh
     marker: "# Tuan set variable bash shell"
     insertbefore: BOF
     block: |
@@ -25,7 +25,7 @@
       DAY=$(date +%d)
       RCLONE_PATH=google-drive:google-drive/{{ rclone_url }}/config-n-database/$YEAR/$MONTH/$DAY
       RCLONE_RECORDINGS_PATH=google-drive:google-drive/{{ rclone_url }}/recordings
-      BACKUP_PATH={{ backup_path }}
+      BACKUP_PATH={{ backup_restore_path }}
       RECORD_PATH={{ recordings_path }}
       CUSTOM_PATH_01={{ custom_path_01  }}
       CUSTOM_PATH_02={{ custom_path_02  }}
@@ -34,14 +34,14 @@
       DB_PASS={{ db_pass }}
     state: present
     create: yes
-- name: Create backup directory
+- name: Create restore directory
   file:
-    path: "{{ backup_path }}"
+    path: "{{ backup_restore_path }}"
     state: directory
 - name: Download file from google drive
   blockinfile:
-    path: /opt/backup-system.sh
-    marker: "# Tuan download file backup"
+    path: /opt/restore-system.sh
+    marker: "# Tuan download file restore"
     insertbefore: EOF
     block: |
       rclone copy -P --ignore-existing $RCLONE_PATH $BACKUP_PATH
