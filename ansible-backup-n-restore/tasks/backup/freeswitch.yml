@@ -1,21 +1,21 @@
 ---
-- name: Check if package freeswitch in /usr/local/freeswitch
+- name: Check if freeswitch path is exist
   shell:
-    cmd: ls /usr/local/freeswitch
-  register: freeswitch_path
-  failed_when: freeswitch_path.rc not in [0, 1, 2]
-- name: Message check freeswitch 
+    cmd: ls {{ freeswitch_path }}
+  register: freeswitch_path_check
+  failed_when: freeswitch_path_check.rc not in [0, 1, 2]
+- name: Message check freeswitch path
   debug:
     msg:
-      - "freeswitch exist"
-  when: freeswitch_path.rc == 0
-- name: Add line compress directory /usr/local/freeswitch
+      - "{{ freeswitch_path }} exist"
+  when: freeswitch_path_check.rc == 0
+- name: Add line compress directory {{ freeswitch_path }} 
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan compress freeswitch config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz -C /usr/local/freeswitch .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz -C {{ freeswitch_path }}  .
     state: present
-  when: freeswitch_path.rc == 0
+  when: freeswitch_path_check.rc == 0
 ...

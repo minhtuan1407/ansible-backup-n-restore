@@ -1,58 +1,66 @@
 ---
-- name: Check if package httpd is exist with yum
+- name: Check if httpd package is exist with yum
   shell:
     cmd: yum list installed | grep httpd
-  register: httpd_package
+  register: httpd_package_check
+  failed_when: httpd_package_check.rc not in [0, 1]
   when: ansible_distribution == 'CentOS'
-  failed_when: httpd_package.rc not in [0, 1]
-- name: Check if package apache2 is exist with dpkg
+- name: Message check httpd package
+  debug:
+    msg:
+      - "httpd package exist"
+  when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0
+- name: Check if httpd path is exist
   shell:
-    cmd: dpkg -l | grep apache2
-  register: apache2_package
-  when: ansible_distribution == 'Debian'
-  failed_when: apache2_package.rc not in [0, 1]
-- name: Message check httpd
+    cmd: ls {{ httpd_path }}
+  register: httpd_path_check
+  failed_when: httpd_path_check.rc not in [0, 1, 2]
+- name: Message check httpd path
   debug:
     msg:
-      - "httpd exist"
-  when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
-- name: Message check apache2
-  debug:
-    msg:
-      - "apache2 exist"
-  when: ansible_distribution == 'Debian' and apache2_package.rc == 0
-- name: Add line extract directory /etc/httpd/
+      - "{{ httpd_path }} exist"
+  when: ansible_distribution == 'CentOS' and httpd_path_check.rc == 0
+- name: Add line extract directory $BACKUP_RESTORE_PATH/httpd/
   blockinfile:
     path: /opt/restore-system.sh
     marker: "# Tuan extract httpd config"
     insertafter: EOF
     block: |
-      tar -xzvf $BACKUP_RESTORE_PATH/*-httpd-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/httpd
+      tar -xzvf $BACKUP_RESTORE_PATH/*-httpd-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/httpd/
+      mv {{ httpd_path }} /etc/httpd.$(date +%Y-%m-%d--%H-%M-%S).bak/
+      mv $BACKUP_RESTORE_PATH/httpd/ {{ httpd_path }}
     state: present
-  when: ansible_distribution == 'CentOS' and httpd_package.rc == 0 and
-- name: Add line extract directory /etc/apache2/
+  when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0 and httpd_path_check.rc == 0
+- name: Check if apache2 package is exist with dpkg
+  shell:
+    cmd: dpkg -l | grep apache2
+  register: apache2_package_check
+  failed_when: apache2_package.rc not in [0, 1]
+  when: ansible_distribution == 'Debian'
+- name: Message check apache2 package
+  debug:
+    msg:
+      - "apache2 package exist"
+  when: ansible_distribution == 'Debian' and apache2_package_check.rc == 0
+- name: Check if apache2 path is exist
+  shell:
+    cmd: ls {{ apache2_path }}
+  register: apache2_path_check
+  failed_when: apache2_path_check.rc not in [0, 1, 2]
+- name: Message check apache2 path
+  debug:
+    msg:
+      - "{{ apache2_path }} exist"
+  when: ansible_distribution == 'Debian' and apache2_path_check.rc == 0
+- name: Add line extract directory $BACKUP_RESTORE_PATH/apache2/
   blockinfile:
     path: /opt/restore-system.sh
     marker: "# Tuan extract apache2 config"
     insertafter: EOF
     block: |
-      tar -xzvf $BACKUP_RESTORE_PATH/*-apache2-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/apache2
+      tar -xzvf $BACKUP_RESTORE_PATH/*-apache2-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/apache2/
+      mv {{ apache2_path }} /etc/apache2.$(date +%Y-%m-%d--%H-%M-%S).bak/
+      mv $BACKUP_RESTORE_PATH/apache2/ {{ apache2_path }}
     state: present
-  when: ansible_distribution == 'Debian' and apache2_package.rc == 0
-- name: Backup directory /etc/httpd
-  shell:
-    cmd: mv /etc/httpd /etc/httpd.$(date +%Y-%m-%d--%H-%M-%S).bak
-  when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
-- name: Backup directory /etc/apache2
-  shell:
-    cmd: mv /etc/apache2 /etc/apache2.$(date +%Y-%m-%d--%H-%M-%S).bak
-  when: ansible_distribution == 'Debian' and apache2_package.rc == 0
-- name: Apply config /etc/httpd from restore
-  shell:
-    cmd: mv $BACKUP_RESTORE_PATH/httpd /etc/httpd
-  when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
-- name: Apply config /etc/apache2 from restore
-  shell:
-    cmd: mv $BACKUP_RESTORE_PATH/apache2 /etc/apache2
-  when: ansible_distribution == 'Debian' and apache2_package.rc == 0
+  when: ansible_distribution == 'Debian' and apache2_package_check.rc == 0 and apache2_path_check.rc == 0
 ...

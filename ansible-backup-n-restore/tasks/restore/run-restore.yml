@@ -16,15 +16,15 @@
   systemd:
     name: httpd
     state: restarted
-  when: ansible_distribution == 'CentOS' and apache2 == "true" and restart_after == "true"
+  when: ansible_distribution == 'CentOS' and apache2 == "true"
 - name: Restart apache2 after apply config
   systemd:
     name: apache2
     state: restarted
-  when: ansible_distribution == 'Debian' and apache2 == "true" and restart_after == "true"
+  when: ansible_distribution == 'Debian' and apache2 == "true"
 - name: Restart nginx after apply config
   systemd:
     name: nginx
     state: restarted
-  when: nginx == "true" and restart_after == "true"
+  when: nginx == "true"
 ...

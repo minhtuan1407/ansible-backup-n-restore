@@ -1,4 +1,7 @@
 ---
+- name: Check if rclone url exist
+  shell:
+    cmd:
 - name: Check file /opt/restore-system.sh
   stat:
     path: /opt/restore-system.sh

@@ -1,30 +1,40 @@
 ---
-- name: Check if package mariadb is exist with yum
+- name: Check if mariadb package is exist with yum
   shell:
     cmd: yum list installed | grep mariadb-server
-  register: mariadb_package
+  register: mariadb_package_check
+  failed_when: mariadb_package_check.rc not in [0, 1]
   when: ansible_distribution == 'CentOS'
-  failed_when: mariadb_package.rc not in [0, 1]
-- name: Check if package mariadb is exist with dpkg
+- name: Check if mariadb package is exist with dpkg
   shell:
     cmd: dpkg -l | grep mariadb-server
-  register: mariadb_package
+  register: mariadb_package_check
+  failed_when: mariadb_package_check.rc not in [0, 1]
   when: ansible_distribution == 'Debian'
-  failed_when: mariadb_package.rc not in [0, 1]
-- name: Message check mariadb 
+- name: Message check mariadb package
   debug:
     msg:
-      - "mariadb exist"
-  when: mariadb_package.rc == 0
-- name: Add line compress directory /etc/mysql/
+      - "mariadb package exist"
+  when: mariadb_package_check.rc == 0
+- name: Check if mariadb path is exist
+  shell:
+    cmd: ls {{ mariadb_path }}
+  register: mariadb_path_check
+  failed_when: mariadb_path_check.rc not in [0, 1, 2]
+- name: Message check mariadb path
+  debug:
+    msg:
+      - "{{ mariadb_path }} exist"
+  when: mariadb_path_check.rc == 0
+- name: Add line compress directory {{ mariadb_path }}
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan compress mariadb config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C /etc/mysql/ .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C {{ mariadb_path }} .
     state: present
-  when: mariadb_package.rc == 0
+  when: mariadb_package_check.rc == 0 and mariadb_path_check.rc == 0
 - name: Dump database mariadb
   blockinfile:
     path: /opt/backup-system.sh
@@ -33,5 +43,5 @@
     block: |
       mysqldump -u $DB_USER -p$DB_PASS --all-databases | gzip > $BACKUP_RESTORE_PATH/$IP_SERVER-mysqldump-$NOW.sql.gz
     state: present
-  when: mariadb_package.rc == 0 and db_user != '' and db_pass != ''
+  when: mariadb_package_check.rc == 0 and mariadb_path_check.rc == 0 and db_user != '' and db_pass != ''
 ...

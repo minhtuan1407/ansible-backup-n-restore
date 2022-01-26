@@ -1,40 +1,33 @@
 ---
-- name: Check if package nginx is exist with dpkg
+- name: Check if nginx package is exist with dpkg
   shell:
     cmd: dpkg -l | grep nginx
-  register: nginx_package
-  when: ansible_distribution == 'Debian'
+  register: nginx_package_check
   failed_when: nginx_package.rc not in [0, 1]
-- name: Message check nginx
+- name: Message check nginx package
   debug:
     msg:
-      - "nginx exist"
-  when: ansible_distribution == 'Debian' and nginx_package.rc == 0
-- name: Add line extract directory /etc/nginx/
+      - "nginx package exist"
+  when: nginx_package_check.rc == 0
+- name: Check if nginx path is exist
+  shell:
+    cmd: ls {{ nginx_path }}
+  register: nginx_path_check
+  failed_when: nginx_path_check.rc not in [0, 1, 2]
+- name: Message check nginx path
+  debug:
+    msg:
+      - "{{ nginx_path }} exist"
+  when: nginx_path_check.rc == 0
+- name: Add line extract directory $BACKUP_RESTORE_PATH/nginx/
   blockinfile:
     path: /opt/restore-system.sh
     marker: "# Tuan extract nginx config"
     insertafter: EOF
     block: |
-      tar -xzvf $BACKUP_RESTORE_PATH/*-nginx-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/nginx
+      tar -xzvf $BACKUP_RESTORE_PATH/*-nginx-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/nginx/
+      mv {{ nginx_path }} /etc/nginx.$(date +%Y-%m-%d--%H-%M-%S).bak/
+      mv $BACKUP_RESTORE_PATH/nginx/ {{ nginx_path }}
     state: present
-  when: ansible_distribution == 'Debian' and nginx_package.rc == 0
-- name: Backup directory /etc/nginx
-  blockinfile:
-    path: /opt/restore-system.sh
-    marker: "# Tuan extract nginx config"
-    insertafter: EOF
-    block: |
-      mv /etc/nginx /etc/nginx.$(date +%Y-%m-%d--%H-%M-%S).bak
-    state: present
-  when: ansible_distribution == 'Debian' and nginx_package.rc == 0
-- name: Add line mv directory /etc/nginx/
-  blockinfile:
-    path: /opt/restore-system.sh
-    marker: "# Tuan extract nginx config"
-    insertafter: EOF
-    block: |
-      mv $BACKUP_RESTORE_PATH/nginx /etc/nginx
-    state: present
-  when: ansible_distribution == 'Debian' and nginx_package.rc == 0
+  when: nginx_package_check.rc == 0 and nginx_path_check.rc == 0
 ...

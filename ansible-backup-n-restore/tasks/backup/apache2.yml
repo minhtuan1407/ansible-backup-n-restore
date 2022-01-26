@@ -1,42 +1,62 @@
 ---
-- name: Check if package httpd is exist with yum
+- name: Check if httpd package is exist with yum
   shell:
     cmd: yum list installed | grep httpd
-  register: httpd_package
+  register: httpd_package_check
+  failed_when: httpd_package_check.rc not in [0, 1]
   when: ansible_distribution == 'CentOS'
-  failed_when: httpd_package.rc not in [0, 1]
-- name: Check if package apache2 is exist with dpkg
+- name: Message check httpd package
+  debug:
+    msg:
+      - "httpd package exist"
+  when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0
+- name: Check if httpd path is exist
   shell:
-    cmd: dpkg -l | grep apache2
-  register: apache2_package
-  when: ansible_distribution == 'Debian'
-  failed_when: apache2_package.rc not in [0, 1]
-- name: Message check httpd
+    cmd: ls {{ httpd_path }}
+  register: httpd_path_check
+  failed_when: httpd_path_check.rc not in [0, 1, 2]
+- name: Message check httpd path
   debug:
     msg:
-      - "httpd exist"
-  when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
-- name: Message check apache2
-  debug:
-    msg:
-      - "apache2 exist"
-  when: ansible_distribution == 'Debian' and apache2_package.rc == 0
-- name: Add line compress directory /etc/httpd/
+      - "{{ httpd_path }} exist"
+  when: ansible_distribution == 'CentOS' and httpd_path_check.rc == 0
+- name: Add line compress directory {{ httpd_path }}
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan compress httpd config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C /etc/httpd/ .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C {{ httpd_path }} .
     state: present
-  when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
-- name: Add line compress directory /etc/apache2/
+  when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0 and 
+- name: Check if apache2 package is exist with dpkg
+  shell:
+    cmd: dpkg -l | grep apache2
+  register: apache2_package_check
+  failed_when: apache2_package.rc not in [0, 1]
+  when: ansible_distribution == 'Debian'
+- name: Message check apache2 package
+  debug:
+    msg:
+      - "apache2 package exist"
+  when: ansible_distribution == 'Debian' and apache2_package_check.rc == 0
+- name: Check if apache2 path is exist
+  shell:
+    cmd: ls {{ apache2_path }}
+  register: apache2_path_check
+  failed_when: apache2_path_check.rc not in [0, 1, 2]
+- name: Message check apache2 path
+  debug:
+    msg:
+      - "{{ apache2_path }} exist"
+  when: ansible_distribution == 'Debian' and apache2_path_check.rc == 0
+- name: Add line compress directory {{ apache2_path }}
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan compress apache2 config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C /etc/apache2/ .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C {{ apache2_path }} .
     state: present
-  when: ansible_distribution == 'Debian' and apache2_package.rc == 0
+  when: ansible_distribution == 'Debian' and apache2_package_check.rc == 0 and apache2_path_check.rc == 0
 ...

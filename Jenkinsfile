@@ -26,7 +26,6 @@ pipeline {
         booleanParam(name: 'crontab_backup_3h', defaultValue: true, description: '')
         booleanParam(name: 'run_now', defaultValue: true, description: '')
         booleanParam(name: 'delete_after', defaultValue: false, description: '')
-        booleanParam(name: 'restart_after', defaultValue: false, description: '')
         string(name: 'rclone_url', defaultValue: 'minhtuan.tel4vn.com', description: '')
         string(name: 'backup_restore_path', defaultValue: '/opt/backup/', description: '')
         string(name: 'recordings_path', defaultValue: '', description: '')
@@ -70,7 +69,6 @@ pipeline {
                         crontab_backup_3h: [value: '${crontab_backup_3h}', hidden: false],
                         run_now: [value: '${run_now}', hidden: false],
                         delete_after: [value: '${delete_after}', hidden: false],
-                        restart_after: [value: '${restart_after}', hidden: false],
                         rclone_url: [value: '${rclone_url}', hidden: false],
                         backup_restore_path: [value: '${backup_restore_path}', hidden: false],
                         recordings_path: [value: '${recordings_path}', hidden: false],
@@ -104,7 +102,6 @@ pipeline {
                         crontab_backup_3h: [value: '${crontab_backup_3h}', hidden: false],
                         run_now: [value: '${run_now}', hidden: false],
                         delete_after: [value: '${delete_after}', hidden: false],
-                        restart_after: [value: '${restart_after}', hidden: false],
                         rclone_url: [value: '${rclone_url}', hidden: false],
                         backup_restore_path: [value: '${backup_restore_path}', hidden: false],
                         recordings_path: [value: '${recordings_path}', hidden: false],

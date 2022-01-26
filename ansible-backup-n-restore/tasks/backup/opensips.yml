@@ -1,21 +1,21 @@
 ---
-- name: Check if package opensips in /etc/opensips
+- name: Check if opensips path is exist
   shell:
-    cmd: ls /etc/opensips
-  register: opensips_path
-  failed_when: opensips_path.rc not in [0, 1, 2]
-- name: Message check opensips 
+    cmd: ls {{ opensips_path }}
+  register: opensips_path_check
+  failed_when: opensips_path_check.rc not in [0, 1, 2]
+- name: Message check opensips path
   debug:
     msg:
-      - "opensips exist"
-  when: opensips_path.rc == 0
-- name: Add line compress directory /etc/opensips
+      - "{{ opensips_path }} exist"
+  when: opensips_path_check.rc == 0
+- name: Add line compress directory {{ opensips_path }} 
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan compress opensips config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-opensips-$NOW.tar.gz -C /etc/opensips .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-opensips-$NOW.tar.gz -C {{ opensips_path }}  .
     state: present
-  when: opensips_path.rc == 0
+  when: opensips_path_check.rc == 0
 ...
