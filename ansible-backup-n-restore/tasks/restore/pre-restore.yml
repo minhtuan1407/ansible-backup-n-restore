@@ -48,17 +48,17 @@
     state: present
 - name: Create directory for httpd
   file:
-    path: "{{ backup_restore_path }}"/httpd
+    path: "{{ backup_restore_path }}/httpd"
     state: directory
   when: ansible_distribution == 'CentOS' and apache2 == "true"
 - name: Create directory for apache2
   file:
-    path: "{{ backup_restore_path }}"/apache2
+    path: "{{ backup_restore_path }}/apache2"
     state: directory
   when: ansible_distribution == 'Debian' and apache2 == "true"
 - name: Create directory for nginx
   file:
-    path: "{{ backup_restore_path }}"/nginx
+    path: "{{ backup_restore_path }}/nginx"
     state: directory
   when: nginx == "true"
 ...
