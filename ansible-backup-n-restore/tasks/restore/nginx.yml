@@ -20,10 +20,15 @@
     state: present
   when: ansible_distribution == 'Debian' and nginx_package.rc == 0
 - name: Backup directory /etc/nginx
-  shell:
-    cmd: mv /etc/nginx /etc/nginx.$(date +%Y-%m-%d--%H-%M-%S).bak
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan extract nginx config"
+    insertafter: EOF
+    block: |
+      mv /etc/nginx /etc/nginx.$(date +%Y-%m-%d--%H-%M-%S).bak
+    state: present
   when: ansible_distribution == 'Debian' and nginx_package.rc == 0
-- name: Add line extract directory /etc/nginx/
+- name: Add line mv directory /etc/nginx/
   blockinfile:
     path: /opt/restore-system.sh
     marker: "# Tuan extract nginx config"
