@@ -23,4 +23,8 @@
       rclone copy -P --ignore-existing $RCLONE_RECORDINGS_PATH $RECORD_PATH
     state: present
   when: recordings_path != ''
+- name: Run restore right now
+  shell:
+    cmd: "bash /opt/restore-system.sh"
+  when: run_now == "true"
 ...
