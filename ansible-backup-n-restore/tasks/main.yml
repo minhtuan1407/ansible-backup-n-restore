@@ -7,8 +7,8 @@
   tags:
     - backup
   when: task == "backup"
-# - include: restore.yml
-#   tags:
-#     - backup
-#   when: task == "restore"
+- include: restore.yml
+  tags:
+    - restore
+  when: task == "restore"
 ...
