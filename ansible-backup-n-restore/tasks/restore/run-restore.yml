@@ -1,4 +1,17 @@
 ---
+- name: Download file recordings to google drive
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan download file recordings"
+    insertbefore: EOF
+    block: |
+      rclone copy -P --ignore-existing $RCLONE_RECORDINGS_PATH $RECORD_PATH
+    state: present
+  when: recordings_path != ''
+- name: Run restore right now
+  shell:
+    cmd: "bash /opt/restore-system.sh"
+  when: run_now == "true"
 - name: Restart httpd after apply config
   systemd:
     name: httpd
@@ -13,18 +26,5 @@
   systemd:
     name: nginx
     state: restarted
-  when: ansible_distribution == 'Debian' and nginx == "true" and restart_after == "true"
-- name: Upload file recordings to google drive
-  blockinfile:
-    path: /opt/restore-system.sh
-    marker: "# Tuan download file recordings"
-    insertbefore: EOF
-    block: |
-      rclone copy -P --ignore-existing $RCLONE_RECORDINGS_PATH $RECORD_PATH
-    state: present
-  when: recordings_path != ''
-- name: Run restore right now
-  shell:
-    cmd: "bash /opt/restore-system.sh"
-  when: run_now == "true"
+  when: nginx == "true" and restart_after == "true"
 ...
