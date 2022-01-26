@@ -15,7 +15,7 @@
     marker: "# Tuan compress freeswitch config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz -C /usr/local/freeswitch --exclude="./bin" --exclude="./db" --exclude="./include" --exclude="./lib" --exclude="./log" --exclude="./mod" --exclude="./recordings*" --exclude="./run" --exclude="./conf.orig" .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz -C /usr/local/freeswitch --exclude="./bin" --exclude="./db" --exclude="./include" --exclude="./lib" --exclude="./log" --exclude="./mod" --exclude="./recordings*" --exclude="./run" --exclude="./conf.orig" .
     state: present
   when: freeswitch_path.rc == 0
 ...

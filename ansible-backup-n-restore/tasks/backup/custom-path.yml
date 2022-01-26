@@ -15,7 +15,7 @@
     marker: "# Tuan compress custom_path_01"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_01 }} .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_01 }} .
     state: present
   when: custom_path_01 != '' and custom_path_01_check.rc == 0
 - name: Check if custom_path_02 exist
@@ -34,7 +34,7 @@
     marker: "# Tuan compress custom_path_02"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_02 }} .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_02 }} .
     state: present
   when: custom_path_02 != '' and custom_path_02_check.rc == 0
 - name: Check if custom_path_03 exist
@@ -53,7 +53,7 @@
     marker: "# Tuan compress custom_path_03"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_03 }} .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_03 }} .
     state: present
   when: custom_path_03 != '' and custom_path_03_check.rc == 0
 ...

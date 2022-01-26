@@ -22,7 +22,7 @@
     marker: "# Tuan compress mariadb config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C /etc/mysql/ .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C /etc/mysql/ .
     state: present
   when: mariadb_package.rc == 0
 - name: Dump database mariadb
@@ -31,7 +31,7 @@
     marker: "# Tuan dump all database mariadb"
     insertafter: EOF
     block: |
-      mysqldump -u $DB_USER -p$DB_PASS --all-databases | gzip > $BACKUP_PATH/$IP_SERVER-mysqldump-$NOW.sql.gz
+      mysqldump -u $DB_USER -p$DB_PASS --all-databases | gzip > $BACKUP_RESTORE_PATH/$IP_SERVER-mysqldump-$NOW.sql.gz
     state: present
   when: mariadb_package.rc == 0 and db_user != '' and db_pass != ''
 ...

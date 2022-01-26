@@ -27,7 +27,7 @@
     marker: "# Tuan compress httpd config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C /etc/httpd/ .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C /etc/httpd/ .
     state: present
   when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
 - name: Add line compress directory /etc/apache2/
@@ -36,7 +36,7 @@
     marker: "# Tuan compress apache2 config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C /etc/apache2/ .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C /etc/apache2/ .
     state: present
   when: ansible_distribution == 'Debian' and apache2_package.rc == 0
 ...

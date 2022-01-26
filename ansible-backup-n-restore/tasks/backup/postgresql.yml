@@ -22,7 +22,7 @@
     marker: "# Tuan compress postgresql config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-postgresql-$NOW.tar.gz -C /etc/postgresql/ .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-postgresql-$NOW.tar.gz -C /etc/postgresql/ .
     state: present
   when: postgresql_package.rc == 0
 - name: Dump database postgresql
@@ -31,7 +31,7 @@
     marker: "# Tuan dump all database postgresql"
     insertafter: EOF
     block: |
-      sudo -u postgres pg_dumpall -h 127.0.0.1 | gzip > $BACKUP_PATH/$IP_SERVER-pg_dumpall-$NOW.sql.gz
+      sudo -u postgres pg_dumpall -h 127.0.0.1 | gzip > $BACKUP_RESTORE_PATH/$IP_SERVER-pg_dumpall-$NOW.sql.gz
     state: present
   when: postgresql_package.rc == 0
 ...

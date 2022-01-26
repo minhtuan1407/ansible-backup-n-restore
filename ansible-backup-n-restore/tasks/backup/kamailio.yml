@@ -22,7 +22,7 @@
     marker: "# Tuan compress kamailio config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-kamailio-$NOW.tar.gz -C /etc/kamailio/ .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-kamailio-$NOW.tar.gz -C /etc/kamailio/ .
     state: present
   when: kamailio_package.rc == 0
 ...

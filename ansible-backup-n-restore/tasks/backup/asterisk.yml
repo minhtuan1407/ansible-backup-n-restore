@@ -22,7 +22,7 @@
     marker: "# Tuan compress asterisk config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_PATH/$IP_SERVER-asterisk-$NOW.tar.gz -C /etc/asterisk/ .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-asterisk-$NOW.tar.gz -C /etc/asterisk/ .
     state: present
   when: asterisk_package.rc == 0
 ...

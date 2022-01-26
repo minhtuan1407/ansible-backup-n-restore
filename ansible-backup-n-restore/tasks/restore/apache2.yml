@@ -27,7 +27,7 @@
     marker: "# Tuan extract httpd config"
     insertafter: EOF
     block: |
-      tar -xzvf $BACKUP_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C $BACKUP_PATH/httpd
+      tar -xzvf $BACKUP_RESTORE_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/httpd
     state: present
   when: ansible_distribution == 'CentOS' and httpd_package.rc == 0 and
 - name: Add line extract directory /etc/apache2/
@@ -36,7 +36,7 @@
     marker: "# Tuan extract apache2 config"
     insertafter: EOF
     block: |
-      tar -xzvf $BACKUP_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C $BACKUP_PATH/apache2
+      tar -xzvf $BACKUP_RESTORE_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/apache2
     state: present
   when: ansible_distribution == 'Debian' and apache2_package.rc == 0
 - name: Backup directory /etc/httpd
@@ -49,10 +49,10 @@
   when: ansible_distribution == 'Debian' and apache2_package.rc == 0
 - name: Apply config /etc/httpd from restore
   shell:
-    cmd: mv $BACKUP_PATH/httpd /etc/httpd
+    cmd: mv $BACKUP_RESTORE_PATH/httpd /etc/httpd
   when: ansible_distribution == 'CentOS' and httpd_package.rc == 0
 - name: Apply config /etc/apache2 from restore
   shell:
-    cmd: mv $BACKUP_PATH/apache2 /etc/apache2
+    cmd: mv $BACKUP_RESTORE_PATH/apache2 /etc/apache2
   when: ansible_distribution == 'Debian' and apache2_package.rc == 0
 ...
