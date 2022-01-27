@@ -26,6 +26,11 @@
     msg:
       - "{{ nginx_path }} exist"
   when: nginx_path_check.rc == 0
+- name: Create directory for nginx
+  file:
+    path: "{{ backup_restore_path }}/nginx"
+    state: directory
+  when: nginx_package_check.rc == 0 and nginx_path_check.rc == 0
 - name: Add line restore directory $BACKUP_RESTORE_PATH/nginx/
   blockinfile:
     path: /opt/restore-system.sh

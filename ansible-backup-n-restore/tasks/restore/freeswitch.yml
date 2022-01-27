@@ -9,6 +9,11 @@
     msg:
       - "{{ freeswitch_path }} exist"
   when: freeswitch_path_check.rc == 0
+- name: Create directory for freeswitch
+  file:
+    path: "{{ backup_restore_path }}/freeswitch"
+    state: directory
+  when: freeswitch_path_check.rc == 0
 - name: Add line restore directory $BACKUP_RESTORE_PATH/freeswitch/
   blockinfile:
     path: /opt/restore-system.sh

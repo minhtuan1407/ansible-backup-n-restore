@@ -1,24 +1,29 @@
 ---
-- name: Check if kamailio path is exist
+- name: Check if opensips path is exist
   shell:
-    cmd: ls {{ kamailio_path }}
-  register: kamailio_path_check
-  failed_when: kamailio_path_check.rc not in [0, 1, 2]
-- name: Message check kamailio path
+    cmd: ls {{ opensips_path }}
+  register: opensips_path_check
+  failed_when: opensips_path_check.rc not in [0, 1, 2]
+- name: Message check opensips path
   debug:
     msg:
-      - "{{ kamailio_path }} exist"
-  when: kamailio_path_check.rc == 0
-- name: Add line restore directory $BACKUP_RESTORE_PATH/kamailio/
+      - "{{ opensips_path }} exist"
+  when: opensips_path_check.rc == 0
+- name: Create directory for opensips
+  file:
+    path: "{{ backup_restore_path }}/opensips"
+    state: directory
+  when: opensips_path_check.rc == 0
+- name: Add line restore directory $BACKUP_RESTORE_PATH/opensips/
   blockinfile:
     path: /opt/restore-system.sh
-    marker: "# Tuan restore kamailio config"
+    marker: "# Tuan restore opensips config"
     insertafter: EOF
     block: |
-      tar -xzvf $BACKUP_RESTORE_PATH/*-kamailio-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/kamailio
-      mv {{ kamailio_path }} {{ kamailio_path }}.$TIME.bak
-      mv $BACKUP_RESTORE_PATH/kamailio {{ kamailio_path }}
+      tar -xzvf $BACKUP_RESTORE_PATH/*-opensips-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/opensips
+      mv {{ opensips_path }} {{ opensips_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/opensips {{ opensips_path }}
       systemctl restart opensips
     state: present
-  when: kamailio_path_check.rc == 0
+  when: opensips_path_check.rc == 0
 ...

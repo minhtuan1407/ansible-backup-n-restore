@@ -26,6 +26,11 @@
     msg:
       - "{{ postgresql_path }} exist"
   when: postgresql_path_check.rc == 0
+- name: Create directory for postgresql
+  file:
+    path: "{{ backup_restore_path }}/postgresql"
+    state: directory
+  when: postgresql_package_check.rc == 0 and postgresql_path_check.rc == 0
 - name: Add line restore directory $BACKUP_RESTORE_PATH/postgresql/
   blockinfile:
     path: /opt/restore-system.sh

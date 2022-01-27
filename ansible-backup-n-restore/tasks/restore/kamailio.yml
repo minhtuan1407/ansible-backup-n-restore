@@ -26,6 +26,11 @@
     msg:
       - "{{ kamailio_path }} exist"
   when: kamailio_path_check.rc == 0
+- name: Create directory for kamailio
+  file:
+    path: "{{ backup_restore_path }}/kamailio"
+    state: directory
+  when: kamailio_package_check.rc == 0 and kamailio_path_check.rc == 0
 - name: Add line restore directory $BACKUP_RESTORE_PATH/kamailio/
   blockinfile:
     path: /opt/restore-system.sh

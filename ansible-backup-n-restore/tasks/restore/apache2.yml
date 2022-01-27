@@ -20,6 +20,11 @@
     msg:
       - "{{ httpd_path }} exist"
   when: ansible_distribution == 'CentOS' and httpd_path_check.rc == 0
+- name: Create directory for httpd
+  file:
+    path: "{{ backup_restore_path }}/httpd"
+    state: directory
+  when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0 and httpd_path_check.rc == 0
 - name: Add line restore directory $BACKUP_RESTORE_PATH/httpd/
   blockinfile:
     path: /opt/restore-system.sh
@@ -53,6 +58,11 @@
     msg:
       - "{{ apache2_path }} exist"
   when: ansible_distribution == 'Debian' and apache2_path_check.rc == 0
+- name: Create directory for apache2
+  file:
+    path: "{{ backup_restore_path }}/apache2"
+    state: directory
+  when: ansible_distribution == 'Debian' and apache2_package_check.rc == 0 and apache2_path_check.rc == 0
 - name: Add line restore directory $BACKUP_RESTORE_PATH/apache2/
   blockinfile:
     path: /opt/restore-system.sh

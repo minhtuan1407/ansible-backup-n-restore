@@ -26,6 +26,11 @@
     msg:
       - "{{ asterisk_path }} exist"
   when: asterisk_path_check.rc == 0
+- name: Create directory for asterisk
+  file:
+    path: "{{ backup_restore_path }}/asterisk"
+    state: directory
+  when: asterisk_package_check.rc == 0 and asterisk_path_check.rc == 0
 - name: Add line restore directory $BACKUP_RESTORE_PATH/asterisk/
   blockinfile:
     path: /opt/restore-system.sh

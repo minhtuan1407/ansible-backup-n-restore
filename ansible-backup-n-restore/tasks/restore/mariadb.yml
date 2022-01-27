@@ -26,6 +26,11 @@
     msg:
       - "{{ mariadb_path }} exist"
   when: mariadb_path_check.rc == 0
+- name: Create directory for mariadb
+  file:
+    path: "{{ backup_restore_path }}/mysql"
+    state: directory
+  when: mariadb_package_check.rc == 0 and mariadb_path_check.rc == 0 and db_user != '' and db_pass != ''
 - name: Add line restore directory $BACKUP_RESTORE_PATH/mariadb/
   blockinfile:
     path: /opt/restore-system.sh

@@ -1,4 +1,7 @@
 ---
+- name: Check if backup_restore_path is empty
+  fail: msg="backup_restore_path is empty"
+  when: backup_restore_path == ''
 - name: Check if rclone_url is empty
   fail: msg="rclone_url is empty"
   when: rclone_url == ''

@@ -1,4 +1,7 @@
 ---
+- name: Check if backup_restore_path is empty
+  fail: msg="backup_restore_path is empty"
+  when: backup_restore_path == ''
 - name: Check if rclone_url is empty
   fail: msg="rclone_url is empty"
   when: rclone_url == ''
@@ -50,39 +53,4 @@
     block: |
       rclone copy -P --ignore-existing $RCLONE_PATH $BACKUP_RESTORE_PATH
     state: present
-- name: Create directory for httpd
-  file:
-    path: "{{ backup_restore_path }}/httpd"
-    state: directory
-  when: ansible_distribution == 'CentOS' and apache2 == "true"
-- name: Create directory for apache2
-  file:
-    path: "{{ backup_restore_path }}/apache2"
-    state: directory
-  when: ansible_distribution == 'Debian' and apache2 == "true"
-- name: Create directory for nginx
-  file:
-    path: "{{ backup_restore_path }}/nginx"
-    state: directory
-  when: nginx == "true"
-- name: Create directory for mariadb
-  file:
-    path: "{{ backup_restore_path }}/mysql"
-    state: directory
-  when: mariadb == "true"
-- name: Create directory for postgresql
-  file:
-    path: "{{ backup_restore_path }}/postgresql"
-    state: directory
-  when: postgresql == "true"
-- name: Create directory for asterisk
-  file:
-    path: "{{ backup_restore_path }}/asterisk"
-    state: directory
-  when: asterisk == "true"
-- name: Create directory for postgresql
-  file:
-    path: "{{ backup_restore_path }}/freeswitch"
-    state: directory
-  when: freeswitch == "true"
 ...
