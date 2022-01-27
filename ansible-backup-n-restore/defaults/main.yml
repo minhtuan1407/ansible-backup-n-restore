@@ -1,13 +1,13 @@
 ---
 # defaults file for ansible-backup-n-restore
-httpd_path: /etc/httpd/
-apache2_path: /etc/apache2/
-nginx_path: /etc/nginx/
-mariadb_path: /etc/mysql/
-postgresql_path: /etc/postgresql/
-asterisk_path: /etc/asterisk/
-freeswitch_path: /usr/local/freeswitch/
-kamailio_path: /etc/kamailio/
-opensips_path: /etc/opensips/
-rtpengine_path: /etc/rtpengine/
+httpd_path: /etc/httpd
+apache2_path: /etc/apache2
+nginx_path: /etc/nginx
+mariadb_path: /etc/mysql
+postgresql_path: /etc/postgresql
+asterisk_path: /etc/asterisk
+freeswitch_path: /usr/local/freeswitch
+kamailio_path: /etc/kamailio
+opensips_path: /etc/opensips
+rtpengine_path: /etc/rtpengine
 ...

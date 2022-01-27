@@ -59,9 +59,9 @@
     marker: "# Tuan restore apache2 config"
     insertafter: EOF
     block: |
-      tar -xzvf $BACKUP_RESTORE_PATH/*-apache2-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/apache2/
-      mv {{ apache2_path }} /etc/apache2.$(date +%Y-%m-%d--%H-%M-%S).bak/
-      mv $BACKUP_RESTORE_PATH/apache2/ {{ apache2_path }}
+      tar -xzvf $BACKUP_RESTORE_PATH/*-apache2-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/apache2
+      mv {{ apache2_path }} {{ apache2_path }}.$(date +%Y-%m-%d--%H-%M-%S).bak
+      mv $BACKUP_RESTORE_PATH/apache2 {{ apache2_path }}
       systemctl restart apache2
     state: present
   when: ansible_distribution == 'Debian' and apache2_package_check.rc == 0 and apache2_path_check.rc == 0
