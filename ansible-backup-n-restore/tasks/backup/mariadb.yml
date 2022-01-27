@@ -41,7 +41,12 @@
     marker: "# Tuan dump all database mariadb"
     insertafter: EOF
     block: |
-      mysqldump -u $DB_USER -p"$DB_PASS" --all-databases --routines --triggers --add-drop-database --system=all | gzip > $BACKUP_RESTORE_PATH/$IP_SERVER-mysqldump-$NOW.sql.gz
+      all_databases=$(mysql -u $USER -p$PASSWORD -e "SHOW DATABASES;" | tr -d "| " | grep -v Database)
+      for db_name in $all_databases; do
+          if [[ "$db_name" != "mysql" ]] && [[ "$db_name" != "performance_schema" ]] && [[ "$db_name" != "information_schema" ]] && [[ "$db_name" != _* ]] ; then
+              mysqldump -u "$DB_USER" -p"$DB_PASS" --routines --triggers  --databases $db_name | gzip > $BACKUP_RESTORE_PATH/$IP_SERVER-db-$db_name-$NOW.sql.gz
+          fi
+      done
     state: present
   when: mariadb_package_check.rc == 0 and mariadb_path_check.rc == 0 and db_user != '' and db_pass != ''
 ...

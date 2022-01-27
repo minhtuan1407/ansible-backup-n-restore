@@ -9,7 +9,7 @@
     msg:
       - "{{ custom_path_01 }} exist"
   when: custom_path_01_check.rc == 0
-- name: Add line backup custom_path_01
+- name: Add line backup {{ custom_path_01 }}
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan backup custom_path_01"
@@ -28,7 +28,7 @@
     msg:
       - "{{ custom_path_02 }} exist"
   when: custom_path_02_check.rc == 0
-- name: Add line backup custom_path_02
+- name: Add line backup {{ custom_path_02 }}
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan backup custom_path_02"
@@ -47,7 +47,7 @@
     msg:
       - "{{ custom_path_03 }} exist"
   when: custom_path_03_check.rc == 0
-- name: Add line backup custom_path_03
+- name: Add line backup {{ custom_path_03 }}
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan backup custom_path_03"

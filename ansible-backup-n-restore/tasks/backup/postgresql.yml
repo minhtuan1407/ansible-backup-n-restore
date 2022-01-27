@@ -41,7 +41,12 @@
     marker: "# Tuan dump all database postgresql"
     insertafter: EOF
     block: |
-      sudo -u postgres pg_dumpall -h 127.0.0.1 --clean | gzip > $BACKUP_RESTORE_PATH/$IP_SERVER-pg_dumpall-$NOW.sql.gz
+      all_databases=$(sudo -u postgres psql -l -t | cut -d'|' -f1 | sed -e 's/ //g' -e '/^$/d')
+      for db_name in $all_databases; do
+          if [[ "$db_name" != "postgres" ]] && [[ "$db_name" != "template0" ]] && [[ "$db_name" != "template1" ]] ; then
+              sudo -u postgres pg_dump -Fc -Z1 -h 127.0.0.1 --database $db_name > $BACKUP_RESTORE_PATH/$IP_SERVER-db-$db_name-$NOW.tar.gz
+          fi
+      done
     state: present
   when: postgresql_package_check.rc == 0 and postgresql_path_check.rc == 0
 ...

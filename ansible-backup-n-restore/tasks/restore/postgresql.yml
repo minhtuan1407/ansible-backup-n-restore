@@ -36,7 +36,6 @@
       mv {{ postgresql_path }} /etc/postgresql.$(date +%Y-%m-%d--%H-%M-%S).bak/
       mv $BACKUP_RESTORE_PATH/postgresql/ {{ postgresql_path }}
       systemctl restart postgresql
-      gunzip < $BACKUP_RESTORE_PATH/$IP_SERVER-pg_dumpall-$NOW.sql.gz | sudo -u postgres -h 127.0.0.1 --clean
     state: present
   when: postgresql_package_check.rc == 0 and postgresql_path_check.rc == 0
 ...

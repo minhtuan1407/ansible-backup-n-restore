@@ -21,7 +21,7 @@
     marker: "# Tuan delete file backup by name"
     insertbefore: EOF
     block: |
-      cd $BACKUP_RESTORE_PATH && rm -rf $IP_SERVER-httpd-*.tar.gz $IP_SERVER-apache2-*.tar.gz $IP_SERVER-nginx-*.tar.gz $IP_SERVER-mariadb-*.tar.gz $IP_SERVER-mysqldump-*.sql.gz $IP_SERVER-postgresql-*.tar.gz $IP_SERVER-pg_dumpall-*.sql.gz $IP_SERVER-asterisk-*.tar.gz $IP_SERVER-freeswitch-*.tar.gz $IP_SERVER-kamailio-*.tar.gz $IP_SERVER-opensips-*.tar.gz $IP_SERVER-rtpengine-*.tar.gz $IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz $IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz $IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz
+      cd $BACKUP_RESTORE_PATH && rm -rf $IP_SERVER-httpd-$NOW.tar.gz $IP_SERVER-apache2-$NOW.tar.gz $IP_SERVER-nginx-$NOW.tar.gz $IP_SERVER-mariadb-$NOW.tar.gz $IP_SERVER-postgresql-$NOW.tar.gz $IP_SERVER-db-*-$NOW.tar.gz $IP_SERVER-db-*-$NOW.sql.gz $IP_SERVER-asterisk-$NOW.tar.gz $IP_SERVER-freeswitch-$NOW.tar.gz $IP_SERVER-kamailio-$NOW.tar.gz $IP_SERVER-opensips-$NOW.tar.gz $IP_SERVER-rtpengine-$NOW.tar.gz $IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz $IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz $IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz
     state: present
   when: delete_after == "true"
 - name: Insert delete file by date
