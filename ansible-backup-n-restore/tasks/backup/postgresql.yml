@@ -26,13 +26,13 @@
     msg:
       - "{{ postgresql_path }} exist"
   when: postgresql_path_check.rc == 0
-- name: Add line backup directory {{ nginx_path }}
+- name: Add line backup directory {{ postgresql_path }}
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan backup postgresql config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-postgresql-$NOW.tar.gz -C {{ nginx_path }} .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-postgresql-$NOW.tar.gz -C {{ postgresql_path }} .
     state: present
   when: postgresql_package_check.rc == 0 and postgresql_path_check.rc == 0
 - name: Dump database postgresql
