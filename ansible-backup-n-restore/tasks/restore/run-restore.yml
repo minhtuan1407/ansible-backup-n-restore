@@ -5,7 +5,7 @@
     marker: "# Tuan download file recordings"
     insertbefore: EOF
     block: |
-      rclone copy -P --ignore-existing $RCLONE_RECORDINGS_PATH $RECORD_PATH
+      nohup rclone copy -P --ignore-existing $RCLONE_RECORDINGS_PATH $RECORD_PATH > /dev/null 2>&1 &
     state: present
   when: recordings_path != ''
 - name: Run restore right now

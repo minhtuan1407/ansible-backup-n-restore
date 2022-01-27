@@ -12,7 +12,7 @@
     marker: "# Tuan upload file recordings"
     insertbefore: EOF
     block: |
-      rclone copy -P --ignore-existing $RECORD_PATH $RCLONE_RECORDINGS_PATH
+      nohup rclone copy -P --ignore-existing $RECORD_PATH $RCLONE_RECORDINGS_PATH > /dev/null 2>&1 &
     state: present
   when: recordings_path != ''
 - name: Insert delete file by name
