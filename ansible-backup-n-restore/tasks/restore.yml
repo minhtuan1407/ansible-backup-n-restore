@@ -10,14 +10,14 @@
   tags:
     - nginx
   when: nginx == "true"
-# - include: restore/mariadb.yml
-#   tags:
-#     - mariadb
-#   when: mariadb == "true"
-# - include: restore/postgresql.yml
-#   tags:
-#     - postgresql
-#   when: postgresql == "true"
+- include: restore/mariadb.yml
+  tags:
+    - mariadb
+  when: mariadb == "true"
+- include: restore/postgresql.yml
+  tags:
+    - postgresql
+  when: postgresql == "true"
 # - include: restore/asterisk.yml
 #   tags:
 #     - asterisk

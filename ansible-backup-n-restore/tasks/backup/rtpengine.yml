@@ -26,10 +26,10 @@
     msg:
       - "{{ rtpengine_path }} exist"
   when: rtpengine_path_check.rc == 0
-- name: Add line compress directory {{ rtpengine_path }}
+- name: Add line backup directory {{ rtpengine_path }}
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan compress rtpengine config"
+    marker: "# Tuan backup rtpengine config"
     insertafter: EOF
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-rtpengine-$NOW.tar.gz -C {{ rtpengine_path }} .

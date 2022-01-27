@@ -26,10 +26,10 @@
     msg:
       - "{{ asterisk_path }} exist"
   when: asterisk_path_check.rc == 0
-- name: Add line compress directory {{ asterisk_path }}
+- name: Add line backup directory {{ asterisk_path }}
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan compress asterisk config"
+    marker: "# Tuan backup asterisk config"
     insertafter: EOF
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-asterisk-$NOW.tar.gz -C {{ asterisk_path }} .

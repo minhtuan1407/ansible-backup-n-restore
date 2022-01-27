@@ -9,10 +9,10 @@
     msg:
       - "{{ freeswitch_path }} exist"
   when: freeswitch_path_check.rc == 0
-- name: Add line compress directory {{ freeswitch_path }} 
+- name: Add line backup directory {{ freeswitch_path }} 
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan compress freeswitch config"
+    marker: "# Tuan backup freeswitch config"
     insertafter: EOF
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz -C {{ freeswitch_path }} --exclude='{{ freeswitch_path }}/recordings/' .

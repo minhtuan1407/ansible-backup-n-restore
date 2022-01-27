@@ -26,10 +26,10 @@
     msg:
       - "{{ nginx_path }} exist"
   when: nginx_path_check.rc == 0
-- name: Add line compress directory {{ nginx_path }}
+- name: Add line backup directory {{ nginx_path }}
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan compress nginx config"
+    marker: "# Tuan backup nginx config"
     insertafter: EOF
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C {{ nginx_path }} .

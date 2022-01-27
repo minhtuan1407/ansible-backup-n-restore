@@ -26,10 +26,10 @@
     msg:
       - "{{ kamailio_path }} exist"
   when: kamailio_path_check.rc == 0
-- name: Add line compress directory {{ kamailio_path }}
+- name: Add line backup directory {{ kamailio_path }}
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan compress kamailio config"
+    marker: "# Tuan backup kamailio config"
     insertafter: EOF
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-kamailio-$NOW.tar.gz -C {{ kamailio_path }} .

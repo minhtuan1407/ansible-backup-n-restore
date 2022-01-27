@@ -9,10 +9,10 @@
     msg:
       - "{{ opensips_path }} exist"
   when: opensips_path_check.rc == 0
-- name: Add line compress directory {{ opensips_path }} 
+- name: Add line backup directory {{ opensips_path }} 
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan compress opensips config"
+    marker: "# Tuan backup opensips config"
     insertafter: EOF
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-opensips-$NOW.tar.gz -C {{ opensips_path }}  .

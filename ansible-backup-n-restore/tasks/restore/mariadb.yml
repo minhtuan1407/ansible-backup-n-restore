@@ -26,22 +26,17 @@
     msg:
       - "{{ mariadb_path }} exist"
   when: mariadb_path_check.rc == 0
-- name: Add line backup directory {{ mariadb_path }}
+- name: Add line restore directory $BACKUP_RESTORE_PATH/mariadb/
   blockinfile:
-    path: /opt/backup-system.sh
-    marker: "# Tuan backup mariadb config"
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore mariadb config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C {{ mariadb_path }} .
-    state: present
-  when: mariadb_package_check.rc == 0 and mariadb_path_check.rc == 0
-- name: Dump database mariadb
-  blockinfile:
-    path: /opt/backup-system.sh
-    marker: "# Tuan dump all database mariadb"
-    insertafter: EOF
-    block: |
-      mysqldump -u $DB_USER -p"$DB_PASS" --all-databases --routines --triggers --add-drop-database --system=users| gzip > $BACKUP_RESTORE_PATH/$IP_SERVER-mysqldump-$NOW.sql.gz
+      tar -xzvf $BACKUP_RESTORE_PATH/*-mariadb-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/mariadb/
+      mv {{ mariadb_path }} /etc/mariadb.$(date +%Y-%m-%d--%H-%M-%S).bak/
+      mv $BACKUP_RESTORE_PATH/mariadb/ {{ mariadb_path }}
+      systemctl restart mariadb
+      gunzip < $BACKUP_RESTORE_PATH/*-mysqldump-$NOW.sql.gz | mysql -u $DB_USER -h 127.0.0.1 -p"$DB_PASS"
     state: present
   when: mariadb_package_check.rc == 0 and mariadb_path_check.rc == 0 and db_user != '' and db_pass != ''
 ...

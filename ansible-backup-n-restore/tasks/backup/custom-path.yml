@@ -9,10 +9,10 @@
     msg:
       - "{{ custom_path_01 }} exist"
   when: custom_path_01_check.rc == 0
-- name: Add line compress custom_path_01
+- name: Add line backup custom_path_01
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan compress custom_path_01"
+    marker: "# Tuan backup custom_path_01"
     insertafter: EOF
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_01 }} .
@@ -28,10 +28,10 @@
     msg:
       - "{{ custom_path_02 }} exist"
   when: custom_path_02_check.rc == 0
-- name: Add line compress custom_path_02
+- name: Add line backup custom_path_02
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan compress custom_path_02"
+    marker: "# Tuan backup custom_path_02"
     insertafter: EOF
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_02 }} .
@@ -47,10 +47,10 @@
     msg:
       - "{{ custom_path_03 }} exist"
   when: custom_path_03_check.rc == 0
-- name: Add line compress custom_path_03
+- name: Add line backup custom_path_03
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan compress custom_path_03"
+    marker: "# Tuan backup custom_path_03"
     insertafter: EOF
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_03 }} .

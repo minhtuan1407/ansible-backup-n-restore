@@ -20,10 +20,10 @@
     msg:
       - "{{ httpd_path }} exist"
   when: ansible_distribution == 'CentOS' and httpd_path_check.rc == 0
-- name: Add line compress directory "{{ httpd_path }}"
+- name: Add line backup directory "{{ httpd_path }}"
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan compress httpd config"
+    marker: "# Tuan backup httpd config"
     insertafter: EOF
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C {{ httpd_path }} .
@@ -50,10 +50,10 @@
     msg:
       - "{{ apache2_path }} exist"
   when: ansible_distribution == 'Debian' and apache2_path_check.rc == 0
-- name: Add line compress directory {{ apache2_path }}
+- name: Add line backup directory {{ apache2_path }}
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan compress apache2 config"
+    marker: "# Tuan backup apache2 config"
     insertafter: EOF
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C {{ apache2_path }} .

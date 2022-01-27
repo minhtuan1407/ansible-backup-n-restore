@@ -26,22 +26,17 @@
     msg:
       - "{{ postgresql_path }} exist"
   when: postgresql_path_check.rc == 0
-- name: Add line backup directory {{ nginx_path }}
+- name: Add line restore directory $BACKUP_RESTORE_PATH/postgresql/
   blockinfile:
-    path: /opt/backup-system.sh
-    marker: "# Tuan backup postgresql config"
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore postgresql config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-postgresql-$NOW.tar.gz -C {{ nginx_path }} .
-    state: present
-  when: postgresql_package_check.rc == 0 and postgresql_path_check.rc == 0
-- name: Dump database postgresql
-  blockinfile:
-    path: /opt/backup-system.sh
-    marker: "# Tuan dump all database postgresql"
-    insertafter: EOF
-    block: |
-      sudo -u postgres pg_dumpall -h 127.0.0.1 --clean | gzip > $BACKUP_RESTORE_PATH/$IP_SERVER-pg_dumpall-$NOW.sql.gz
+      tar -xzvf $BACKUP_RESTORE_PATH/*-postgresql-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/postgresql/
+      mv {{ postgresql_path }} /etc/postgresql.$(date +%Y-%m-%d--%H-%M-%S).bak/
+      mv $BACKUP_RESTORE_PATH/postgresql/ {{ postgresql_path }}
+      systemctl restart postgresql
+      gunzip < $BACKUP_RESTORE_PATH/$IP_SERVER-pg_dumpall-$NOW.sql.gz | sudo -u postgres -h 127.0.0.1 --clean
     state: present
   when: postgresql_package_check.rc == 0 and postgresql_path_check.rc == 0
 ...

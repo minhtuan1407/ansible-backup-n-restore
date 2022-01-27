@@ -19,15 +19,16 @@
     msg:
       - "{{ nginx_path }} exist"
   when: nginx_path_check.rc == 0
-- name: Add line extract directory $BACKUP_RESTORE_PATH/nginx/
+- name: Add line restore directory $BACKUP_RESTORE_PATH/nginx/
   blockinfile:
     path: /opt/restore-system.sh
-    marker: "# Tuan extract nginx config"
+    marker: "# Tuan restore nginx config"
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-nginx-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/nginx/
       mv {{ nginx_path }} /etc/nginx.$(date +%Y-%m-%d--%H-%M-%S).bak/
       mv $BACKUP_RESTORE_PATH/nginx/ {{ nginx_path }}
+      systemctl restart nginx
     state: present
   when: nginx_package_check.rc == 0 and nginx_path_check.rc == 0
 ...

@@ -20,15 +20,16 @@
     msg:
       - "{{ httpd_path }} exist"
   when: ansible_distribution == 'CentOS' and httpd_path_check.rc == 0
-- name: Add line extract directory $BACKUP_RESTORE_PATH/httpd/
+- name: Add line restore directory $BACKUP_RESTORE_PATH/httpd/
   blockinfile:
     path: /opt/restore-system.sh
-    marker: "# Tuan extract httpd config"
+    marker: "# Tuan restore httpd config"
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-httpd-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/httpd/
       mv {{ httpd_path }} /etc/httpd.$(date +%Y-%m-%d--%H-%M-%S).bak/
-      mv $BACKUP_RESTORE_PATH/httpd/ {{ httpd_path }}
+      mv $BACKUP_RESTORE_PATH/httpd/ {{ httpd_path }}\
+      systemctl restart httpd
     state: present
   when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0 and httpd_path_check.rc == 0
 - name: Check if apache2 package is exist with dpkg
@@ -52,15 +53,16 @@
     msg:
       - "{{ apache2_path }} exist"
   when: ansible_distribution == 'Debian' and apache2_path_check.rc == 0
-- name: Add line extract directory $BACKUP_RESTORE_PATH/apache2/
+- name: Add line restore directory $BACKUP_RESTORE_PATH/apache2/
   blockinfile:
     path: /opt/restore-system.sh
-    marker: "# Tuan extract apache2 config"
+    marker: "# Tuan restore apache2 config"
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-apache2-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/apache2/
       mv {{ apache2_path }} /etc/apache2.$(date +%Y-%m-%d--%H-%M-%S).bak/
       mv $BACKUP_RESTORE_PATH/apache2/ {{ apache2_path }}
+      systemctl restart apache2
     state: present
   when: ansible_distribution == 'Debian' and apache2_package_check.rc == 0 and apache2_path_check.rc == 0
 ...
