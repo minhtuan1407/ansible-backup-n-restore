@@ -36,7 +36,7 @@
       mv {{ postgresql_path }} {{ postgresql_path }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/postgresql {{ postgresql_path }}
       systemctl restart postgresql
-      for db_file in /opt/backup/*-db-*-$NOW.tar.gz; do
+      for db_file in {{ backup_restore_path }}/*-db-*-$NOW.tar.gz; do
           sudo -u postgres pg_restore --clean --create -Fc -j 1 -h 127.0.0.1 -d postgres < $db_file
       done
     state: present

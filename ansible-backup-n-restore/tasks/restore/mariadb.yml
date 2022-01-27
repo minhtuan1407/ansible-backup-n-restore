@@ -36,7 +36,7 @@
       mv {{ mariadb_path }} {{ mariadb_path }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/mysql {{ mariadb_path }}
       systemctl restart mariadb
-      for db_file in /opt/backup/*-db-*-$NOW.sql.gz; do
+      for db_file in {{ backup_restore_path }}/*-db-*-$NOW.sql.gz; do
           gunzip < $db_file | mysql -u "$DB_USER" -p"$DB_PASS"
       done
     state: present
