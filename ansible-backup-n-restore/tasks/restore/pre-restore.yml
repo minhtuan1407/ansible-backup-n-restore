@@ -2,7 +2,6 @@
 - name: Check if rclone_url is empty
   fail: msg="rclone_url is empty"
   when: rclone_url == ''
-- name: 
 - name: Check file /opt/restore-system.sh
   stat:
     path: /opt/restore-system.sh
