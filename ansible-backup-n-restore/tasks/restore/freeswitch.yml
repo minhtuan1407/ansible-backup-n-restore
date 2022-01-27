@@ -8,7 +8,7 @@
   debug:
     msg:
       - "{{ freeswitch_path }} exist"
-  when: freeswitch_path_check.rc == 0\
+  when: freeswitch_path_check.rc == 0
 - name: Add line restore directory $BACKUP_RESTORE_PATH/freeswitch/
   blockinfile:
     path: /opt/restore-system.sh
