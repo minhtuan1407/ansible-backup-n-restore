@@ -18,14 +18,14 @@
   tags:
     - postgresql
   when: postgresql == "true"
-# - include: restore/asterisk.yml
-#   tags:
-#     - asterisk
-#   when: asterisk == "true"
-# - include: restore/freeswitch.yml
-#   tags:
-#     - freeswitch
-#   when: freeswitch == "true"
+- include: restore/asterisk.yml
+  tags:
+    - asterisk
+  when: asterisk == "true"
+- include: restore/freeswitch.yml
+  tags:
+    - freeswitch
+  when: freeswitch == "true"
 # - include: restore/kamailio.yml
 #   tags:
 #     - kamailio

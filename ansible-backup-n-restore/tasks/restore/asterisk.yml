@@ -26,13 +26,16 @@
     msg:
       - "{{ asterisk_path }} exist"
   when: asterisk_path_check.rc == 0
-- name: Add line backup directory {{ asterisk_path }}
+- name: Add line restore directory $BACKUP_RESTORE_PATH/asterisk/
   blockinfile:
-    path: /opt/backup-system.sh
-    marker: "# Tuan backup asterisk config"
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore asterisk config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-asterisk-$NOW.tar.gz -C {{ asterisk_path }} .
+      tar -xzvf $BACKUP_RESTORE_PATH/*-asterisk-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/asterisk
+      mv {{ asterisk_path }} {{ asterisk_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/asterisk {{ asterisk_path }}
+      asterisk -x 'core restart now'
     state: present
   when: asterisk_package_check.rc == 0 and asterisk_path_check.rc == 0
 ...

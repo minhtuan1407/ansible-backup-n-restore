@@ -1,9 +1,16 @@
 ---
+- name: Check if nginx package is exist with yum
+  shell:
+    cmd: yum list installed | grep nginx
+  register: nginx_package_check
+  failed_when: nginx_package_check.rc not in [0, 1]
+  when: ansible_distribution == 'CentOS'
 - name: Check if nginx package is exist with dpkg
   shell:
     cmd: dpkg -l | grep nginx
   register: nginx_package_check
   failed_when: nginx_package_check.rc not in [0, 1]
+  when: ansible_distribution == 'Debian'
 - name: Message check nginx package
   debug:
     msg:
@@ -26,7 +33,7 @@
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-nginx-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/nginx
-      mv {{ nginx_path }} {{ nginx_path }}.$(date +%Y-%m-%d--%H-%M-%S).bak
+      mv {{ nginx_path }} {{ nginx_path }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/nginx {{ nginx_path }}
       systemctl restart nginx
     state: present

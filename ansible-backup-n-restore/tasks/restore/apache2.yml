@@ -26,9 +26,9 @@
     marker: "# Tuan restore httpd config"
     insertafter: EOF
     block: |
-      tar -xzvf $BACKUP_RESTORE_PATH/*-httpd-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/httpd/
-      mv {{ httpd_path }} /etc/httpd.$(date +%Y-%m-%d--%H-%M-%S).bak/
-      mv $BACKUP_RESTORE_PATH/httpd/ {{ httpd_path }}\
+      tar -xzvf $BACKUP_RESTORE_PATH/*-httpd-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/httpd
+      mv {{ httpd_path }} {{ httpd_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/httpd {{ httpd_path }}
       systemctl restart httpd
     state: present
   when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0 and httpd_path_check.rc == 0
@@ -60,7 +60,7 @@
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-apache2-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/apache2
-      mv {{ apache2_path }} {{ apache2_path }}.$(date +%Y-%m-%d--%H-%M-%S).bak
+      mv {{ apache2_path }} {{ apache2_path }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/apache2 {{ apache2_path }}
       systemctl restart apache2
     state: present

@@ -23,6 +23,7 @@
       #!/bin/bash
       IP_SERVER=
       NOW=$(date +%Y-%m-%d)
+      TIME=$(date +%Y-%m-%d--%H-%M-%S)
       YEAR=$(date +%Y)
       MONTH=$(date +%h)
       DAY=$(date +%d)
@@ -69,7 +70,7 @@
     path: "{{ backup_restore_path }}/mysql"
     state: directory
   when: mariadb == "true"
-- name: Create directory for mariadb
+- name: Create directory for postgresql
   file:
     path: "{{ backup_restore_path }}/postgresql"
     state: directory

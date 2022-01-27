@@ -33,7 +33,7 @@
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-mariadb-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/mysql
-      mv {{ mariadb_path }} {{ mariadb_path }}.$(date +%Y-%m-%d--%H-%M-%S).bak
+      mv {{ mariadb_path }} {{ mariadb_path }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/mysql {{ mariadb_path }}
       systemctl restart mariadb
       for db_file in /opt/backup/*-db-*-$NOW.sql.gz; do

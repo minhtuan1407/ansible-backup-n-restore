@@ -3,14 +3,14 @@
   shell:
     cmd: yum list installed | grep nginx
   register: nginx_package_check
-  when: ansible_distribution == 'CentOS'
   failed_when: nginx_package_check.rc not in [0, 1]
+  when: ansible_distribution == 'CentOS'
 - name: Check if nginx package is exist with dpkg
   shell:
     cmd: dpkg -l | grep nginx
   register: nginx_package_check
-  when: ansible_distribution == 'Debian'
   failed_when: nginx_package_check.rc not in [0, 1]
+  when: ansible_distribution == 'Debian'
 - name: Message check nginx package
   debug:
     msg:

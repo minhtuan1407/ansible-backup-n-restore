@@ -33,7 +33,7 @@
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-postgresql-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/postgresql
-      mv {{ postgresql_path }} {{ postgresql_path }}.$(date +%Y-%m-%d--%H-%M-%S).bak
+      mv {{ postgresql_path }} {{ postgresql_path }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/postgresql {{ postgresql_path }}
       systemctl restart postgresql
       for db_file in /opt/backup/*-db-*-$NOW.tar.gz; do
