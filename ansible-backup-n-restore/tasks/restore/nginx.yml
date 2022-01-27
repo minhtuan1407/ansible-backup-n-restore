@@ -3,7 +3,7 @@
   shell:
     cmd: dpkg -l | grep nginx
   register: nginx_package_check
-  failed_when: nginx_package.rc not in [0, 1]
+  failed_when: nginx_package_check.rc not in [0, 1]
 - name: Message check nginx package
   debug:
     msg:
