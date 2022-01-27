@@ -34,7 +34,7 @@
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-mariadb-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/mariadb/
       mv {{ mariadb_path }} /etc/mariadb.$(date +%Y-%m-%d--%H-%M-%S).bak/
-      mv $BACKUP_RESTORE_PATH/mariadb/ {{ mariadb_path }}
+      mv $BACKUP_RESTORE_PATH/mysql/ {{ mariadb_path }}
       systemctl restart mariadb
       for db_file in /opt/backup/*-db-*-$NOW.sql.gz; do
           gunzip < $db_file | mysql -u "$DB_USER" -p"$DB_PASS"
