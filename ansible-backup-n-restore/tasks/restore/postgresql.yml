@@ -36,6 +36,9 @@
       mv {{ postgresql_path }} /etc/postgresql.$(date +%Y-%m-%d--%H-%M-%S).bak/
       mv $BACKUP_RESTORE_PATH/postgresql/ {{ postgresql_path }}
       systemctl restart postgresql
+      for db_file in /opt/backup/*-db-*-$NOW.tar.gz; do
+          sudo -u postgres pg_restore --clean --create -Fc -j 1 -h 127.0.0.1 -d postgres < $db_file
+      done
     state: present
   when: postgresql_package_check.rc == 0 and postgresql_path_check.rc == 0
 ...
