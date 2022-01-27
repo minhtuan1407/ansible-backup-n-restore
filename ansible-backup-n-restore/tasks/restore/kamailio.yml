@@ -1,0 +1,41 @@
+---
+- name: Check if kamailio package is exist with yum
+  shell:
+    cmd: yum list installed | grep kamailio
+  register: kamailio_package_check
+  failed_when: kamailio_package_check.rc not in [0, 1]
+  when: ansible_distribution == 'CentOS'
+- name: Check if kamailio package is exist with dpkg
+  shell:
+    cmd: dpkg -l | grep kamailio
+  register: kamailio_package_check
+  failed_when: kamailio_package_check.rc not in [0, 1]
+  when: ansible_distribution == 'Debian'
+- name: Message check kamailio package
+  debug:
+    msg:
+      - "kamailio package exist"
+  when: kamailio_package_check.rc == 0
+- name: Check if kamailio path is exist
+  shell:
+    cmd: ls {{ kamailio_path }}
+  register: kamailio_path_check
+  failed_when: kamailio_path_check.rc not in [0, 1, 2]
+- name: Message check kamailio path
+  debug:
+    msg:
+      - "{{ kamailio_path }} exist"
+  when: kamailio_path_check.rc == 0
+- name: Add line restore directory $BACKUP_RESTORE_PATH/kamailio/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore kamailio config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-kamailio-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/kamailio
+      mv {{ kamailio_path }} {{ kamailio_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/kamailio {{ kamailio_path }}
+      systemctl restart kamailio
+    state: present
+  when: kamailio_package_check.rc == 0 and kamailio_path_check.rc == 0
+...

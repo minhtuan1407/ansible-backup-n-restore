@@ -1,0 +1,41 @@
+---
+- name: Check if rtpengine package is exist with yum
+  shell:
+    cmd: yum list installed | grep rtpengine
+  register: rtpengine_package_check
+  failed_when: rtpengine_package_check.rc not in [0, 1]
+  when: ansible_distribution == 'CentOS'
+- name: Check if rtpengine package is exist with dpkg
+  shell:
+    cmd: dpkg -l | grep rtpengine
+  register: rtpengine_package_check
+  failed_when: rtpengine_package_check.rc not in [0, 1]
+  when: ansible_distribution == 'Debian'
+- name: Message check rtpengine package
+  debug:
+    msg:
+      - "rtpengine package exist"
+  when: rtpengine_package_check.rc == 0
+- name: Check if rtpengine path is exist
+  shell:
+    cmd: ls {{ rtpengine_path }}
+  register: rtpengine_path_check
+  failed_when: rtpengine_path_check.rc not in [0, 1, 2]
+- name: Message check rtpengine path
+  debug:
+    msg:
+      - "{{ rtpengine_path }} exist"
+  when: rtpengine_path_check.rc == 0
+- name: Add line restore directory $BACKUP_RESTORE_PATH/rtpengine/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore rtpengine config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-rtpengine-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/rtpengine
+      mv {{ rtpengine_path }} {{ rtpengine_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/rtpengine {{ rtpengine_path }}
+      systemctl restart rtpengine
+    state: present
+  when: rtpengine_package_check.rc == 0 and rtpengine_path_check.rc == 0
+...
