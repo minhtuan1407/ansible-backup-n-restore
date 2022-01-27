@@ -15,7 +15,7 @@
     marker: "# Tuan backup freeswitch config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz -C {{ freeswitch_path }} --exclude='{{ freeswitch_path }}/recordings/' --exclude='{{ freeswitch_path }}/sounds/' --exclude='{{ freeswitch_path }}/db/' --exclude='{{ freeswitch_path }}/run/' .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz -C {{ freeswitch_path }} --exclude='./recordings' --exclude='./sounds' --exclude='./db' --exclude='./run' .
     state: present
   when: freeswitch_path_check.rc == 0
 ...
