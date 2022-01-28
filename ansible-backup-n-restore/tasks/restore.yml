@@ -34,14 +34,14 @@
   tags:
     - opensips
   when: opensips == "true"
-# - include: restore/rtpengine.yml
-#   tags:
-#     - rtpengine
-#   when: rtpengine == "true"
-# - include: restore/custom-path.yml
-#   tags:
-#     - custom-path
-#   when: custom_path_01 != '' or custom_path_02 != '' or custom_path_03 != ''
+- include: restore/rtpengine.yml
+  tags:
+    - rtpengine
+  when: rtpengine == "true"
+- include: restore/custom-path.yml
+  tags:
+    - custom-path
+  when: custom_path_01 != '' or custom_path_02 != '' or custom_path_03 != ''
 - include: restore/run-restore.yml
   tags:
     - run-restore

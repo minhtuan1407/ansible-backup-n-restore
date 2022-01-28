@@ -1,0 +1,25 @@
+- name: Check if custom_path_01 exist
+  shell:
+    cmd: ls {{ custom_path_01 }}
+  register: custom_path_01_check
+  failed_when: custom_path_01_check.rc not in [0, 1, 2]
+- name: Message check custom_path_01 
+  debug:
+    msg:
+      - "{{ custom_path_01 | regex_replace('(.*)/.*/', '\1') }} exist"
+  when: custom_path_01_check.rc == 0
+- name: Create directory for {{ custom_path_01 }}
+  file:
+    path: "{{ backup_restore_path }}/{{ custom_path_01 | replace('/','') }}"
+    state: directory
+  when: asterisk_package_check.rc == 0 and asterisk_path_check.rc == 0
+- name: Add line backup {{ custom_path_01 }}
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup custom_path_01"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_01 | replace('/','') }}
+      mv {{ custom_path_01 }} {{ custom_path_01 }}.bak
+    state: present
+  when: custom_path_01 != '' and custom_path_01_check.rc == 0
