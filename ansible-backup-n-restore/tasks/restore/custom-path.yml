@@ -6,7 +6,8 @@
 - name: Message check custom_path_01 
   debug:
     msg:
-      - ""{{ custom_path_01 | regex_replace('(.*)/.*/', '\1') }}" exist"
+      # - "{{ custom_path_01 | regex_replace('(.*)/.*/', '\1') }} exist"
+      - "{{ custom_path_01 | replace('/','') }} exist"
   when: custom_path_01_check.rc == 0
 - name: Create directory for {{ custom_path_01 }}
   file:
