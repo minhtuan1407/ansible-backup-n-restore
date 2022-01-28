@@ -49,7 +49,7 @@
       mv {{ custom_path_02 | regex_replace('(.*)/', '\\1') }} {{ custom_path_02 | regex_replace('(.*)/', '\\1') }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/{{ custom_path_02 | replace('/','') }} {{ custom_path_02 | regex_replace('(.*)/', '\\1') }}
     state: present
-  when: custom_path_02_check.rc == 0
+  when: custom_path_02 != '' and custom_path_02_check.rc == 0
 - name: Check if custom_path_03 exist
   shell:
     cmd: ls {{ custom_path_03 }}
