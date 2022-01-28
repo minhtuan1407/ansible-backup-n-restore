@@ -1,78 +1,128 @@
+---
 - name: Check if custom_path_01 exist
-  shell:
-    cmd: ls {{ custom_path_01 }}
+  stat:
+    path: "{{ custom_path_01 }}"
   register: custom_path_01_check
-  failed_when: custom_path_01_check.rc not in [0, 1, 2]
 - name: Message check custom_path_01
   debug:
     msg:
-      - "{{ custom_path_01 | regex_replace('(.*)/', '\\1') }} exist"
-  when: custom_path_01 != '' and custom_path_01_check.rc == 0
-- name: Create directory for custom_path_01
+      - "{{ custom_path_01 | regex_replace('^(/.*)/$', '\\1') }} exist"
+      - "{{ custom_path_01 | regex_replace('^(/.*)/.*$', '\\1') }} exist"
+  when: custom_path_01 != '' and custom_path_01_check.stat.exists
+- name: Create directory for directory custom_path_01
   file:
     path: "{{ backup_restore_path }}/{{ custom_path_01 | replace('/','') }}"
     state: directory
-  when: custom_path_01 != '' and custom_path_01_check.rc == 0
-- name: Add line backup custom_path_01
+  when: custom_path_01 != '' and custom_path_01_check.stat.exists and custom_path_01_check.stat.isdir
+- name: Create directory for directory file custom_path_01
+  file:
+    path: "{{ backup_restore_path }}/{{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}"
+    state: directory
+  when: custom_path_01 != '' and custom_path_01_check.stat.exists and custom_path_01_check.stat.isdir
+- name: Add line restore directory custom_path_01
   blockinfile:
     path: /opt/restore-system.sh
-    marker: "# Tuan backup custom_path_01"
+    marker: "# Tuan restore custom_path_01"
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_01 | replace('/','') }}
-      mv {{ custom_path_01 | regex_replace('(.*)/', '\1') }} {{ custom_path_01 | regex_replace('(.*)/', '\1') }}.$TIME.bak
-      mv $BACKUP_RESTORE_PATH/{{ custom_path_01 | replace('/','') }} {{ custom_path_01 | regex_replace('(.*)/', '\1') }}
+      mv {{ custom_path_01 | regex_replace('^(/.*)/$', '\\1') }} {{ custom_path_01 | regex_replace('^(/.*)/$', '\\1') }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/{{ custom_path_01 | replace('/','') }} {{ custom_path_01 | regex_replace('^(/.*)/$', '\\1') }}
     state: present
-  when: custom_path_01 != '' and custom_path_01_check.rc == 0
+  when: custom_path_01 != '' and custom_path_01_check.stat.exists and custom_path_01_check.stat.isdir
+- name: Add line restore directory file custom_path_01
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore custom_path_01"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}
+      mv {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/{{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\\1') }}
+    state: present
+  when: custom_path_01 != '' and custom_path_01_check.stat.exists and custom_path_01_check.stat.isdir
 - name: Check if custom_path_02 exist
-  shell:
-    cmd: ls {{ custom_path_02 }}
+  stat:
+    path: "{{ custom_path_02 }}"
   register: custom_path_02_check
-  failed_when: custom_path_02_check.rc not in [0, 1, 2]
 - name: Message check custom_path_02
   debug:
     msg:
-      - "{{ custom_path_02 }} exist"
-  when: custom_path_02 != '' and custom_path_02_check.rc == 0
-- name: Create directory for custom_path_02
+      - "{{ custom_path_02 | regex_replace('^(/.*)/$', '\\1') }} exist"
+      - "{{ custom_path_02 | regex_replace('^(/.*)/.*$', '\\1') }} exist"
+  when: custom_path_02 != '' and custom_path_02_check.stat.exists
+- name: Create directory for directory custom_path_02
   file:
     path: "{{ backup_restore_path }}/{{ custom_path_02 | replace('/','') }}"
     state: directory
-  when: custom_path_02 != '' and custom_path_02_check.rc == 0
-- name: Add line backup custom_path_02
+  when: custom_path_02 != '' and custom_path_02_check.stat.exists and custom_path_02_check.stat.isdir
+- name: Create directory for directory file custom_path_02
+  file:
+    path: "{{ backup_restore_path }}/{{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}"
+    state: directory
+  when: custom_path_02 != '' and custom_path_02_check.stat.exists and custom_path_02_check.stat.isdir
+- name: Add line restore directory custom_path_02
   blockinfile:
     path: /opt/restore-system.sh
-    marker: "# Tuan backup custom_path_02"
+    marker: "# Tuan restore custom_path_02"
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_02 | replace('/','') }}
-      mv {{ custom_path_02 | regex_replace('(.*)/', '\\1') }} {{ custom_path_02 | regex_replace('(.*)/', '\\1') }}.$TIME.bak
-      mv $BACKUP_RESTORE_PATH/{{ custom_path_02 | replace('/','') }} {{ custom_path_02 | regex_replace('(.*)/', '\\1') }}
+      mv {{ custom_path_02 | regex_replace('^(/.*)/$', '\\1') }} {{ custom_path_02 | regex_replace('^(/.*)/$', '\\1') }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/{{ custom_path_02 | replace('/','') }} {{ custom_path_02 | regex_replace('^(/.*)/$', '\\1') }}
     state: present
-  when: custom_path_02 != '' and custom_path_02_check.rc == 0
+  when: custom_path_02 != '' and custom_path_02_check.stat.exists and custom_path_02_check.stat.isdir
+- name: Add line restore directory file custom_path_02
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore custom_path_02"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}
+      mv {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/{{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\\1') }}
+    state: present
+  when: custom_path_02 != '' and custom_path_02_check.stat.exists and custom_path_02_check.stat.isdir
 - name: Check if custom_path_03 exist
-  shell:
-    cmd: ls {{ custom_path_03 }}
+  stat:
+    path: "{{ custom_path_03 }}"
   register: custom_path_03_check
-  failed_when: custom_path_03_check.rc not in [0, 1, 2]
-- name: Message check custom_path_03 
+- name: Message check custom_path_03
   debug:
     msg:
-      - "{{ custom_path_03 }} exist"
-  when: custom_path_03 != '' and custom_path_03_check.rc == 0
-- name: Create directory for custom_path_03
+      - "{{ custom_path_03 | regex_replace('^(/.*)/$', '\\1') }} exist"
+      - "{{ custom_path_03 | regex_replace('^(/.*)/.*$', '\\1') }} exist"
+  when: custom_path_03 != '' and custom_path_03_check.stat.exists
+- name: Create directory for directory custom_path_03
   file:
     path: "{{ backup_restore_path }}/{{ custom_path_03 | replace('/','') }}"
     state: directory
-  when: custom_path_03 != '' and custom_path_03_check.rc == 0
-- name: Add line backup custom_path_03
+  when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir
+- name: Create directory for directory file custom_path_03
+  file:
+    path: "{{ backup_restore_path }}/{{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}"
+    state: directory
+  when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir
+- name: Add line restore directory custom_path_03
   blockinfile:
     path: /opt/restore-system.sh
-    marker: "# Tuan backup custom_path_03"
+    marker: "# Tuan restore custom_path_03"
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_03 | replace('/','') }}
-      mv {{ custom_path_03 | regex_replace('(.*)/', '\\1') }} {{ custom_path_03 | regex_replace('(.*)/', '\\1') }}.$TIME.bak
-      mv $BACKUP_RESTORE_PATH/{{ custom_path_03 | replace('/','') }} {{ custom_path_03 | regex_replace('(.*)/', '\\1') }}
+      mv {{ custom_path_03 | regex_replace('^(/.*)/$', '\\1') }} {{ custom_path_03 | regex_replace('^(/.*)/$', '\\1') }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/{{ custom_path_03 | replace('/','') }} {{ custom_path_03 | regex_replace('^(/.*)/$', '\\1') }}
     state: present
-  when: custom_path_03 != '' and custom_path_03_check.rc == 0
+  when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir
+- name: Add line restore directory file custom_path_03
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore custom_path_03"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}
+      mv {{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/{{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_03 | regex_replace('^(/.*)/.*$', '\\1') }}
+    state: present
+  when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir
+...
