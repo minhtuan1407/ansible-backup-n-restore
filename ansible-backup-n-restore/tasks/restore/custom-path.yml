@@ -37,7 +37,7 @@
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}
-      mv {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}.$TIME.bak
+      mv {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') }} {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/{{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') }}
     state: present
   when: custom_path_01 != '' and custom_path_01_check.stat.exists and custom_path_01_check.stat.isdir == false and custom_path_01_check.stat.islnk == false
@@ -79,7 +79,7 @@
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}
-      mv {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}.$TIME.bak
+      mv {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') }} {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/{{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') }}
     state: present
   when: custom_path_02 != '' and custom_path_02_check.stat.exists and custom_path_02_check.stat.isdir == false and custom_path_02_check.stat.islnk == false
@@ -121,7 +121,7 @@
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}
-      mv {{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}.$TIME.bak
+      mv {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') }} {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/{{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') }}
     state: present
   when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir == false and custom_path_03_check.stat.islnk == false
