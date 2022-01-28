@@ -8,8 +8,8 @@
   debug:
     msg:
       - "{{ custom_path_01 }}"
-      - "{{ custom_path_01 | regex_replace('.*/', '\1') }}"
-      - "{{ custom_path_01 | regex_replace('(.*)/', '\1') }}"
+      # - "{{ custom_path_01 | regex_replace('.*/', '\1') }}"
+      # - "{{ custom_path_01 | regex_replace('(.*)/', '\1') }}"
       - "{{ custom_path_01 | regex_replace('.*/', '\\1') }}"
       - "{{ custom_path_01 | regex_replace('(.*)/', '\\1') }}"
   when: custom_path_01 != '' and custom_path_01_check.rc == 0
