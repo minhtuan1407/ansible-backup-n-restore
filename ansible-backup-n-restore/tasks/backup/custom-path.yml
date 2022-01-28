@@ -15,7 +15,7 @@
     marker: "# Tuan backup custom_path_01"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_01 | regex_replace('^(/.*)/$', '\\1') }} .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_01 | regex_replace('^(/.*)/$', '\1') }} .
     state: present
   when: custom_path_01 != '' and custom_path_01_check.stat.exists and custom_path_01_check.stat.isdir
 - name: Add line backup directory file custom_path_01
@@ -24,7 +24,7 @@
     marker: "# Tuan backup custom_path_01"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\\1') }} .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_01 | regex_replace('^(/.*)/.*$', '\\1') | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\1') }} .
     state: present
   when: custom_path_01 != '' and custom_path_01_check.stat.exists and custom_path_01_check.stat.isdir == false and custom_path_01_check.stat.islnk == false
 - name: Check if custom_path_02 exist
@@ -43,7 +43,7 @@
     marker: "# Tuan backup custom_path_02"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_02 | regex_replace('^(/.*)/$', '\\1') }} .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_02 | regex_replace('^(/.*)/$', '\1') }} .
     state: present
   when: custom_path_02 != '' and custom_path_02_check.stat.exists and custom_path_02_check.stat.isdir
 - name: Add line backup directory file custom_path_02
@@ -52,7 +52,7 @@
     marker: "# Tuan backup custom_path_02"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\\1') }} .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_02 | regex_replace('^(/.*)/.*$', '\\1') | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') }} .
     state: present
   when: custom_path_02 != '' and custom_path_02_check.stat.exists and custom_path_02_check.stat.isdir == false and custom_path_02_check.stat.islnk == false
 - name: Check if custom_path_03 exist
@@ -71,7 +71,7 @@
     marker: "# Tuan backup custom_path_03"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_03 | regex_replace('^(/.*)/$', '\\1') }} .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_03 | regex_replace('^(/.*)/$', '\1') }} .
     state: present
   when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir
 - name: Add line backup directory file custom_path_03
@@ -80,7 +80,7 @@
     marker: "# Tuan backup custom_path_03"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_03 | regex_replace('^(/.*)/.*$', '\\1') }} .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_03 | regex_replace('^(/.*)/.*$', '\\1') | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') }} .
     state: present
   when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir == false and custom_path_03_check.stat.islnk == false
 ...
