@@ -20,7 +20,7 @@
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_01 | replace('/','') }}
-      mv {{ custom_path_01 | regex_replace('(.*)/', '\\1') }} {{ custom_path_01 | regex_replace('(.*)/', '\\1') }}.bak
+      mv {{ custom_path_01 | regex_replace('(.*)/', '\\1') }} {{ custom_path_01 | regex_replace('(.*)/', '\\1') }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/{{ custom_path_01 | replace('/','') }} {{ custom_path_01 | regex_replace('(.*)/', '\\1') }}
     state: present
   when: custom_path_01 != '' and custom_path_01_check.rc == 0
@@ -46,7 +46,7 @@
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_02 | replace('/','') }}
-      mv {{ custom_path_02 | regex_replace('(.*)/', '\\1') }} {{ custom_path_02 | regex_replace('(.*)/', '\\1') }}.bak
+      mv {{ custom_path_02 | regex_replace('(.*)/', '\\1') }} {{ custom_path_02 | regex_replace('(.*)/', '\\1') }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/{{ custom_path_02 | replace('/','') }} {{ custom_path_02 | regex_replace('(.*)/', '\\1') }}
     state: present
   when: custom_path_02_check.rc == 0
@@ -72,7 +72,7 @@
     insertafter: EOF
     block: |
       tar -xzvf $BACKUP_RESTORE_PATH/*-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/{{ custom_path_03 | replace('/','') }}
-      mv {{ custom_path_03 | regex_replace('(.*)/', '\\1') }} {{ custom_path_03 | regex_replace('(.*)/', '\\1') }}.bak
+      mv {{ custom_path_03 | regex_replace('(.*)/', '\\1') }} {{ custom_path_03 | regex_replace('(.*)/', '\\1') }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/{{ custom_path_03 | replace('/','') }} {{ custom_path_03 | regex_replace('(.*)/', '\\1') }}
     state: present
   when: custom_path_03 != '' and custom_path_03_check.rc == 0
