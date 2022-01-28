@@ -11,7 +11,7 @@
   when: custom_path_01_check.rc == 0
 - name: Create directory for {{ custom_path_01 }}
   file:
-    path: "{{ backup_restore_path }}"/"{{ custom_path_01 | replace('/','') }}"
+    path: "{{ backup_restore_path }}/{{ custom_path_01 | replace('/','') }}"
     state: directory
   when: custom_path_01_check.rc == 0
 - name: Add line backup {{ custom_path_01 }}
