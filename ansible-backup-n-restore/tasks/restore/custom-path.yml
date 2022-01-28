@@ -15,7 +15,7 @@
   when: custom_path_01 != '' and custom_path_01_check.rc == 0
 - name: Add line backup custom_path_01
   blockinfile:
-    path: /opt/backup-system.sh
+    path: /opt/restore-system.sh
     marker: "# Tuan backup custom_path_01"
     insertafter: EOF
     block: |
@@ -41,7 +41,7 @@
   when: custom_path_02 != '' and custom_path_02_check.rc == 0
 - name: Add line backup custom_path_02
   blockinfile:
-    path: /opt/backup-system.sh
+    path: /opt/restore-system.sh
     marker: "# Tuan backup custom_path_02"
     insertafter: EOF
     block: |
@@ -67,7 +67,7 @@
   when: custom_path_03 != '' and custom_path_03_check.rc == 0
 - name: Add line backup custom_path_03
   blockinfile:
-    path: /opt/backup-system.sh
+    path: /opt/restore-system.sh
     marker: "# Tuan backup custom_path_03"
     insertafter: EOF
     block: |
