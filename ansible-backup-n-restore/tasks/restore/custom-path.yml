@@ -7,12 +7,12 @@
   debug:
     msg:
       - "{{ custom_path_01 | regex_replace('(.*)/', '\\1') }} exist"
-  when: custom_path_01_check.rc == 0
+  when: custom_path_01 != '' and custom_path_01_check.rc == 0
 - name: Create directory for {{ custom_path_01 }}
   file:
     path: "{{ backup_restore_path }}/{{ custom_path_01 | replace('/','') }}"
     state: directory
-  when: custom_path_01_check.rc == 0
+  when: custom_path_01 != '' and custom_path_01_check.rc == 0
 - name: Add line backup {{ custom_path_01 }}
   blockinfile:
     path: /opt/backup-system.sh
@@ -23,7 +23,7 @@
       mv {{ custom_path_01 | regex_replace('(.*)/', '\\1') }} {{ custom_path_01 | regex_replace('(.*)/', '\\1') }}.bak
       mv $BACKUP_RESTORE_PATH/{{ custom_path_01 | replace('/','') }} {{ custom_path_01 | regex_replace('(.*)/', '\\1') }}
     state: present
-  when: custom_path_01_check.rc == 0
+  when: custom_path_01 != '' and custom_path_01_check.rc == 0
 - name: Check if {{ custom_path_02 }} exist
   shell:
     cmd: ls {{ custom_path_02 }}
@@ -33,12 +33,12 @@
   debug:
     msg:
       - "{{ custom_path_02 | regex_replace('(.*)/', '\\1') }} exist"
-  when: custom_path_02_check.rc == 0
+  when: custom_path_02 != '' and custom_path_02_check.rc == 0
 - name: Create directory for {{ custom_path_02 }}
   file:
     path: "{{ backup_restore_path }}/{{ custom_path_02 | replace('/','') }}"
     state: directory
-  when: custom_path_02_check.rc == 0
+  when: custom_path_02 != '' and custom_path_02_check.rc == 0
 - name: Add line backup {{ custom_path_02 }}
   blockinfile:
     path: /opt/backup-system.sh
@@ -59,12 +59,12 @@
   debug:
     msg:
       - "{{ custom_path_03 | regex_replace('(.*)/', '\\1') }} exist"
-  when: custom_path_03_check.rc == 0
+  when: custom_path_03 != '' and custom_path_03_check.rc == 0
 - name: Create directory for {{ custom_path_03 }}
   file:
     path: "{{ backup_restore_path }}/{{ custom_path_03 | replace('/','') }}"
     state: directory
-  when: custom_path_03_check.rc == 0
+  when: custom_path_03 != '' and custom_path_03_check.rc == 0
 - name: Add line backup {{ custom_path_03 }}
   blockinfile:
     path: /opt/backup-system.sh
@@ -75,4 +75,4 @@
       mv {{ custom_path_03 | regex_replace('(.*)/', '\\1') }} {{ custom_path_03 | regex_replace('(.*)/', '\\1') }}.bak
       mv $BACKUP_RESTORE_PATH/{{ custom_path_03 | replace('/','') }} {{ custom_path_03 | regex_replace('(.*)/', '\\1') }}
     state: present
-  when: custom_path_03_check.rc == 0
+  when: custom_path_03 != '' and custom_path_03_check.rc == 0
