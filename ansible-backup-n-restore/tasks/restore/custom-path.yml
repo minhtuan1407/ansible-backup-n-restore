@@ -18,7 +18,7 @@
   file:
     path: "{{ backup_restore_path }}/{{ custom_path_01 | regex_replace('^(/.*)/.*$', '\\1') | replace('/','') }}"
     state: directory
-  when: custom_path_01 != '' and custom_path_01_check.stat.exists and custom_path_01_check.stat.isdir
+  when: custom_path_01 != '' and custom_path_01_check.stat.exists and custom_path_01_check.stat.isdir == false and custom_path_01_check.stat.islnk == false
 - name: Add line restore directory custom_path_01
   blockinfile:
     path: /opt/restore-system.sh
@@ -82,7 +82,7 @@
       mv {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/{{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\1') }}
     state: present
-  when: custom_path_02 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir == false and custom_path_03_check.stat.islnk == false
+  when: custom_path_02 != '' and custom_path_02_check.stat.exists and custom_path_02_check.stat.isdir == false and custom_path_02_check.stat.islnk == false
 - name: Check if custom_path_03 exist
   stat:
     path: "{{ custom_path_03 }}"
@@ -102,7 +102,7 @@
   file:
     path: "{{ backup_restore_path }}/{{ custom_path_03 | regex_replace('^(/.*)/.*$', '\\1') | replace('/','') }}"
     state: directory
-  when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir
+  when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir == false and custom_path_03_check.stat.islnk == false
 - name: Add line restore directory custom_path_03
   blockinfile:
     path: /opt/restore-system.sh
@@ -124,5 +124,5 @@
       mv {{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/{{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') | replace('/','') }} {{ custom_path_03 | regex_replace('^(/.*)/.*$', '\1') }}
     state: present
-  when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir
+  when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir == false and custom_path_03_check.stat.islnk == false
 ...

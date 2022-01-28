@@ -23,7 +23,7 @@
       tar -xzvf $BACKUP_RESTORE_PATH/*-freeswitch-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/freeswitch
       mv {{ freeswitch_path }} {{ freeswitch_path }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/freeswitch {{ freeswitch_path }}
-      mv {{ freeswitch_path }}.$TIME.bak/sounds {{ freeswitch_path }}/sounds
+      # mv {{ freeswitch_path }}.$TIME.bak/sounds {{ freeswitch_path }}/sounds
       bash /root/restart-fs.sh
     state: present
   when: freeswitch_path_check.rc == 0
