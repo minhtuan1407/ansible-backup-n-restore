@@ -1,20 +1,15 @@
 ---
 - name: Check if custom_path_01 exist
-  shell:
-    cmd: ls {{ custom_path_01 }}
+  stat:
+    path: "{{ custom_path_01 }}"
   register: custom_path_01_check
-  failed_when: custom_path_01_check.rc not in [0, 1, 2]
 - name: Message check custom_path_01
   debug:
     msg:
-      # - "{{ custom_path_01 }}"
-      # - "{{ custom_path_01 | regex_replace('.*/', '\1') }}"
-      # - "{{ custom_path_01 | regex_replace('(.*)/', '\1') }}"
-      # - "{{ custom_path_01 | regex_replace('.*/', '\\1') }}"
       - "{{ custom_path_01 | regex_replace('^(/.*)/$', '\\1') }} exist"
       - "{{ custom_path_01 | regex_replace('^(/.*)/.*$', '\\1') }} exist"
-  when: custom_path_01 != '' and custom_path_01_check.rc == 0
-- name: Add line backup custom_path_01
+  when: custom_path_01 != '' and custom_path_01_check.stat.exists
+- name: Add line backup directory custom_path_01
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan backup custom_path_01"
@@ -22,18 +17,27 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_01 | regex_replace('^(/.*)/$', '\\1') }} .
     state: present
-  when: custom_path_01 != '' and custom_path_01_check.rc == 0
+  when: custom_path_01 != '' and custom_path_01_check.stat.exists and custom_path_01_check.stat.isdir
+- name: Add line backup directory file custom_path_01
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup custom_path_01"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_01 | regex_replace('^(/.*)/.*$', '\\1') }} .
+    state: present
+  when: custom_path_01 != '' and custom_path_01_check.stat.exists and custom_path_01_check.stat.isdir == false and custom_path_01_check.stat.islnk == false
 - name: Check if custom_path_02 exist
-  shell:
-    cmd: ls {{ custom_path_02 }}
+  stat:
+    path: "{{ custom_path_02 }}"
   register: custom_path_02_check
-  failed_when: custom_path_02_check.rc not in [0, 1, 2]
 - name: Message check custom_path_02
   debug:
     msg:
       - "{{ custom_path_02 | regex_replace('^(/.*)/$', '\\1') }} exist"
-  when: custom_path_02 != '' and custom_path_02_check.rc == 0
-- name: Add line backup custom_path_02
+      - "{{ custom_path_02 | regex_replace('^(/.*)/.*$', '\\1') }} exist"
+  when: custom_path_02 != '' and custom_path_02_check.stat.exists
+- name: Add line backup directory custom_path_02
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan backup custom_path_02"
@@ -41,18 +45,27 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_02 | regex_replace('^(/.*)/$', '\\1') }} .
     state: present
-  when: custom_path_02 != '' and custom_path_02_check.rc == 0
+  when: custom_path_02 != '' and custom_path_02_check.stat.exists and custom_path_02_check.stat.isdir
+- name: Add line backup directory file custom_path_02
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup custom_path_02"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_02 | regex_replace('^(/.*)/.*$', '\\1') }} .
+    state: present
+  when: custom_path_02 != '' and custom_path_02_check.stat.exists and custom_path_02_check.stat.isdir == false and custom_path_02_check.stat.islnk == false
 - name: Check if custom_path_03 exist
-  shell:
-    cmd: ls {{ custom_path_03 }}
+  stat:
+    path: "{{ custom_path_03 }}"
   register: custom_path_03_check
-  failed_when: custom_path_03_check.rc not in [0, 1, 2]
 - name: Message check custom_path_03
   debug:
     msg:
       - "{{ custom_path_03 | regex_replace('^(/.*)/$', '\\1') }} exist"
-  when: custom_path_03 != '' and custom_path_03_check.rc == 0
-- name: Add line backup custom_path_03
+      - "{{ custom_path_03 | regex_replace('^(/.*)/.*$', '\\1') }} exist"
+  when: custom_path_03 != '' and custom_path_03_check.stat.exists
+- name: Add line backup directory custom_path_03
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan backup custom_path_03"
@@ -60,5 +73,14 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_03 | regex_replace('^(/.*)/$', '\\1') }} .
     state: present
-  when: custom_path_03 != '' and custom_path_03_check.rc == 0
+  when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir
+- name: Add line backup directory file custom_path_03
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup custom_path_03"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz -C {{ custom_path_03 | regex_replace('^(/.*)/.*$', '\\1') }} .
+    state: present
+  when: custom_path_03 != '' and custom_path_03_check.stat.exists and custom_path_03_check.stat.isdir == false and custom_path_03_check.stat.islnk == false
 ...
