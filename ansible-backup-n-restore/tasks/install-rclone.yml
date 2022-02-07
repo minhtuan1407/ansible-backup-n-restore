@@ -37,11 +37,15 @@
     group: root
     mode: 0775
   when: not rclone.stat.exists
-- name: Copy google json service account
+# - name: Copy google json service account
+#   copy:
+#     src: minhtuan1407-drive-340607-6ac15a259b6c.json
+#     dest: /opt/minhtuan1407-drive-340607-6ac15a259b6c.json
+# - name: Config rclone
+#   shell:
+#     cmd: rclone config create google-drive drive service_account_file /opt/minhtuan1407-drive-340607-6ac15a259b6c.json shared_with_me true
+- name: Config rclone for google drive
   copy:
-    src: minhtuan1407-drive-340607-6ac15a259b6c.json
-    dest: /opt/minhtuan1407-drive-340607-6ac15a259b6c.json
-- name: Config rclone
-  shell:
-    cmd: rclone config create google-drive drive service_account_file /opt/minhtuan1407-drive-340607-6ac15a259b6c.json shared_with_me true
+    src: rclone.conf
+    dest: /root/.config/rclone/rclone.conf
 ...
