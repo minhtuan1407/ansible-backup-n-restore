@@ -44,6 +44,10 @@
 # - name: Config rclone
 #   shell:
 #     cmd: rclone config create google-drive drive service_account_file /opt/minhtuan1407-drive-340607-6ac15a259b6c.json shared_with_me true
+- name: Create rclone config directory
+  file:
+    path: /root/.config/rclone/
+    state: directory
 - name: Config rclone for google drive
   copy:
     src: rclone.conf
