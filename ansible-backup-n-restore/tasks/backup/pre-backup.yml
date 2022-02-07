@@ -41,6 +41,14 @@
       DB_PASS='{{ db_pass }}'
     state: present
     create: yes
+- name: Insert delete file by date
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan delete file backup by date"
+    insertbefore: EOF
+    block: |
+      find $BACKUP_RESTORE_PATH \( -name "*.tar.gz" -o -name "*.sql.gz" \) -type f -mtime +0 -delete
+    state: present
 - name: Create backup directory
   file:
     path: "{{ backup_restore_path }}"
