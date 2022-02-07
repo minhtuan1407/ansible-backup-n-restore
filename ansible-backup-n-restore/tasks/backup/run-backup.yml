@@ -34,15 +34,14 @@
     state: present
 - name: Add crontab to run backup at 03:00
   cron:
-    name: "Run backup database at 03:00"
+    name: "Run backup system at 03:00"
     minute: "00"
     hour: "03"
-    job:
-    - "bash /opt/backup-system.sh"
+    job: "bash /opt/backup-system.sh"
   when: crontab_backup_3h == "true"
 - name: Remove crontab to run backup at 03:00
   cron:
-    name: "Run backup database at 03:00"
+    name: "Run backup system at 03:00"
     state: absent
   when: crontab_backup_3h == "false"
 - name: Run backup right now
