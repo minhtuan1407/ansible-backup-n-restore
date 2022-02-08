@@ -1,11 +1,3 @@
-- name: Upload file to google drive
-  blockinfile:
-    path: /opt/backup-system.sh
-    marker: "# Tuan upload file backup"
-    insertbefore: EOF
-    block: |
-      rclone copy -P $BACKUP_RESTORE_PATH $RCLONE_PATH
-    state: present
 - name: Upload file recordings to google drive
   blockinfile:
     path: /opt/backup-system.sh
@@ -15,6 +7,14 @@
       nohup rclone copy -P --ignore-existing $RECORD_PATH $RCLONE_RECORDINGS_PATH > /dev/null 2>&1 &
     state: present
   when: recordings_path != ''
+- name: Upload file to google drive
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan upload file backup"
+    insertbefore: EOF
+    block: |
+      rclone copy -P $BACKUP_RESTORE_PATH $RCLONE_PATH
+    state: present
 - name: Insert delete file by name
   blockinfile:
     path: /opt/backup-system.sh
