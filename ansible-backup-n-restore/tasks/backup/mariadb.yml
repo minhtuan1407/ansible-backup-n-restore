@@ -1,31 +1,23 @@
 ---
-- name: Check if mariadb package is exist with yum
-  shell:
-    cmd: yum list installed | grep mariadb-server
-  register: mariadb_package_check
-  failed_when: mariadb_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'CentOS'
-- name: Check if mariadb package is exist with dpkg
-  shell:
-    cmd: dpkg -l | grep mariadb-server
-  register: mariadb_package_check
-  failed_when: mariadb_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'Debian'
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
 - name: Message check mariadb package
   debug:
     msg:
       - "mariadb package exist"
-  when: mariadb_package_check.rc == 0
-- name: Check if mariadb path is exist
-  shell:
-    cmd: ls {{ mariadb_path }}
+  when: 'mariadb-server' in ansible_facts.packages
+- name: Check if {{ mariadb_path }} exist
+  stat:
+    path: "{{ mariadb_path }}"
   register: mariadb_path_check
-  failed_when: mariadb_path_check.rc not in [0, 1, 2]
-- name: Message check mariadb path
+- name: Message check {{ mariadb_path }}
   debug:
     msg:
       - "{{ mariadb_path }} exist"
-  when: mariadb_path_check.rc == 0
+  when: 
+    - mariadb_path_check.stat.exists
+    - mariadb_path_check.stat.isdir
 - name: Add line backup directory {{ mariadb_path }}
   blockinfile:
     path: /opt/backup-system.sh
@@ -34,7 +26,10 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C {{ mariadb_path }} .
     state: present
-  when: mariadb_package_check.rc == 0 and mariadb_path_check.rc == 0
+  when:
+    - 'mariadb-server' in ansible_facts.packages
+    - mariadb_path_check.stat.exists
+    - mariadb_path_check.stat.isdir
 - name: Dump database mariadb
   blockinfile:
     path: /opt/backup-system.sh
@@ -48,5 +43,10 @@
           fi
       done
     state: present
-  when: mariadb_package_check.rc == 0 and mariadb_path_check.rc == 0 and db_user != '' and db_pass != ''
+  when:
+    - 'mariadb-server' in ansible_facts.packages
+    - mariadb_path_check.stat.exists
+    - mariadb_path_check.stat.isdir
+    - db_user != '' 
+    - db_pass != ''
 ...

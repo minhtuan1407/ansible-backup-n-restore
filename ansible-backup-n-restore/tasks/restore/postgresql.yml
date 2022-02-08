@@ -1,36 +1,31 @@
 ---
-- name: Check if postgresql package is exist with yum
-  shell:
-    cmd: yum list installed | grep postgresql
-  register: postgresql_package_check
-  failed_when: postgresql_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'CentOS'
-- name: Check if postgresql package is exist with dpkg
-  shell:
-    cmd: dpkg -l | grep postgresql
-  register: postgresql_package_check
-  failed_when: postgresql_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'Debian'
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
 - name: Message check postgresql package
   debug:
     msg:
       - "postgresql package exist"
-  when: postgresql_package_check.rc == 0
-- name: Check if postgresql path is exist
-  shell:
-    cmd: ls {{ postgresql_path }}
+  when: 'postgresql' in ansible_facts.packages
+- name: Check if {{ postgresql_path }} exist
+  stat:
+    path: "{{ postgresql_path }}"
   register: postgresql_path_check
-  failed_when: postgresql_path_check.rc not in [0, 1, 2]
-- name: Message check postgresql path
+- name: Message check {{ postgresql_path }}
   debug:
     msg:
       - "{{ postgresql_path }} exist"
-  when: postgresql_path_check.rc == 0
+  when: 
+    - postgresql_path_check.stat.exists
+    - postgresql_path_check.stat.isdir
 - name: Create directory for postgresql
   file:
     path: "{{ backup_restore_path }}/postgresql"
     state: directory
-  when: postgresql_package_check.rc == 0 and postgresql_path_check.rc == 0
+  when:
+    - 'postgresql' in ansible_facts.packages
+    - postgresql_path_check.stat.exists
+    - postgresql_path_check.stat.isdir
 - name: Add line restore directory $BACKUP_RESTORE_PATH/postgresql/
   blockinfile:
     path: /opt/restore-system.sh
@@ -45,5 +40,8 @@
           sudo -u postgres pg_restore --clean --create -Fc -j 1 -h 127.0.0.1 -d postgres < $db_file
       done
     state: present
-  when: postgresql_package_check.rc == 0 and postgresql_path_check.rc == 0
+  when:
+    - 'postgresql' in ansible_facts.packages
+    - postgresql_path_check.stat.exists
+    - postgresql_path_check.stat.isdir
 ...

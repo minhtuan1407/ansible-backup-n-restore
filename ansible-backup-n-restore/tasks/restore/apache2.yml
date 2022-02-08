@@ -1,30 +1,31 @@
 ---
-- name: Check if httpd package is exist with yum
-  shell:
-    cmd: yum list installed | grep httpd
-  register: httpd_package_check
-  failed_when: httpd_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'CentOS'
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
 - name: Message check httpd package
   debug:
     msg:
       - "httpd package exist"
-  when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0
-- name: Check if httpd path is exist
-  shell:
-    cmd: ls {{ httpd_path }}
+  when: 'httpd' in ansible_facts.packages
+- name: Check if {{ httpd_path }} exist
+  stat:
+    path: "{{ httpd_path }}"
   register: httpd_path_check
-  failed_when: httpd_path_check.rc not in [0, 1, 2]
-- name: Message check httpd path
+- name: Message check {{ httpd_path }}
   debug:
     msg:
       - "{{ httpd_path }} exist"
-  when: ansible_distribution == 'CentOS' and httpd_path_check.rc == 0
+  when: 
+    - httpd_path_check.stat.exists
+    - httpd_path_check.stat.isdir
 - name: Create directory for httpd
   file:
     path: "{{ backup_restore_path }}/httpd"
     state: directory
-  when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0 and httpd_path_check.rc == 0
+  when:
+    - 'httpd' in ansible_facts.packages
+    - httpd_path_check.stat.exists
+    - httpd_path_check.stat.isdir
 - name: Add line restore directory $BACKUP_RESTORE_PATH/httpd/
   blockinfile:
     path: /opt/restore-system.sh
@@ -36,33 +37,34 @@
       mv $BACKUP_RESTORE_PATH/httpd {{ httpd_path }}
       systemctl restart httpd
     state: present
-  when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0 and httpd_path_check.rc == 0
-- name: Check if apache2 package is exist with dpkg
-  shell:
-    cmd: dpkg -l | grep apache2
-  register: apache2_package_check
-  failed_when: apache2_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'Debian'
+  when:
+    - 'httpd' in ansible_facts.packages
+    - httpd_path_check.stat.exists
+    - httpd_path_check.stat.isdir
 - name: Message check apache2 package
   debug:
     msg:
       - "apache2 package exist"
-  when: ansible_distribution == 'Debian' and apache2_package_check.rc == 0
-- name: Check if apache2 path is exist
-  shell:
-    cmd: ls {{ apache2_path }}
+  when: 'apache2' in ansible_facts.packages
+- name: Check if {{ apache2_path }} exist
+  stat:
+    path: "{{ apache2_path }}"
   register: apache2_path_check
-  failed_when: apache2_path_check.rc not in [0, 1, 2]
-- name: Message check apache2 path
+- name: Message check {{ apache2_path }}
   debug:
     msg:
       - "{{ apache2_path }} exist"
-  when: ansible_distribution == 'Debian' and apache2_path_check.rc == 0
+  when:
+    - apache2_path_check.stat.exists
+    - apache2_path_check.stat.isdir
 - name: Create directory for apache2
   file:
     path: "{{ backup_restore_path }}/apache2"
     state: directory
-  when: ansible_distribution == 'Debian' and apache2_package_check.rc == 0 and apache2_path_check.rc == 0
+  when: 
+    - 'apache2' in ansible_facts.packages 
+    - apache2_path_check.stat.exists 
+    - apache2_path_check.stat.isdir
 - name: Add line restore directory $BACKUP_RESTORE_PATH/apache2/
   blockinfile:
     path: /opt/restore-system.sh
@@ -74,5 +76,7 @@
       mv $BACKUP_RESTORE_PATH/apache2 {{ apache2_path }}
       systemctl restart apache2
     state: present
-  when: ansible_distribution == 'Debian' and apache2_package_check.rc == 0 and apache2_path_check.rc == 0
-...
+  when: 
+    - 'apache2' in ansible_facts.packages 
+    - apache2_path_check.stat.exists 
+    - apache2_path_check.stat.isdir...

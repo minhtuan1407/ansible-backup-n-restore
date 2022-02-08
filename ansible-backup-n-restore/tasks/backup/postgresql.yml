@@ -1,31 +1,23 @@
 ---
-- name: Check if postgresql package is exist with yum
-  shell:
-    cmd: yum list installed | grep postgresql
-  register: postgresql_package_check
-  failed_when: postgresql_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'CentOS'
-- name: Check if postgresql package is exist with dpkg
-  shell:
-    cmd: dpkg -l | grep postgresql
-  register: postgresql_package_check
-  failed_when: postgresql_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'Debian'
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
 - name: Message check postgresql package
   debug:
     msg:
       - "postgresql package exist"
-  when: postgresql_package_check.rc == 0
-- name: Check if postgresql path is exist
-  shell:
-    cmd: ls {{ postgresql_path }}
+  when: 'postgresql' in ansible_facts.packages
+- name: Check if {{ postgresql_path }} exist
+  stat:
+    path: "{{ postgresql_path }}"
   register: postgresql_path_check
-  failed_when: postgresql_path_check.rc not in [0, 1, 2]
-- name: Message check postgresql path
+- name: Message check {{ postgresql_path }}
   debug:
     msg:
       - "{{ postgresql_path }} exist"
-  when: postgresql_path_check.rc == 0
+  when: 
+    - postgresql_path_check.stat.exists
+    - postgresql_path_check.stat.isdir
 - name: Add line backup directory {{ postgresql_path }}
   blockinfile:
     path: /opt/backup-system.sh
@@ -34,7 +26,10 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-postgresql-$NOW.tar.gz -C {{ postgresql_path }} .
     state: present
-  when: postgresql_package_check.rc == 0 and postgresql_path_check.rc == 0
+  when:
+    - 'postgresql' in ansible_facts.packages
+    - postgresql_path_check.stat.exists
+    - postgresql_path_check.stat.isdir
 - name: Dump database postgresql
   blockinfile:
     path: /opt/backup-system.sh
@@ -48,5 +43,8 @@
           fi
       done
     state: present
-  when: postgresql_package_check.rc == 0 and postgresql_path_check.rc == 0
+  when:     
+    - 'postgresql' in ansible_facts.packages
+    - postgresql_path_check.stat.exists
+    - postgresql_path_check.stat.isdir
 ...

@@ -1,36 +1,31 @@
 ---
-- name: Check if nginx package is exist with yum
-  shell:
-    cmd: yum list installed | grep nginx
-  register: nginx_package_check
-  failed_when: nginx_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'CentOS'
-- name: Check if nginx package is exist with dpkg
-  shell:
-    cmd: dpkg -l | grep nginx
-  register: nginx_package_check
-  failed_when: nginx_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'Debian'
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
 - name: Message check nginx package
   debug:
     msg:
       - "nginx package exist"
-  when: nginx_package_check.rc == 0
-- name: Check if nginx path is exist
-  shell:
-    cmd: ls {{ nginx_path }}
+  when: 'nginx' in ansible_facts.packages
+- name: Check if {{ nginx_path }} exist
+  stat:
+    path: "{{ nginx_path }}"
   register: nginx_path_check
-  failed_when: nginx_path_check.rc not in [0, 1, 2]
-- name: Message check nginx path
+- name: Message check {{ nginx_path }}
   debug:
     msg:
       - "{{ nginx_path }} exist"
-  when: nginx_path_check.rc == 0
+  when: 
+    - nginx_path_check.stat.exists
+    - nginx_path_check.stat.isdir
 - name: Create directory for nginx
   file:
     path: "{{ backup_restore_path }}/nginx"
     state: directory
-  when: nginx_package_check.rc == 0 and nginx_path_check.rc == 0
+  when:
+    - 'nginx' in ansible_facts.packages
+    - nginx_path_check.stat.exists
+    - nginx_path_check.stat.isdir
 - name: Add line restore directory $BACKUP_RESTORE_PATH/nginx/
   blockinfile:
     path: /opt/restore-system.sh
@@ -42,5 +37,8 @@
       mv $BACKUP_RESTORE_PATH/nginx {{ nginx_path }}
       systemctl restart nginx
     state: present
-  when: nginx_package_check.rc == 0 and nginx_path_check.rc == 0
+  when:
+    - 'nginx' in ansible_facts.packages
+    - nginx_path_check.stat.exists
+    - nginx_path_check.stat.isdir
 ...

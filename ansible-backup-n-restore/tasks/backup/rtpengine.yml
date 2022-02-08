@@ -1,31 +1,23 @@
 ---
-- name: Check if rtpengine package is exist with yum
-  shell:
-    cmd: yum list installed | grep rtpengine
-  register: rtpengine_package_check
-  failed_when: rtpengine_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'CentOS'
-- name: Check if rtpengine package is exist with dpkg
-  shell:
-    cmd: dpkg -l | grep rtpengine
-  register: rtpengine_package_check
-  failed_when: rtpengine_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'Debian'
-- name: Message check rtpengine package 
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+- name: Message check rtpengine package
   debug:
     msg:
       - "rtpengine package exist"
-  when: rtpengine_package_check.rc == 0
-- name: Check if rtpengine path is exist
-  shell:
-    cmd: ls {{ rtpengine_path }}
+  when: 'rtpengine' in ansible_facts.packages
+- name: Check if {{ rtpengine_path }} exist
+  stat:
+    path: "{{ rtpengine_path }}"
   register: rtpengine_path_check
-  failed_when: rtpengine_path_check.rc not in [0, 1, 2]
-- name: Message check rtpengine path
+- name: Message check {{ rtpengine_path }}
   debug:
     msg:
       - "{{ rtpengine_path }} exist"
-  when: rtpengine_path_check.rc == 0
+  when: 
+    - rtpengine_path_check.stat.exists
+    - rtpengine_path_check.stat.isdir
 - name: Add line backup directory {{ rtpengine_path }}
   blockinfile:
     path: /opt/backup-system.sh
@@ -34,5 +26,8 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-rtpengine-$NOW.tar.gz -C {{ rtpengine_path }} .
     state: present
-  when: rtpengine_package_check.rc == 0 and rtpengine_path_check.rc == 0
+  when:
+    - 'rtpengine' in ansible_facts.packages
+    - rtpengine_path_check.stat.exists
+    - rtpengine_path_check.stat.isdir
 ...

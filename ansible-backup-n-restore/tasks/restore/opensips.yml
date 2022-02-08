@@ -1,19 +1,22 @@
 ---
-- name: Check if opensips path is exist
-  shell:
-    cmd: ls {{ opensips_path }}
+- name: Check if {{ opensips_path }} exist
+  stat:
+    path: "{{ opensips_path }}"
   register: opensips_path_check
-  failed_when: opensips_path_check.rc not in [0, 1, 2]
-- name: Message check opensips path
+- name: Message check {{ opensips_path }}
   debug:
     msg:
       - "{{ opensips_path }} exist"
-  when: opensips_path_check.rc == 0
+  when: 
+    - opensips_path_check.stat.exists
+    - opensips_path_check.stat.isdir
 - name: Create directory for opensips
   file:
     path: "{{ backup_restore_path }}/opensips"
     state: directory
-  when: opensips_path_check.rc == 0
+  when: 
+    - opensips_path_check.stat.exists
+    - opensips_path_check.stat.isdir
 - name: Add line restore directory $BACKUP_RESTORE_PATH/opensips/
   blockinfile:
     path: /opt/restore-system.sh
@@ -25,5 +28,7 @@
       mv $BACKUP_RESTORE_PATH/opensips {{ opensips_path }}
       systemctl restart opensips
     state: present
-  when: opensips_path_check.rc == 0
+  when: 
+    - opensips_path_check.stat.exists
+    - opensips_path_check.stat.isdir
 ...
