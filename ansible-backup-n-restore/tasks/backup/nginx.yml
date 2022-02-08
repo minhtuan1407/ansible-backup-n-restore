@@ -16,16 +16,20 @@
     msg:
       - "nginx package exist"
   when: nginx_package_check.rc == 0
-- name: Check if nginx path is exist
-  shell:
-    cmd: ls {{ nginx_path }}
+# - name: Check if nginx path is exist
+#   shell:
+#     cmd: ls {{ nginx_path }}
+#   register: nginx_path_check
+#   failed_when: nginx_path_check.rc not in [0, 1, 2]
+- name: Check if {{ nginx_path }} exist
+  stat:
+    path: "{{ nginx_path }}"
   register: nginx_path_check
-  failed_when: nginx_path_check.rc not in [0, 1, 2]
 - name: Message check nginx path
   debug:
     msg:
       - "{{ nginx_path }} exist"
-  when: nginx_path_check.rc == 0
+  when: nginx_path_check.stat.exists and nginx_path_check.stat.isdir
 - name: Add line backup directory {{ nginx_path }}
   blockinfile:
     path: /opt/backup-system.sh
@@ -34,5 +38,5 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C {{ nginx_path }} .
     state: present
-  when: nginx_package_check.rc == 0 and nginx_path_check.rc == 0
+  when: nginx_package_check.rc == 0 and nginx_path_check.stat.exists and nginx_path_check.stat.isdir
 ...
