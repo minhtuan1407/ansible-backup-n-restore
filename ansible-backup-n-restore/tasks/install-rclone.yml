@@ -15,9 +15,14 @@
   stat:
     path: /usr/bin/rclone
   register: rclone
-- name: Download rclone
-  get_url:
-    url: https://downloads.rclone.org/rclone-current-linux-amd64.zip
+# - name: Download rclone
+#   get_url:
+#     url: https://downloads.rclone.org/rclone-current-linux-amd64.zip
+#     dest: /tmp/rclone-current-linux-amd64.zip
+#   when: not rclone.stat.exists
+- name: Copy rlone
+  copy:
+    src: rclone-current-linux-amd64.zip
     dest: /tmp/rclone-current-linux-amd64.zip
   when: not rclone.stat.exists
 - name: Extract rclone-current-linux-amd64.zip
