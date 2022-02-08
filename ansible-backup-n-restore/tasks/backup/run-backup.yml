@@ -30,7 +30,7 @@
     marker: "# Tuan delete file backup on google drive"
     insertbefore: EOF
     block: |
-      rclone delete $RCLONE_PATH --include *.gz --min-age 365d
+      rclone delete $RCLONE_PATH --include *.gz --min-age 90d
     state: present
 - name: Add crontab to run backup at 03:00
   cron:
