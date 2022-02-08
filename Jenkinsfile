@@ -36,6 +36,7 @@ pipeline {
     stages {
         stage ("Install Rclone") {
             steps {
+                sh 'cp $JENKINS_HOME/.config/rclone/rclone.conf ${WORKSPACE}/ansible-backup-n-restore/files/'
                 ansiblePlaybook (
                     playbook: '${WORKSPACE}/ansible-backup-n-restore.yml',
                     inventory: '${WORKSPACE}/hosts_all_server',
