@@ -18,7 +18,7 @@
 - name: Insert delete file by name
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan delete file backup by date"
+    marker: "# Tuan delete file backup after rclone"
     insertbefore: EOF
     block: |
       find $BACKUP_RESTORE_PATH \( -name "*.tar.gz" -o -name "*.sql.gz" \) -type f -mtime 0 -delete
