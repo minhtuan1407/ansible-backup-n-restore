@@ -18,10 +18,10 @@
 - name: Insert delete file by name
   blockinfile:
     path: /opt/backup-system.sh
-    marker: "# Tuan delete file backup by name"
+    marker: "# Tuan delete file backup by date"
     insertbefore: EOF
     block: |
-      cd $BACKUP_RESTORE_PATH && rm -rf $IP_SERVER-httpd-$NOW.tar.gz $IP_SERVER-apache2-$NOW.tar.gz $IP_SERVER-nginx-$NOW.tar.gz $IP_SERVER-mariadb-$NOW.tar.gz $IP_SERVER-postgresql-$NOW.tar.gz $IP_SERVER-db-*-$NOW.tar.gz $IP_SERVER-db-*-$NOW.sql.gz $IP_SERVER-asterisk-$NOW.tar.gz $IP_SERVER-freeswitch-$NOW.tar.gz $IP_SERVER-kamailio-$NOW.tar.gz $IP_SERVER-opensips-$NOW.tar.gz $IP_SERVER-rtpengine-$NOW.tar.gz $IP_SERVER-{{ custom_path_01 | replace('/','') }}-$NOW.tar.gz $IP_SERVER-{{ custom_path_02 | replace('/','') }}-$NOW.tar.gz $IP_SERVER-{{ custom_path_03 | replace('/','') }}-$NOW.tar.gz
+      find $BACKUP_RESTORE_PATH \( -name "*.tar.gz" -o -name "*.sql.gz" \) -type f -mtime 0 -delete
     state: present
   when: delete_after == "true"
 - name: Insert delete file on google drive by date
