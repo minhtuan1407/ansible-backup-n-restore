@@ -6,7 +6,7 @@
   debug:
     msg:
       - "kamailio package exist"
-  when: 'kamailio' in ansible_facts.packages
+  when: "'kamailio' in ansible_facts.packages"
 - name: Check if {{ kamailio_path }} exist
   stat:
     path: "{{ kamailio_path }}"

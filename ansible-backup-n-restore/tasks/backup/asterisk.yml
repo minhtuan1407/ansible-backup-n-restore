@@ -6,7 +6,7 @@
   debug:
     msg:
       - "asterisk package exist"
-  when: 'asterisk' in ansible_facts.packages
+  when: "'asterisk' in ansible_facts.packages"
 - name: Check if {{ asterisk_path }} exist
   stat:
     path: "{{ asterisk_path }}"

@@ -45,7 +45,7 @@
   debug:
     msg:
       - "apache2 package exist"
-  when: 'apache2' in ansible_facts.packages
+  when: "'apache2' in ansible_facts.packages"
 - name: Check if {{ apache2_path }} exist
   stat:
     path: "{{ apache2_path }}"

@@ -6,7 +6,7 @@
   debug:
     msg:
       - "nginx package exist"
-  when: 'nginx' in ansible_facts.packages
+  when: "'nginx' in ansible_facts.packages"
 - name: Check if {{ nginx_path }} exist
   stat:
     path: "{{ nginx_path }}"
