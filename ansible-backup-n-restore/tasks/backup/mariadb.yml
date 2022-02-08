@@ -46,7 +46,7 @@
     marker: "# Tuan backup mariadb config"
     insertafter: EOF
     block: |
-      cp {{ mycnfd_path }} {{ mycnfd_path }}/my.cnf.bak
+      cp /etc/my.cnf {{ mycnfd_path }}/my.cnf.bak
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-mycnfd-$NOW.tar.gz -C {{ mycnfd_path }} .
     state: present
   when:
