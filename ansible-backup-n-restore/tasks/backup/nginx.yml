@@ -2,20 +2,20 @@
 - name: Check if nginx package is exist with yum
   shell:
     cmd: yum list installed | grep nginx
-  register: nginx_package_check
-  failed_when: nginx_package_check.rc not in [0, 1]
+  register: yum_nginx_package_check
+  failed_when: yum_nginx_package_check.rc not in [0, 1]
   when: ansible_distribution == 'CentOS'
 - name: Check if nginx package is exist with dpkg
   shell:
     cmd: dpkg -l | grep nginx
-  register: nginx_package_check
-  failed_when: nginx_package_check.rc not in [0, 1]
+  register: dpkg_nginx_package_check
+  failed_when: dpkg_nginx_package_check.rc not in [0, 1]
   when: ansible_distribution == 'Debian'
 - name: Message check nginx package
   debug:
     msg:
       - "nginx package exist"
-  when: nginx_package_check.rc == 0
+  when: yum_nginx_package_check.rc == 0 or dpkg_nginx_package_check.rc == 0
 - name: Check if nginx path is exist
   shell:
     cmd: ls {{ nginx_path }}
@@ -34,5 +34,5 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C {{ nginx_path }} .
     state: present
-  when: nginx_package_check.rc == 0 and nginx_path_check.rc == 0
+  when: (yum_nginx_package_check.rc == 0 or dpkg_nginx_package_check.rc == 0) and nginx_path_check.rc == 0
 ...
