@@ -4,7 +4,7 @@
     manager: auto
 - name: Print the rpm package facts
   debug:
-    var: ansible_facts.packages
+    var: ansible_facts.packages.postgresql[0].version
 - name: Message check postgresql package
   debug:
     msg:
