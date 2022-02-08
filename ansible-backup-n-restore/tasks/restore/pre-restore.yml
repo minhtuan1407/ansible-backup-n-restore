@@ -45,15 +45,6 @@
   file:
     path: "{{ backup_restore_path }}"
     state: directory
-- name: Download file recordings to google drive
-  blockinfile:
-    path: /opt/restore-system.sh
-    marker: "# Tuan download file recordings"
-    insertbefore: EOF
-    block: |
-      nohup rclone copy -P --ignore-existing $RCLONE_RECORDINGS_PATH $RECORD_PATH > /dev/null 2>&1 &
-    state: present
-  when: recordings_path != ''
 - name: Download file from google drive
   blockinfile:
     path: /opt/restore-system.sh

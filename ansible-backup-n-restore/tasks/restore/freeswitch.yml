@@ -26,6 +26,9 @@
       tar -xzvf $BACKUP_RESTORE_PATH/*-freeswitch-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/freeswitch
       mv {{ freeswitch_path }} {{ freeswitch_path }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/freeswitch {{ freeswitch_path }}
+      mkdir {{ freeswitch_path }}/recordings/
+      chown -R www-data. {{ freeswitch_path }}/recordings/
+      chmod -R ug+rw {{ freeswitch_path }}/recordings/
       bash /root/restart-fs.sh
     state: present
   when: 
