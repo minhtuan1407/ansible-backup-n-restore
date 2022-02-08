@@ -6,7 +6,7 @@
   debug:
     msg:
       - "httpd package exist"
-  when: 'httpd' in ansible_facts.packages
+  when: "'httpd' in ansible_facts.packages"
 - name: Check if {{ httpd_path }} exist
   stat:
     path: "{{ httpd_path }}"
@@ -23,7 +23,7 @@
     path: "{{ backup_restore_path }}/httpd"
     state: directory
   when:
-    - 'httpd' in ansible_facts.packages
+    - "'httpd' in ansible_facts.packages"
     - httpd_path_check.stat.exists
     - httpd_path_check.stat.isdir
 - name: Add line restore directory $BACKUP_RESTORE_PATH/httpd/
@@ -38,7 +38,7 @@
       systemctl restart httpd
     state: present
   when:
-    - 'httpd' in ansible_facts.packages
+    - "'httpd' in ansible_facts.packages"
     - httpd_path_check.stat.exists
     - httpd_path_check.stat.isdir
 - name: Message check apache2 package
@@ -62,7 +62,7 @@
     path: "{{ backup_restore_path }}/apache2"
     state: directory
   when: 
-    - 'apache2' in ansible_facts.packages 
+    - "'apache2' in ansible_facts.packages"
     - apache2_path_check.stat.exists 
     - apache2_path_check.stat.isdir
 - name: Add line restore directory $BACKUP_RESTORE_PATH/apache2/
@@ -77,6 +77,6 @@
       systemctl restart apache2
     state: present
   when: 
-    - 'apache2' in ansible_facts.packages 
+    - "'apache2' in ansible_facts.packages"
     - apache2_path_check.stat.exists 
     - apache2_path_check.stat.isdir...

@@ -6,7 +6,7 @@
   debug:
     msg:
       - "mariadb package exist"
-  when: 'mariadb-server' in ansible_facts.packages
+  when: "'mariadb-server' in ansible_facts.packages"
 - name: Check if {{ mariadb_path }} exist
   stat:
     path: "{{ mariadb_path }}"
@@ -27,7 +27,7 @@
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C {{ mariadb_path }} .
     state: present
   when:
-    - 'mariadb-server' in ansible_facts.packages
+    - "'mariadb-server' in ansible_facts.packages"
     - mariadb_path_check.stat.exists
     - mariadb_path_check.stat.isdir
 - name: Dump database mariadb
@@ -44,7 +44,7 @@
       done
     state: present
   when:
-    - 'mariadb-server' in ansible_facts.packages
+    - "'mariadb-server' in ansible_facts.packages"
     - mariadb_path_check.stat.exists
     - mariadb_path_check.stat.isdir
     - db_user != '' 

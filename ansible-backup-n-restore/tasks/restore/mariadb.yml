@@ -6,7 +6,7 @@
   debug:
     msg:
       - "mariadb package exist"
-  when: 'mariadb-server' in ansible_facts.packages
+  when: "'mariadb-server' in ansible_facts.packages"
 - name: Check if {{ mariadb_path }} exist
   stat:
     path: "{{ mariadb_path }}"
@@ -23,7 +23,7 @@
     path: "{{ backup_restore_path }}/mysql"
     state: directory
   when:
-    - 'mariadb-server' in ansible_facts.packages
+    - "'mariadb-server' in ansible_facts.packages"
     - mariadb_path_check.stat.exists
     - mariadb_path_check.stat.isdir
 - name: Add line restore directory $BACKUP_RESTORE_PATH/mariadb/
@@ -41,7 +41,7 @@
       done
     state: present
   when:     
-    - 'mariadb-server' in ansible_facts.packages
+    - "'mariadb-server' in ansible_facts.packages"
     - mariadb_path_check.stat.exists
     - mariadb_path_check.stat.isdir
     - db_user != '' 

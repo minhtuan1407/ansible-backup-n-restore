@@ -6,7 +6,7 @@
   debug:
     msg:
       - "kamailio package exist"
-  when: 'kamailio' in ansible_facts.packages
+  when: "'kamailio' in ansible_facts.packages"
 - name: Check if {{ kamailio_path }} exist
   stat:
     path: "{{ kamailio_path }}"
@@ -23,7 +23,7 @@
     path: "{{ backup_restore_path }}/kamailio"
     state: directory
   when:
-    - 'kamailio' in ansible_facts.packages
+    - "'kamailio' in ansible_facts.packages"
     - kamailio_path_check.stat.exists
     - kamailio_path_check.stat.isdir
 - name: Add line restore directory $BACKUP_RESTORE_PATH/kamailio/
@@ -38,7 +38,7 @@
       systemctl restart kamailio
     state: present
   when:
-    - 'kamailio' in ansible_facts.packages
+    - "'kamailio' in ansible_facts.packages"
     - kamailio_path_check.stat.exists
     - kamailio_path_check.stat.isdir
 ...

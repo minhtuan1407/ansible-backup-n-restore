@@ -27,7 +27,7 @@
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C {{ nginx_path }} .
     state: present
   when:
-    - 'nginx' in ansible_facts.packages
+    - "'nginx' in ansible_facts.packages"
     - nginx_path_check.stat.exists
     - nginx_path_check.stat.isdir
 ...

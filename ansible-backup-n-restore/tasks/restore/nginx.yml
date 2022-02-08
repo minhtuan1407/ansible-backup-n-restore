@@ -6,7 +6,7 @@
   debug:
     msg:
       - "nginx package exist"
-  when: 'nginx' in ansible_facts.packages
+  when: "'nginx' in ansible_facts.packages"
 - name: Check if {{ nginx_path }} exist
   stat:
     path: "{{ nginx_path }}"
@@ -23,7 +23,7 @@
     path: "{{ backup_restore_path }}/nginx"
     state: directory
   when:
-    - 'nginx' in ansible_facts.packages
+    - "'nginx' in ansible_facts.packages"
     - nginx_path_check.stat.exists
     - nginx_path_check.stat.isdir
 - name: Add line restore directory $BACKUP_RESTORE_PATH/nginx/
@@ -38,7 +38,7 @@
       systemctl restart nginx
     state: present
   when:
-    - 'nginx' in ansible_facts.packages
+    - "'nginx' in ansible_facts.packages"
     - nginx_path_check.stat.exists
     - nginx_path_check.stat.isdir
 ...

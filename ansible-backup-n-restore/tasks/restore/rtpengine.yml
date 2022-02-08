@@ -6,7 +6,7 @@
   debug:
     msg:
       - "rtpengine package exist"
-  when: 'rtpengine' in ansible_facts.packages
+  when: "'rtpengine' in ansible_facts.packages"
 - name: Check if {{ rtpengine_path }} exist
   stat:
     path: "{{ rtpengine_path }}"
@@ -30,7 +30,7 @@
       systemctl restart rtpengine
     state: present
   when:
-    - 'rtpengine' in ansible_facts.packages
+    - "'rtpengine' in ansible_facts.packages"
     - rtpengine_path_check.stat.exists
     - rtpengine_path_check.stat.isdir
 ...

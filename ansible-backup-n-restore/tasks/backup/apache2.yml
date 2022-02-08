@@ -6,7 +6,7 @@
   debug:
     msg:
       - "httpd package exist"
-  when: 'httpd' in ansible_facts.packages
+  when: "'httpd' in ansible_facts.packages"
 - name: Check if {{ httpd_path }} exist
   stat:
     path: "{{ httpd_path }}"
@@ -27,7 +27,7 @@
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C {{ httpd_path }} .
     state: present
   when:
-    - 'httpd' in ansible_facts.packages
+    - "'httpd' in ansible_facts.packages"
     - httpd_path_check.stat.exists
     - httpd_path_check.stat.isdir
 - name: Message check apache2 package
@@ -55,7 +55,7 @@
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C {{ apache2_path }} .
     state: present
   when: 
-    - 'apache2' in ansible_facts.packages 
+    - "'apache2' in ansible_facts.packages"
     - apache2_path_check.stat.exists 
     - apache2_path_check.stat.isdir
 ...

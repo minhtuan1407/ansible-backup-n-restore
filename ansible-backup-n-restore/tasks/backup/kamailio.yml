@@ -27,7 +27,7 @@
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-kamailio-$NOW.tar.gz -C {{ kamailio_path }} .
     state: present
   when:
-    - 'kamailio' in ansible_facts.packages
+    - "'kamailio' in ansible_facts.packages"
     - kamailio_path_check.stat.exists
     - kamailio_path_check.stat.isdir
 ...
