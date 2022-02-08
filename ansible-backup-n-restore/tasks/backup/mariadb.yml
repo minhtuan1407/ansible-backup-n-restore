@@ -27,9 +27,31 @@
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C {{ mariadb_path }} .
     state: present
   when:
-    - "'mariadb-server' in ansible_facts.packages"
     - mariadb_path_check.stat.exists
     - mariadb_path_check.stat.isdir
+- name: Check if mycnfd_path exist
+  stat:
+    path: "{{ mycnfd_path }}"
+  register: mycnfd_path_check
+- name: Message check {{ mycnfd_path }}
+  debug:
+    msg:
+      - "{{ mycnfd_path }} exist"
+  when: 
+    - mycnfd_path_check.stat.exists
+    - mycnfd_path_check.stat.isdir
+- name: Add line backup directory {{ mycnfd_path }}
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup mariadb config"
+    insertafter: EOF
+    block: |
+      cp {{ mycnfd_path }} {{ mycnfd_path }}/my.cnf.bak
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-mycnfd-$NOW.tar.gz -C {{ mycnfd_path }} .
+    state: present
+  when:
+    - mycnfd_path_check.stat.exists
+    - mycnfd_path_check.stat.isdir
 - name: Dump database mariadb
   blockinfile:
     path: /opt/backup-system.sh
@@ -45,8 +67,6 @@
     state: present
   when:
     - "'mariadb-server' in ansible_facts.packages"
-    - mariadb_path_check.stat.exists
-    - mariadb_path_check.stat.isdir
     - db_user != '' 
     - db_pass != ''
 ...

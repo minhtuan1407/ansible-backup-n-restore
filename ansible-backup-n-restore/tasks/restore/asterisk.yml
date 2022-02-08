@@ -1,12 +1,4 @@
 ---
-- name: Gather the package facts
-  ansible.builtin.package_facts:
-    manager: auto
-- name: Message check asterisk package
-  debug:
-    msg:
-      - "asterisk package exist"
-  when: "'asterisk' in ansible_facts.packages"
 - name: Check if {{ asterisk_path }} exist
   stat:
     path: "{{ asterisk_path }}"
@@ -23,7 +15,6 @@
     path: "{{ backup_restore_path }}/asterisk"
     state: directory
   when:
-    - "'asterisk' in ansible_facts.packages"
     - asterisk_path_check.stat.exists
     - asterisk_path_check.stat.isdir
 - name: Add line restore directory $BACKUP_RESTORE_PATH/asterisk/
@@ -38,7 +29,6 @@
       asterisk -x 'core restart now'
     state: present
   when:
-    - "'asterisk' in ansible_facts.packages"
     - asterisk_path_check.stat.exists
     - asterisk_path_check.stat.isdir
 ...

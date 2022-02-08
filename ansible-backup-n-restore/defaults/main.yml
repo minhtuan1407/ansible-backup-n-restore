@@ -4,6 +4,7 @@ httpd_path: /etc/httpd
 apache2_path: /etc/apache2
 nginx_path: /etc/nginx
 mariadb_path: /etc/mysql
+mycnfd_path: /etc/my.cnf.d
 postgresql_path: /etc/postgresql
 asterisk_path: /etc/asterisk
 freeswitch_path: /usr/local/freeswitch

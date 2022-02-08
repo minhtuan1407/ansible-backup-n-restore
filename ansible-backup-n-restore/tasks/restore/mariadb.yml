@@ -23,10 +23,41 @@
     path: "{{ backup_restore_path }}/mysql"
     state: directory
   when:
-    - "'mariadb-server' in ansible_facts.packages"
     - mariadb_path_check.stat.exists
     - mariadb_path_check.stat.isdir
-- name: Add line restore directory $BACKUP_RESTORE_PATH/mariadb/
+- name: Check if {{ mycnfd_path }} exist
+  stat:
+    path: "{{ mycnfd_path }}"
+  register: mycnfd_path_check
+- name: Message check {{ mycnfd_path }}
+  debug:
+    msg:
+      - "{{ mariadb_path }} exist"
+  when: 
+    - mycnfd_path_check.stat.exists
+    - mycnfd_path_check.stat.isdir
+- name: Create directory for mariadb
+  file:
+    path: "{{ backup_restore_path }}/my.cnf.d"
+    state: directory
+  when:
+    - mycnfd_path_check.stat.exists
+    - mycnfd_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/my.cnf.d
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore mariadb config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-mycnfd-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/my.cnf.d
+      mv {{ mariadb_path }} {{ mariadb_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/my.cnf.d {{ mariadb_path }}
+      systemctl restart mariadb
+    state: present
+  when:     
+    - mycnfd_path_check.stat.exists
+    - mycnfd_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/mysql
   blockinfile:
     path: /opt/restore-system.sh
     marker: "# Tuan restore mariadb config"
@@ -36,14 +67,22 @@
       mv {{ mariadb_path }} {{ mariadb_path }}.$TIME.bak
       mv $BACKUP_RESTORE_PATH/mysql {{ mariadb_path }}
       systemctl restart mariadb
+    state: present
+  when:     
+    - mariadb_path_check.stat.exists
+    - mariadb_path_check.stat.isdir
+- name: Restore database mariadb
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore all database mariadb"
+    insertafter: EOF
+    block: |
       for db_file in {{ backup_restore_path }}/*-db-*-$NOW.sql.gz; do
           gunzip < $db_file | mysql -u "$DB_USER" -p"$DB_PASS"
       done
     state: present
   when:     
     - "'mariadb-server' in ansible_facts.packages"
-    - mariadb_path_check.stat.exists
-    - mariadb_path_check.stat.isdir
     - db_user != '' 
     - db_pass != ''
 ...

@@ -1,12 +1,4 @@
 ---
-- name: Gather the package facts
-  ansible.builtin.package_facts:
-    manager: auto
-- name: Message check asterisk package
-  debug:
-    msg:
-      - "asterisk package exist"
-  when: "'asterisk' in ansible_facts.packages"
 - name: Check if {{ asterisk_path }} exist
   stat:
     path: "{{ asterisk_path }}"
@@ -27,7 +19,6 @@
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-asterisk-$NOW.tar.gz -C {{ asterisk_path }} .
     state: present
   when:
-    - "'asterisk' in ansible_facts.packages"
     - asterisk_path_check.stat.exists
     - asterisk_path_check.stat.isdir
 ...
