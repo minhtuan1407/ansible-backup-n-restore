@@ -6,7 +6,7 @@
   debug:
     msg:
       - "postgresql package exist"
-  when: "'postgresql' in ansible_facts.packages"
+  when: "'postgresql*' in ansible_facts.packages"
 - name: Check if {{ postgresql_path }} exist
   stat:
     path: "{{ postgresql_path }}"
@@ -23,7 +23,7 @@
     path: "{{ backup_restore_path }}/postgresql"
     state: directory
   when:
-    - "'postgresql' in ansible_facts.packages"
+    - "'postgresql*' in ansible_facts.packages"
     - postgresql_path_check.stat.exists
     - postgresql_path_check.stat.isdir
 - name: Add line restore directory $BACKUP_RESTORE_PATH/postgresql/
@@ -41,7 +41,7 @@
       done
     state: present
   when:
-    - "'postgresql' in ansible_facts.packages"
+    - "'postgresql*' in ansible_facts.packages"
     - postgresql_path_check.stat.exists
     - postgresql_path_check.stat.isdir
 ...
