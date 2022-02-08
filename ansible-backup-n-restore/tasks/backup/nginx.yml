@@ -1,36 +1,24 @@
 ---
-- name: Check if nginx package is exist with yum
-  shell:
-    cmd: yum list installed | grep nginx
-  when: ansible_distribution == 'CentOS'
-  register: nginx_package_check
-  failed_when: nginx_package_check.rc not in [0, 1]
-- name: Check if nginx package is exist with dpkg
-  shell:
-    cmd: dpkg -l | grep nginx
-  when: ansible_distribution == 'Debian'
-  register: nginx_package_check
-  failed_when: nginx_package_check.rc not in [0, 1]
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
 - name: Message check nginx package
   debug:
     msg:
       - "nginx package exist"
-  when: nginx_package_check.rc == 0
-# - name: Check if nginx path is exist
-#   shell:
-#     cmd: ls {{ nginx_path }}
-#   register: nginx_path_check
-#   failed_when: nginx_path_check.rc not in [0, 1, 2]
+  when: 'nginx' in ansible_facts.packages
 - name: Check if {{ nginx_path }} exist
   stat:
     path: "{{ nginx_path }}"
   register: nginx_path_check
-- name: Message check nginx path
+- name: Message check {{ nginx_path }}
   debug:
     msg:
       - "{{ nginx_path }} exist"
-  when: nginx_path_check.stat.exists and nginx_path_check.stat.isdir
-- name: Add line backup directory {{ nginx_path }}
+  when: 
+    - nginx_path_check.stat.exists
+    - nginx_path_check.stat.isdir
+- name: Add line backup directory "{{ nginx_path }}"
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan backup nginx config"
@@ -38,5 +26,8 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-nginx-$NOW.tar.gz -C {{ nginx_path }} .
     state: present
-  when: nginx_package_check.rc == 0 and nginx_path_check.stat.exists and nginx_path_check.stat.isdir
+  when:
+    - 'nginx' in ansible_facts.packages
+    - nginx_path_check.stat.exists
+    - nginx_path_check.stat.isdir
 ...

@@ -1,32 +1,24 @@
 ---
-- name: Check if asterisk package is exist with yum
-  shell:
-    cmd: yum list installed | grep asterisk
-  register: asterisk_package_check
-  failed_when: asterisk_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'CentOS'
-- name: Check if asterisk package is exist with dpkg
-  shell:
-    cmd: dpkg -l | grep asterisk
-  register: asterisk_package_check
-  failed_when: asterisk_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'Debian'
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
 - name: Message check asterisk package
   debug:
     msg:
       - "asterisk package exist"
-  when: asterisk_package_check.rc == 0
-- name: Check if asterisk path is exist
-  shell:
-    cmd: ls {{ asterisk_path }}
+  when: 'asterisk' in ansible_facts.packages
+- name: Check if {{ asterisk_path }} exist
+  stat:
+    path: "{{ asterisk_path }}"
   register: asterisk_path_check
-  failed_when: asterisk_path_check.rc not in [0, 1, 2]
-- name: Message check asterisk path
+- name: Message check {{ asterisk_path }}
   debug:
     msg:
       - "{{ asterisk_path }} exist"
-  when: asterisk_path_check.rc == 0
-- name: Add line backup directory {{ asterisk_path }}
+  when: 
+    - asterisk_path_check.stat.exists
+    - asterisk_path_check.stat.isdir
+- name: Add line backup directory "{{ asterisk_path }}"
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan backup asterisk config"
@@ -34,5 +26,8 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-asterisk-$NOW.tar.gz -C {{ asterisk_path }} .
     state: present
-  when: asterisk_package_check.rc == 0 and asterisk_path_check.rc == 0
+  when:
+    - 'asterisk' in ansible_facts.packages
+    - asterisk_path_check.stat.exists
+    - asterisk_path_check.stat.isdir
 ...

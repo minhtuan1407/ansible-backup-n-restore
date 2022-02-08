@@ -1,21 +1,24 @@
 ---
-- name: Check if freeswitch path is exist
-  shell:
-    cmd: ls {{ freeswitch_path }}
+- name: Check if {{ freeswitch_path }} exist
+  stat:
+    path: "{{ freeswitch_path }}"
   register: freeswitch_path_check
-  failed_when: freeswitch_path_check.rc not in [0, 1, 2]
-- name: Message check freeswitch path
+- name: Message check {{ freeswitch_path }}
   debug:
     msg:
       - "{{ freeswitch_path }} exist"
-  when: freeswitch_path_check.rc == 0
-- name: Add line backup directory {{ freeswitch_path }} 
+  when: 
+    - freeswitch_path_check.stat.exists
+    - freeswitch_path_check.stat.isdir
+- name: Add line backup directory "{{ freeswitch_path }}"
   blockinfile:
     path: /opt/backup-system.sh
     marker: "# Tuan backup freeswitch config"
     insertafter: EOF
     block: |
-      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz -C {{ freeswitch_path }} --exclude='./recordings' .
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz -C {{ freeswitch_path }} .
     state: present
-  when: freeswitch_path_check.rc == 0
+  when:
+    - freeswitch_path_check.stat.exists
+    - freeswitch_path_check.stat.isdir
 ...

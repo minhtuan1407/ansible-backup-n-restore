@@ -1,25 +1,23 @@
 ---
-- name: Check if httpd package is exist with yum
-  shell:
-    cmd: yum list installed | grep httpd
-  register: httpd_package_check
-  failed_when: httpd_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'CentOS'
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
 - name: Message check httpd package
   debug:
     msg:
       - "httpd package exist"
-  when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0
-- name: Check if httpd path is exist
-  shell:
-    cmd: ls {{ httpd_path }}
+  when: 'httpd' in ansible_facts.packages
+- name: Check if {{ httpd_path }} exist
+  stat:
+    path: "{{ httpd_path }}"
   register: httpd_path_check
-  failed_when: httpd_path_check.rc not in [0, 1, 2]
-- name: Message check httpd path
+- name: Message check {{ httpd_path }}
   debug:
     msg:
       - "{{ httpd_path }} exist"
-  when: ansible_distribution == 'CentOS' and httpd_path_check.rc == 0
+  when: 
+    - httpd_path_check.stat.exists
+    - httpd_path_check.stat.isdir
 - name: Add line backup directory "{{ httpd_path }}"
   blockinfile:
     path: /opt/backup-system.sh
@@ -28,28 +26,26 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C {{ httpd_path }} .
     state: present
-  when: ansible_distribution == 'CentOS' and httpd_package_check.rc == 0 and httpd_path_check.rc == 0
-- name: Check if apache2 package is exist with dpkg
-  shell:
-    cmd: dpkg -l | grep apache2
-  register: apache2_package_check
-  failed_when: apache2_package_check.rc not in [0, 1]
-  when: ansible_distribution == 'Debian'
+  when:
+    - 'httpd' in ansible_facts.packages
+    - httpd_path_check.stat.exists
+    - httpd_path_check.stat.isdir
 - name: Message check apache2 package
   debug:
     msg:
       - "apache2 package exist"
-  when: ansible_distribution == 'Debian' and apache2_package_check.rc == 0
-- name: Check if apache2 path is exist
-  shell:
-    cmd: ls {{ apache2_path }}
+  when: 'apache2' in ansible_facts.packages
+- name: Check if {{ apache2_path }} exist
+  stat:
+    path: "{{ apache2_path }}"
   register: apache2_path_check
-  failed_when: apache2_path_check.rc not in [0, 1, 2]
-- name: Message check apache2 path
+- name: Message check {{ apache2_path }}
   debug:
     msg:
       - "{{ apache2_path }} exist"
-  when: ansible_distribution == 'Debian' and apache2_path_check.rc == 0
+  when:
+    - apache2_path_check.stat.exists
+    - apache2_path_check.stat.isdir
 - name: Add line backup directory {{ apache2_path }}
   blockinfile:
     path: /opt/backup-system.sh
@@ -58,5 +54,8 @@
     block: |
       tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C {{ apache2_path }} .
     state: present
-  when: ansible_distribution == 'Debian' and apache2_package_check.rc == 0 and apache2_path_check.rc == 0
+  when: 
+    - 'apache2' in ansible_facts.packages 
+    - apache2_path_check.stat.exists 
+    - apache2_path_check.stat.isdir
 ...
