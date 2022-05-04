@@ -1,0 +1,33 @@
+---
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+- name: Message check kamailio package
+  debug:
+    msg:
+      - "kamailio package exist"
+  when: ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^kamailio$') | list ) != ""
+- name: Check if {{ kamailio_path }} exist
+  stat:
+    path: "{{ kamailio_path }}"
+  register: kamailio_path_check
+- name: Message check {{ kamailio_path }}
+  debug:
+    msg:
+      - "{{ kamailio_path }} exist"
+  when: 
+    - kamailio_path_check.stat.exists
+    - kamailio_path_check.stat.isdir
+- name: Add line backup directory "{{ kamailio_path }}"
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup kamailio config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-kamailio-$NOW.tar.gz -C {{ kamailio_path }} .
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^kamailio$') | list ) != ""
+    - kamailio_path_check.stat.exists
+    - kamailio_path_check.stat.isdir
+...

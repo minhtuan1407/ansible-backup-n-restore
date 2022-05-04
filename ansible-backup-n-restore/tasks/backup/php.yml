@@ -1,0 +1,104 @@
+---
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+- name: Message check php package
+  debug:
+    msg:
+      - "php package exist"
+  when: ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php.') | list ) != ""
+- name: Check if {{ php_path }} exist
+  stat:
+    path: "{{ php_path }}"
+  register: php_path_check
+- name: Message check {{ php_path }}
+  debug:
+    msg:
+      - "{{ php_path }} exist"
+  when: 
+    - php_path_check.stat.exists
+    - php_path_check.stat.isdir
+- name: Add line backup directory "{{ php_path }}"
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup php config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-php-$NOW.tar.gz -C {{ php_path }} .
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php.') | list ) != ""  
+    - php_path_check.stat.exists
+    - php_path_check.stat.isdir
+- name: Check if {{ phpd_path }} exist
+  stat:
+    path: "{{ phpd_path }}"
+  register: phpd_path_check
+- name: Message check {{ phpd_path }}
+  debug:
+    msg:
+      - "{{ phpd_path }} exist"
+  when: 
+    - phpd_path_check.stat.exists
+    - phpd_path_check.stat.isdir
+- name: Add line backup directory "{{ phpd_path }}"
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup php config"
+    insertafter: EOF
+    block: |
+      cp /etc/php.ini {{ phpd_path }}/php.ini.bak
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-phpd-$NOW.tar.gz -C {{ phpd_path }} .
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php.') | list ) != ""  
+    - phpd_path_check.stat.exists
+    - phpd_path_check.stat.isdir
+- name: Check if {{ phpfpmd_path }} exist
+  stat:
+    path: "{{ phpfpmd_path }}"
+  register: phpfpmd_path_check
+- name: Message check {{ phpfpmd_path }}
+  debug:
+    msg:
+      - "{{ phpfpmd_path }} exist"
+  when: 
+    - phpfpmd_path_check.stat.exists
+    - phpfpmd_path_check.stat.isdir
+- name: Add line backup directory "{{ phpfpmd_path }}"
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup php config"
+    insertafter: EOF
+    block: |
+      cp /etc/php-fpm.conf {{ phpfpmd_path }}/php-fpm.conf.bak
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-phpfpm-$NOW.tar.gz -C {{ phpfpmd_path }} .
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php.') | list ) != ""  
+    - phpfpmd_path_check.stat.exists
+    - phpfpmd_path_check.stat.isdir
+- name: Check if {{ phpztsd_path }} exist
+  stat:
+    path: "{{ phpztsd_path }}"
+  register: phpztsd_path_check
+- name: Message check {{ phpztsd_path }}
+  debug:
+    msg:
+      - "{{ phpztsd_path }} exist"
+  when: 
+    - phpztsd_path_check.stat.exists
+    - phpztsd_path_check.stat.isdir
+- name: Add line backup directory "{{ phpztsd_path }}"
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup php config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-phpztsd-$NOW.tar.gz -C {{ phpztsd_path }} .
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php.') | list ) != ""  
+    - phpztsd_path_check.stat.exists
+    - phpztsd_path_check.stat.isdir
+...

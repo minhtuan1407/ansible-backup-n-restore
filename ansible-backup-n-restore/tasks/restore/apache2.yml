@@ -1,0 +1,83 @@
+---
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+- name: Message check httpd package
+  debug:
+    msg:
+      - "httpd package exist"
+  when: ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^httpd$') | list ) != ""
+- name: Check if {{ httpd_path }} exist
+  stat:
+    path: "{{ httpd_path }}"
+  register: httpd_path_check
+- name: Message check {{ httpd_path }}
+  debug:
+    msg:
+      - "{{ httpd_path }} exist"
+  when: 
+    - httpd_path_check.stat.exists
+    - httpd_path_check.stat.isdir
+- name: Create directory for httpd
+  file:
+    path: "{{ backup_restore_path }}/httpd"
+    state: directory
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^httpd$') | list ) != ""
+    - httpd_path_check.stat.exists
+    - httpd_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/httpd/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore httpd config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-httpd-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/httpd
+      mv {{ httpd_path }} {{ httpd_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/httpd {{ httpd_path }}
+      systemctl restart httpd
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^httpd$') | list ) != ""
+    - httpd_path_check.stat.exists
+    - httpd_path_check.stat.isdir
+- name: Message check apache2 package
+  debug:
+    msg:
+      - "apache2 package exist"
+  when: ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^apache2$') | list ) != ""
+- name: Check if {{ apache2_path }} exist
+  stat:
+    path: "{{ apache2_path }}"
+  register: apache2_path_check
+- name: Message check {{ apache2_path }}
+  debug:
+    msg:
+      - "{{ apache2_path }} exist"
+  when:
+    - apache2_path_check.stat.exists
+    - apache2_path_check.stat.isdir
+- name: Create directory for apache2
+  file:
+    path: "{{ backup_restore_path }}/apache2"
+    state: directory
+  when: 
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^apache2$') | list ) != ""
+    - apache2_path_check.stat.exists 
+    - apache2_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/apache2/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore apache2 config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-apache2-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/apache2
+      mv {{ apache2_path }} {{ apache2_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/apache2 {{ apache2_path }}
+      systemctl restart apache2
+    state: present
+  when: 
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^apache2$') | list ) != ""
+    - apache2_path_check.stat.exists 
+    - apache2_path_check.stat.isdir
+...

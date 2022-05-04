@@ -1,0 +1,60 @@
+---
+- name: Install base packages with apt
+  apt:
+    name:
+    - unzip
+    state: present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- name: Install base packages with yum
+  yum:
+    name:
+    - unzip
+    state: present
+  when: ansible_distribution == 'CentOS'
+- name: Check rclone exists
+  stat:
+    path: /usr/bin/rclone
+  register: rclone
+# - name: Download rclone
+#   get_url:
+#     url: https://downloads.rclone.org/rclone-current-linux-amd64.zip
+#     dest: /tmp/rclone-current-linux-amd64.zip
+#   when: not rclone.stat.exists
+- name: Copy rlone
+  copy:
+    src: rclone-current-linux-amd64.zip
+    dest: /tmp/rclone-current-linux-amd64.zip
+  when: not rclone.stat.exists
+- name: Extract rclone-current-linux-amd64.zip
+  unarchive:
+    src: /tmp/rclone-current-linux-amd64.zip
+    dest: /tmp/
+    remote_src: yes
+  when: not rclone.stat.exists
+- name: Copy binary rclone
+  shell:
+    cmd: cp /tmp/rclone-*-linux-amd64/rclone /usr/bin/
+  when: not rclone.stat.exists
+- name: Change permission & ownership of rclone
+  file:
+    path: /usr/bin/rclone
+    owner: root
+    group: root
+    mode: 0775
+  when: not rclone.stat.exists
+# - name: Copy google json service account
+#   copy:
+#     src: minhtuan1407-drive-340607-6ac15a259b6c.json
+#     dest: /opt/minhtuan1407-drive-340607-6ac15a259b6c.json
+# - name: Config rclone
+#   shell:
+#     cmd: rclone config create google-drive drive service_account_file /opt/minhtuan1407-drive-340607-6ac15a259b6c.json shared_with_me true
+- name: Create rclone config directory
+  file:
+    path: /root/.config/rclone/
+    state: directory
+- name: Config rclone for google drive
+  copy:
+    src: rclone.conf
+    dest: /root/.config/rclone/rclone.conf
+...

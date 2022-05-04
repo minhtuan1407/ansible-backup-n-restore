@@ -1,0 +1,52 @@
+---
+- import_tasks: restore/pre-restore.yml
+  tags:
+    - pre-restore
+- import_tasks: restore/apache2.yml
+  tags:
+    - apache2
+  when: apache2 == "true"
+- import_tasks: restore/nginx.yml
+  tags:
+    - nginx
+  when: nginx == "true"
+- import_tasks: restore/php.yml
+  tags:
+    - php
+  when: php == "true"
+- import_tasks: restore/mariadb.yml
+  tags:
+    - mariadb
+  when: mariadb == "true"
+- import_tasks: restore/postgresql.yml
+  tags:
+    - postgresql
+  when: postgresql == "true"
+- import_tasks: restore/asterisk.yml
+  tags:
+    - asterisk
+  when: asterisk == "true"
+- import_tasks: restore/freeswitch.yml
+  tags:
+    - freeswitch
+  when: freeswitch == "true"
+- import_tasks: restore/kamailio.yml
+  tags:
+    - kamailio
+  when: kamailio == "true"
+- import_tasks: restore/opensips.yml
+  tags:
+    - opensips
+  when: opensips == "true"
+- import_tasks: restore/rtpengine.yml
+  tags:
+    - rtpengine
+  when: rtpengine == "true"
+- import_tasks: restore/custom-path.yml
+  tags:
+    - custom-path
+  when: custom_path_01 != '' or custom_path_02 != '' or custom_path_03 != ''
+- import_tasks: restore/run-restore.yml
+  tags:
+    - run-restore
+...

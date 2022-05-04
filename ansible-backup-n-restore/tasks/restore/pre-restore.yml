@@ -1,0 +1,57 @@
+---
+- name: Check if backup_restore_path is empty
+  fail: msg="backup_restore_path is empty"
+  when: backup_restore_path == ''
+- name: Check if rclone_url is empty
+  fail: msg="rclone_url is empty"
+  when: rclone_url == ''
+- name: Check file /opt/restore-system.sh
+  stat:
+    path: /opt/restore-system.sh
+  register: restore_file
+- name: Backup file /opt/restore-system.sh
+  shell:
+    cmd: mv /opt/restore-system.sh /opt/restore-system.sh.$(date +%Y-%m-%d--%H-%M-%S).bak
+  when: restore_file.stat.exists
+- name: Delete file /opt/restore-system.sh older than 30 days
+  shell:
+    cmd: find /opt/ -mtime +7 -name "restore-system.*.sh" -exec rm {} \;
+  when: restore_file.stat.exists
+- name: Insert base variables
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan set variable bash shell"
+    insertbefore: BOF
+    block: |
+      #!/bin/bash
+      IP_SERVER=
+      NOW=$(date +%Y-%m-%d)
+      TIME=$(date +%Y-%m-%d--%H-%M-%S)
+      YEAR=$(date +%Y)
+      MONTH=$(date +%h)
+      DAY=$(date +%d)
+      RCLONE_PATH=google-drive:google-drive/{{ rclone_url | replace(' ','-') }}
+      RCLONE_CONFIG_N_DB_PATH=google-drive:google-drive/{{ rclone_url | replace(' ','-') }}/config-n-database/$YEAR/$MONTH/$DAY
+      RCLONE_RECORDINGS_PATH=google-drive:google-drive/{{ rclone_url | replace(' ','-') }}/recordings
+      BACKUP_RESTORE_PATH={{ backup_restore_path }}
+      RECORD_PATH={{ recordings_path }}
+      CUSTOM_PATH_01={{ custom_path_01  }}
+      CUSTOM_PATH_02={{ custom_path_02  }}
+      CUSTOM_PATH_03={{ custom_path_03  }}
+      DB_USER='{{ db_user }}'
+      DB_PASS='{{ db_pass }}'
+    state: present
+    create: yes
+- name: Create restore directory
+  file:
+    path: "{{ backup_restore_path }}"
+    state: directory
+- name: Download file from google drive
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan download file restore"
+    insertbefore: EOF
+    block: |
+      rclone copy -P --max-backlog 999999 --fast-list --transfers=40 --checkers=40 --tpslimit=10 --drive-chunk-size=1M $RCLONE_CONFIG_N_DB_PATH $BACKUP_RESTORE_PATH
+    state: present
+...

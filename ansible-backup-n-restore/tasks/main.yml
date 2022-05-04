@@ -1,0 +1,14 @@
+---
+# tasks file for ansible-backup-n-restore
+- import_tasks: rclone.yml
+  tags:
+    - install-rclone
+- import_tasks: backup.yml
+  tags:
+    - backup
+  when: task == "backup"
+- import_tasks: restore.yml
+  tags:
+    - restore
+  when: task == "restore"
+...

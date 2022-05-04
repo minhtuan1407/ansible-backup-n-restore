@@ -1,0 +1,52 @@
+---
+- name: Upload file recordings to google drive
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan upload file recordings"
+    insertbefore: EOF
+    block: |
+      nohup rclone copy -P --max-age 3d --max-backlog 999999 --fast-list --transfers=40 --checkers=40 --tpslimit=10 --drive-chunk-size=1M $RECORD_PATH $RCLONE_RECORDINGS_PATH > /dev/null 2>&1 &
+    state: present
+  when: recordings_path != ''
+- name: Upload file to google drive
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan upload file backup"
+    insertbefore: EOF
+    block: |
+      rclone copy -P --max-backlog 999999 --fast-list --transfers=40 --checkers=40 --tpslimit=10 --drive-chunk-size=1M $BACKUP_RESTORE_PATH $RCLONE_CONFIG_N_DB_PATH
+    state: present
+- name: Insert delete file by name
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan delete file backup after rclone"
+    insertbefore: EOF
+    block: |
+      find $BACKUP_RESTORE_PATH \( -name "*.tar.gz" -o -name "*.sql.gz" \) -type f -mtime 0 -delete
+    state: present
+  when: delete_after == "true"
+- name: Insert delete file on google drive by date
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan delete file backup on google drive"
+    insertbefore: EOF
+    block: |
+      rclone delete $RCLONE_PATH --include *.gz --min-age 90d
+    state: present
+- name: Add crontab to run backup at 03:00
+  cron:
+    name: "Run backup system at 03:00"
+    minute: "00"
+    hour: "03"
+    job: "bash /opt/backup-system.sh"
+  when: crontab_backup_3h == "true"
+- name: Remove crontab to run backup at 03:00
+  cron:
+    name: "Run backup system at 03:00"
+    state: absent
+  when: crontab_backup_3h == "false"
+- name: Run backup right now
+  shell:
+    cmd: "bash /opt/backup-system.sh"
+  when: run_now == "true"
+...

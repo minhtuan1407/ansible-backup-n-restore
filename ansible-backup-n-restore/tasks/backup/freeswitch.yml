@@ -1,0 +1,46 @@
+---
+- name: Check if {{ freeswitch_path_01 }} exist
+  stat:
+    path: "{{ freeswitch_path_01 }}"
+  register: freeswitch_path_01_check
+- name: Message check {{ freeswitch_path_01 }}
+  debug:
+    msg:
+      - "{{ freeswitch_path_01 }} exist"
+  when: 
+    - freeswitch_path_01_check.stat.exists
+    - freeswitch_path_01_check.stat.isdir
+- name: Add line backup directory "{{ freeswitch_path_01 }}"
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup freeswitch config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz --exclude="./recordings*" -C {{ freeswitch_path_01 }} . 
+    state: present
+  when:
+    - freeswitch_path_01_check.stat.exists
+    - freeswitch_path_01_check.stat.isdir
+- name: Check if {{ freeswitch_path_02 }} exist
+  stat:
+    path: "{{ freeswitch_path_02 }}"
+  register: freeswitch_path_02_check
+- name: Message check {{ freeswitch_path_02 }}
+  debug:
+    msg:
+      - "{{ freeswitch_path_02 }} exist"
+  when: 
+    - freeswitch_path_02_check.stat.exists
+    - freeswitch_path_02_check.stat.isdir
+- name: Add line backup directory "{{ freeswitch_path_02 }}"
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup freeswitch config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-freeswitch-$NOW.tar.gz --exclude="./recordings*" -C {{ freeswitch_path_02 }} . 
+    state: present
+  when:
+    - freeswitch_path_02_check.stat.exists
+    - freeswitch_path_02_check.stat.isdir
+...

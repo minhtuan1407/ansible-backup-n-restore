@@ -1,0 +1,34 @@
+---
+- name: Check if {{ opensips_path }} exist
+  stat:
+    path: "{{ opensips_path }}"
+  register: opensips_path_check
+- name: Message check {{ opensips_path }}
+  debug:
+    msg:
+      - "{{ opensips_path }} exist"
+  when: 
+    - opensips_path_check.stat.exists
+    - opensips_path_check.stat.isdir
+- name: Create directory for opensips
+  file:
+    path: "{{ backup_restore_path }}/opensips"
+    state: directory
+  when: 
+    - opensips_path_check.stat.exists
+    - opensips_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/opensips/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore opensips config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-opensips-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/opensips
+      mv {{ opensips_path }} {{ opensips_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/opensips {{ opensips_path }}
+      systemctl restart opensips
+    state: present
+  when: 
+    - opensips_path_check.stat.exists
+    - opensips_path_check.stat.isdir
+...

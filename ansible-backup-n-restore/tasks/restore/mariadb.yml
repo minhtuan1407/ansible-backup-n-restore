@@ -1,0 +1,89 @@
+---
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+- name: Message check mariadb package
+  debug:
+    msg:
+      - "mariadb package exist"
+  when: ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^mariadb-server$') | list ) != ""
+- name: Check if {{ mariadb_path }} exist
+  stat:
+    path: "{{ mariadb_path }}"
+  register: mariadb_path_check
+- name: Message check {{ mariadb_path }}
+  debug:
+    msg:
+      - "{{ mariadb_path }} exist"
+  when: 
+    - mariadb_path_check.stat.exists
+    - mariadb_path_check.stat.isdir
+- name: Create directory for mariadb
+  file:
+    path: "{{ backup_restore_path }}/mysql"
+    state: directory
+  when:
+    - mariadb_path_check.stat.exists
+    - mariadb_path_check.stat.isdir
+- name: Check if {{ mycnfd_path }} exist
+  stat:
+    path: "{{ mycnfd_path }}"
+  register: mycnfd_path_check
+- name: Message check {{ mycnfd_path }}
+  debug:
+    msg:
+      - "{{ mycnfd_path }} exist"
+  when: 
+    - mycnfd_path_check.stat.exists
+    - mycnfd_path_check.stat.isdir
+- name: Create directory for mariadb
+  file:
+    path: "{{ backup_restore_path }}/my.cnf.d"
+    state: directory
+  when:
+    - mycnfd_path_check.stat.exists
+    - mycnfd_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/my.cnf.d
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore mariadb config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-mycnfd-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/my.cnf.d
+      mv {{ mycnfd_path }} {{ mycnfd_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/my.cnf.d {{ mycnfd_path }}
+      cp {{ mycnfd_path }}/my.cnf.bak /etc/my.cnf
+      systemctl restart mariadb
+    state: present
+  when:     
+    - mycnfd_path_check.stat.exists
+    - mycnfd_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/mysql
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore mariadb config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-mariadb-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/mysql
+      mv {{ mariadb_path }} {{ mariadb_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/mysql {{ mariadb_path }}
+      systemctl restart mariadb
+    state: present
+  when:     
+    - mariadb_path_check.stat.exists
+    - mariadb_path_check.stat.isdir
+- name: Restore database mariadb
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore all database mariadb"
+    insertafter: EOF
+    block: |
+      for db_file in {{ backup_restore_path }}/*-db-*-$NOW.sql.gz; do
+          gunzip < $db_file | mysql -u "$DB_USER" -p"$DB_PASS"
+      done
+    state: present
+  when:     
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^mariadb-server$') | list ) != ""
+    - db_user != '' 
+    - db_pass != ''
+...

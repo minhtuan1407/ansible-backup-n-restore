@@ -1,0 +1,44 @@
+---
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+- name: Message check nginx package
+  debug:
+    msg:
+      - "nginx package exist"
+  when: ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^nginx$') | list ) != ""
+- name: Check if {{ nginx_path }} exist
+  stat:
+    path: "{{ nginx_path }}"
+  register: nginx_path_check
+- name: Message check {{ nginx_path }}
+  debug:
+    msg:
+      - "{{ nginx_path }} exist"
+  when: 
+    - nginx_path_check.stat.exists
+    - nginx_path_check.stat.isdir
+- name: Create directory for nginx
+  file:
+    path: "{{ backup_restore_path }}/nginx"
+    state: directory
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^nginx$') | list ) != ""
+    - nginx_path_check.stat.exists
+    - nginx_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/nginx/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore nginx config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-nginx-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/nginx
+      mv {{ nginx_path }} {{ nginx_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/nginx {{ nginx_path }}
+      systemctl restart nginx
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^nginx$') | list ) != ""
+    - nginx_path_check.stat.exists
+    - nginx_path_check.stat.isdir
+...

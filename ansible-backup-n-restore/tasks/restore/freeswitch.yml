@@ -1,0 +1,72 @@
+---
+- name: Check if {{ freeswitch_path_01 }} exist
+  stat:
+    path: "{{ freeswitch_path_01 }}"
+  register: freeswitch_path_01_check
+- name: Message check {{ freeswitch_path_01 }}
+  debug:
+    msg:
+      - "{{ freeswitch_path_01 }} exist"
+  when: 
+    - freeswitch_path_01_check.stat.exists
+    - freeswitch_path_01_check.stat.isdir
+- name: Create directory for freeswitch
+  file:
+    path: "{{ backup_restore_path }}/freeswitch"
+    state: directory
+  when: 
+    - freeswitch_path_01_check.stat.exists
+    - freeswitch_path_01_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/freeswitch/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore freeswitch config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-freeswitch-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/freeswitch
+      mv {{ freeswitch_path_01 }} {{ freeswitch_path_01 }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/freeswitch {{ freeswitch_path_01 }}
+      mkdir {{ freeswitch_path_01 }}/recordings/
+      chown -R www-data. {{ freeswitch_path_01 }}/recordings/
+      chmod -R ug+rw {{ freeswitch_path_01 }}/recordings/
+      bash /root/restart-fs.sh
+    state: present
+  when: 
+    - freeswitch_path_01_check.stat.exists
+    - freeswitch_path_01_check.stat.isdir
+- name: Check if {{ freeswitch_path_02 }} exist
+  stat:
+    path: "{{ freeswitch_path_02 }}"
+  register: freeswitch_path_02_check
+- name: Message check {{ freeswitch_path_02 }}
+  debug:
+    msg:
+      - "{{ freeswitch_path_02 }} exist"
+  when: 
+    - freeswitch_path_02_check.stat.exists
+    - freeswitch_path_02_check.stat.isdir
+- name: Create directory for freeswitch
+  file:
+    path: "{{ backup_restore_path }}/freeswitch"
+    state: directory
+  when: 
+    - freeswitch_path_02_check.stat.exists
+    - freeswitch_path_02_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/freeswitch/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore freeswitch config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-freeswitch-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/freeswitch
+      mv {{ freeswitch_path_02 }} {{ freeswitch_path_02 }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/freeswitch {{ freeswitch_path_02 }}
+      mkdir {{ freeswitch_path_02 }}/recordings/
+      chown -R www-data. {{ freeswitch_path_02 }}/recordings/
+      chmod -R ug+rw {{ freeswitch_path_02 }}/recordings/
+      bash /root/restart-fs.sh
+    state: present
+  when: 
+    - freeswitch_path_02_check.stat.exists
+    - freeswitch_path_02_check.stat.isdir
+...

@@ -1,0 +1,61 @@
+---
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+- name: Message check httpd package
+  debug:
+    msg:
+      - "httpd package exist"
+  when: ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^httpd$') | list ) != ""
+- name: Check if {{ httpd_path }} exist
+  stat:
+    path: "{{ httpd_path }}"
+  register: httpd_path_check
+- name: Message check {{ httpd_path }}
+  debug:
+    msg:
+      - "{{ httpd_path }} exist"
+  when: 
+    - httpd_path_check.stat.exists
+    - httpd_path_check.stat.isdir
+- name: Add line backup directory "{{ httpd_path }}"
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup httpd config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-httpd-$NOW.tar.gz -C {{ httpd_path }} .
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^httpd$') | list ) != ""
+    - httpd_path_check.stat.exists
+    - httpd_path_check.stat.isdir
+- name: Message check apache2 package
+  debug:
+    msg:
+      - "apache2 package exist"
+  when: ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^apache2$') | list ) != ""
+- name: Check if {{ apache2_path }} exist
+  stat:
+    path: "{{ apache2_path }}"
+  register: apache2_path_check
+- name: Message check {{ apache2_path }}
+  debug:
+    msg:
+      - "{{ apache2_path }} exist"
+  when:
+    - apache2_path_check.stat.exists
+    - apache2_path_check.stat.isdir
+- name: Add line backup directory {{ apache2_path }}
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup apache2 config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-apache2-$NOW.tar.gz -C {{ apache2_path }} .
+    state: present
+  when: 
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^apache2$') | list ) != ""
+    - apache2_path_check.stat.exists 
+    - apache2_path_check.stat.isdir
+...

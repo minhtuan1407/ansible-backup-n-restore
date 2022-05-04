@@ -1,0 +1,33 @@
+---
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+- name: Message check rtpengine package
+  debug:
+    msg:
+      - "ngcp-rtpengine package exist"
+  when: ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^ngcp-rtpengine$') | list ) != ""
+- name: Check if {{ rtpengine_path }} exist
+  stat:
+    path: "{{ rtpengine_path }}"
+  register: rtpengine_path_check
+- name: Message check {{ rtpengine_path }}
+  debug:
+    msg:
+      - "{{ rtpengine_path }} exist"
+  when: 
+    - rtpengine_path_check.stat.exists
+    - rtpengine_path_check.stat.isdir
+- name: Add line backup directory {{ rtpengine_path }}
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup rtpengine config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-rtpengine-$NOW.tar.gz -C {{ rtpengine_path }} .
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^ngcp-rtpengine$') | list ) != ""
+    - rtpengine_path_check.stat.exists
+    - rtpengine_path_check.stat.isdir
+...

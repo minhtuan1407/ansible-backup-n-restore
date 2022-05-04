@@ -1,0 +1,52 @@
+---
+- import_tasks: backup/pre-backup.yml
+  tags:
+    - pre-backup
+- import_tasks: backup/apache2.yml
+  tags:
+    - apache2
+  when: apache2 == "true"
+- import_tasks: backup/nginx.yml
+  tags:
+    - nginx
+  when: nginx == "true"
+- import_tasks: backup/php.yml
+  tags:
+    - php
+  when: php == "true"
+- import_tasks: backup/mariadb.yml
+  tags:
+    - mariadb
+  when: mariadb == "true"
+- import_tasks: backup/postgresql.yml
+  tags:
+    - postgresql
+  when: postgresql == "true"
+- import_tasks: backup/asterisk.yml
+  tags:
+    - asterisk
+  when: asterisk == "true"
+- import_tasks: backup/freeswitch.yml
+  tags:
+    - freeswitch
+  when: freeswitch == "true"
+- import_tasks: backup/kamailio.yml
+  tags:
+    - kamailio
+  when: kamailio == "true"
+- import_tasks: backup/opensips.yml
+  tags:
+    - opensips
+  when: opensips == "true"
+- import_tasks: backup/rtpengine.yml
+  tags:
+    - rtpengine
+  when: rtpengine == "true"
+- import_tasks: backup/custom-path.yml
+  tags:
+    - custom-path
+  when: custom_path_01 != '' or custom_path_02 != '' or custom_path_03 != ''
+- import_tasks: backup/run-backup.yml
+  tags:
+    - run-backup
+...

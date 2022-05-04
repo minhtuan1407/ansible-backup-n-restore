@@ -1,0 +1,148 @@
+---
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+- name: Message check php package
+  debug:
+    msg:
+      - "php package exist"
+  when: ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php$') | list ) != ""
+- name: Check if {{ php_path }} exist
+  stat:
+    path: "{{ php_path }}"
+  register: php_path_check
+- name: Message check {{ php_path }}
+  debug:
+    msg:
+      - "{{ php_path }} exist"
+  when: 
+    - php_path_check.stat.exists
+    - php_path_check.stat.isdir
+- name: Create directory for php
+  file:
+    path: "{{ backup_restore_path }}/php"
+    state: directory
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php$') | list ) != ""
+    - php_path_check.stat.exists
+    - php_path_check.stat.isdir
+- name: Check if {{ phpd_path }} exist
+  stat:
+    path: "{{ phpd_path }}"
+  register: phpd_path_check
+- name: Message check {{ phpd_path }}
+  debug:
+    msg:
+      - "{{ phpd_path }} exist"
+  when: 
+    - phpd_path_check.stat.exists
+    - phpd_path_check.stat.isdir
+- name: Create directory for php
+  file:
+    path: "{{ backup_restore_path }}/php.d"
+    state: directory
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php$') | list ) != ""
+    - phpd_path_check.stat.exists
+    - phpd_path_check.stat.isdir
+- name: Check if {{ phpfpmd_path }} exist
+  stat:
+    path: "{{ phpfpmd_path }}"
+  register: phpfpmd_path_check
+- name: Message check {{ phpfpmd_path }}
+  debug:
+    msg:
+      - "{{ phpfpmd_path }} exist"
+  when: 
+    - phpfpmd_path_check.stat.exists
+    - phpfpmd_path_check.stat.isdir
+- name: Create directory for php
+  file:
+    path: "{{ backup_restore_path }}/php-fpm.d"
+    state: directory
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php$') | list ) != ""
+    - phpfpmd_path_check.stat.exists
+    - phpfpmd_path_check.stat.isdir
+- name: Check if {{ phpztsd_path }} exist
+  stat:
+    path: "{{ phpztsd_path }}"
+  register: phpztsd_path_check
+- name: Message check {{ phpztsd_path }}
+  debug:
+    msg:
+      - "{{ phpztsd_path }} exist"
+  when: 
+    - phpztsd_path_check.stat.exists
+    - phpztsd_path_check.stat.isdir
+- name: Create directory for php
+  file:
+    path: "{{ backup_restore_path }}/php-zts.d"
+    state: directory
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php$') | list ) != ""
+    - phpztsd_path_check.stat.exists
+    - phpztsd_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/php/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore php config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-php-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/php
+      mv {{ php_path }} {{ php_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/php {{ php_path }}
+      systemctl restart php
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php$') | list ) != ""
+    - php_path_check.stat.exists
+    - php_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/php.d/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore php.d config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-php.d-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/php.d
+      mv {{ phpd_path }} {{ phpd_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/php.d {{ phpd_path }}
+      cp {{ phpd_path }}/php-fpm.conf.bak {{ phpd_path }}/php-fpm.conf
+      systemctl restart php-fpm
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php$') | list ) != ""
+    - phpd_path_check.stat.exists
+    - phpd_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/php-fpm.d/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore php-fpm.d config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-php-fpm.d-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/php-fpm.d
+      mv {{ phpfpmd_path }} {{ phpfpmd_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/php-fpm.d {{ phpfpmd_path }}
+      cp {{ phpfpmd_path }}/php-fpm.conf.bak {{ phpfpmd_path }}/php-fpm.conf
+      systemctl restart php-fpm
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php$') | list ) != ""
+    - phpfpmd_path_check.stat.exists
+    - phpfpmd_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/php-zts.d/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore php-zts.d config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-php-zts.d-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/php-zts.d
+      mv {{ phpztsd_path }} {{ phpztsd_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/php-zts.d {{ phpztsd_path }}
+      systemctl restart php-zts
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^php$') | list ) != ""
+    - phpztsd_path_check.stat.exists
+    - phpztsd_path_check.stat.isdir
+...

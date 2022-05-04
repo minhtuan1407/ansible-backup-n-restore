@@ -1,0 +1,20 @@
+---
+- name: Create recordings directory
+  file:
+    path: "{{ recordings_path }}"
+    state: directory
+  when: recordings_path != ''
+- name: Download file recordings to google drive
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan download file recordings"
+    insertbefore: EOF
+    block: |
+      nohup rclone copy -P --max-backlog 999999 --fast-list --transfers=40 --checkers=40 --tpslimit=10 --drive-chunk-size=1M $RCLONE_RECORDINGS_PATH $RECORD_PATH > /dev/null 2>&1 &
+    state: present
+  when: recordings_path != ''
+- name: Run restore right now
+  shell:
+    cmd: "bash /opt/restore-system.sh"
+  when: run_now == "true"
+...

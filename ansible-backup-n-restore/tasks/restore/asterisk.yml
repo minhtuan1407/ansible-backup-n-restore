@@ -1,0 +1,34 @@
+---
+- name: Check if {{ asterisk_path }} exist
+  stat:
+    path: "{{ asterisk_path }}"
+  register: asterisk_path_check
+- name: Message check {{ asterisk_path }}
+  debug:
+    msg:
+      - "{{ asterisk_path }} exist"
+  when: 
+    - asterisk_path_check.stat.exists
+    - asterisk_path_check.stat.isdir
+- name: Create directory for asterisk
+  file:
+    path: "{{ backup_restore_path }}/asterisk"
+    state: directory
+  when:
+    - asterisk_path_check.stat.exists
+    - asterisk_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/asterisk/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore asterisk config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-asterisk-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/asterisk
+      mv {{ asterisk_path }} {{ asterisk_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/asterisk {{ asterisk_path }}
+      asterisk -x 'core restart now'
+    state: present
+  when:
+    - asterisk_path_check.stat.exists
+    - asterisk_path_check.stat.isdir
+...

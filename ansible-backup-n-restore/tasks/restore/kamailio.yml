@@ -1,0 +1,44 @@
+---
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+- name: Message check kamailio package
+  debug:
+    msg:
+      - "kamailio package exist"
+  when: ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^kamailio$') | list ) != ""
+- name: Check if {{ kamailio_path }} exist
+  stat:
+    path: "{{ kamailio_path }}"
+  register: kamailio_path_check
+- name: Message check {{ kamailio_path }}
+  debug:
+    msg:
+      - "{{ kamailio_path }} exist"
+  when: 
+    - kamailio_path_check.stat.exists
+    - kamailio_path_check.stat.isdir
+- name: Create directory for kamailio
+  file:
+    path: "{{ backup_restore_path }}/kamailio"
+    state: directory
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^kamailio$') | list ) != ""
+    - kamailio_path_check.stat.exists
+    - kamailio_path_check.stat.isdir
+- name: Add line restore directory $BACKUP_RESTORE_PATH/kamailio/
+  blockinfile:
+    path: /opt/restore-system.sh
+    marker: "# Tuan restore kamailio config"
+    insertafter: EOF
+    block: |
+      tar -xzvf $BACKUP_RESTORE_PATH/*-kamailio-$NOW.tar.gz -C $BACKUP_RESTORE_PATH/kamailio
+      mv {{ kamailio_path }} {{ kamailio_path }}.$TIME.bak
+      mv $BACKUP_RESTORE_PATH/kamailio {{ kamailio_path }}
+      systemctl restart kamailio
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^kamailio$') | list ) != ""
+    - kamailio_path_check.stat.exists
+    - kamailio_path_check.stat.isdir
+...

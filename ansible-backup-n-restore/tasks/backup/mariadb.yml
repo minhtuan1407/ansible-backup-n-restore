@@ -1,0 +1,72 @@
+---
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+- name: Message check mariadb package
+  debug:
+    msg:
+      - "mariadb package exist"
+  when: ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^mariadb-server$') | list ) != ""
+- name: Check if {{ mariadb_path }} exist
+  stat:
+    path: "{{ mariadb_path }}"
+  register: mariadb_path_check
+- name: Message check {{ mariadb_path }}
+  debug:
+    msg:
+      - "{{ mariadb_path }} exist"
+  when: 
+    - mariadb_path_check.stat.exists
+    - mariadb_path_check.stat.isdir
+- name: Add line backup directory {{ mariadb_path }}
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup mariadb config"
+    insertafter: EOF
+    block: |
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-mariadb-$NOW.tar.gz -C {{ mariadb_path }} .
+    state: present
+  when:
+    - mariadb_path_check.stat.exists
+    - mariadb_path_check.stat.isdir
+- name: Check if mycnfd_path exist
+  stat:
+    path: "{{ mycnfd_path }}"
+  register: mycnfd_path_check
+- name: Message check {{ mycnfd_path }}
+  debug:
+    msg:
+      - "{{ mycnfd_path }} exist"
+  when: 
+    - mycnfd_path_check.stat.exists
+    - mycnfd_path_check.stat.isdir
+- name: Add line backup directory {{ mycnfd_path }}
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan backup mariadb config"
+    insertafter: EOF
+    block: |
+      cp /etc/my.cnf {{ mycnfd_path }}/my.cnf.bak
+      tar -czvf $BACKUP_RESTORE_PATH/$IP_SERVER-mycnfd-$NOW.tar.gz -C {{ mycnfd_path }} .
+    state: present
+  when:
+    - mycnfd_path_check.stat.exists
+    - mycnfd_path_check.stat.isdir
+- name: Dump database mariadb
+  blockinfile:
+    path: /opt/backup-system.sh
+    marker: "# Tuan dump all database mariadb"
+    insertafter: EOF
+    block: |
+      all_databases=$(mysql -u "$DB_USER" -p"$DB_PASS" -e "SHOW DATABASES;" | tr -d "| " | grep -v Database)
+      for db_name in $all_databases; do
+          if [[ "$db_name" != "mysql" ]] && [[ "$db_name" != "performance_schema" ]] && [[ "$db_name" != "information_schema" ]] && [[ "$db_name" != _* ]] ; then
+              mysqldump -u "$DB_USER" -p"$DB_PASS" --routines --triggers  --databases $db_name | gzip > $BACKUP_RESTORE_PATH/$IP_SERVER-db-$db_name-$NOW.sql.gz
+          fi
+      done
+    state: present
+  when:
+    - ( hostvars['{{ ip_server }}']['ansible_facts']['packages'].keys() | select('search', '^mariadb-server$') | list ) != ""
+    - db_user != '' 
+    - db_pass != ''
+...
